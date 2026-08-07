@@ -1,6 +1,6 @@
 # Sinaptiklab — Kablo Çerçeveleri (Faz 0)
 
-> Durum: **onay bekliyor**. Tüm sayfa tipleri; masaüstü (≥1024px) esas, kritik yerlerde mobil varyant. Tasarım dili: "ölçüm laboratuvarı" — hairline çizgiler (`--doku`), maks 4px radius, tek sinyal rengi, ölçüm cetveli motifli bölüm ayırıcılar. Gradyan/glow/parallax yok.
+> Durum: **ONAYLANDI — 2026-08-08** (dosya sonundaki üç öneri de kabul edildi: Ölçüm Panosu kalıyor, kenar notu masaüstünde varsayılan açık, bülten adı "Sinaptik Sinyal"). Tüm sayfa tipleri; masaüstü (≥1024px) esas, kritik yerlerde mobil varyant. Tasarım dili: "ölçüm laboratuvarı" — hairline çizgiler (`--doku`), maks 4px radius, tek sinyal rengi, ölçüm cetveli motifli bölüm ayırıcılar. Gradyan/glow/parallax yok.
 
 Ortak kabuk (her sayfada):
 

@@ -1,4 +1,4 @@
-# Pillar / Cluster Ağacı — TASLAK (onay bekliyor)
+# Pillar / Cluster Ağacı — ONAYLANDI (2026-08-08)
 
 > Üretim: 2026-08-08. Anahtar kelime havuzuna ve BRIEF §2.3 sabit pillar listesine dayanır. Onaylanınca ADR 0006 Ek A olarak bağlanacak ve `topics` koleksiyonuna tohumlanacak.
 

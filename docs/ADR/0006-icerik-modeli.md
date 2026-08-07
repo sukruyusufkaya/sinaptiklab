@@ -20,4 +20,4 @@
 - Şema değişiklikleri migration script'i + ADR günceli gerektirir.
 
 ## Ek A — Pillar/Cluster ağacı
-Faz 0 araştırma workflow'u tamamlanınca eklenecek; kullanıcı onayı sonrası bağlayıcıdır.
+**ONAYLANDI — 2026-08-08.** Bağlayıcı ağaç: [docs/arastirma/pillar-cluster-agaci.md](../arastirma/pillar-cluster-agaci.md) (12 pillar / 124 cluster). Faz 2'de `topics` koleksiyonuna bu dosyadan tohumlanır; ağaç değişikliği bu ADR'nin güncellenmesini gerektirir.
