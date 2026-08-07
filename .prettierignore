@@ -1,0 +1,9 @@
+.next/
+node_modules/
+docs/
+package-lock.json
+app/fonts/
+coverage/
+playwright-report/
+test-results/
+docs/arastirma/rakip-ham-veri.json

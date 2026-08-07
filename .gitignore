@@ -8,6 +8,9 @@ node_modules/
 out/
 next-env.d.ts
 
+# claude yerel ayarları
+.claude/settings.local.json
+
 # üretim
 build/
 dist/
