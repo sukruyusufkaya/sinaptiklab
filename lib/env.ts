@@ -13,6 +13,9 @@ const envSema = z.object({
   NEXT_PUBLIC_SITE_URL: z.url().default("https://sinaptiklab.com"),
   MONGODB_URI: z.string().min(1).optional(),
   MONGODB_DB: z.string().min(1).default("sinaptiklab"),
+  // Geçici /admin koruması (ADR 0007) — Faz 7'de Auth.js rol sistemiyle değişecek
+  ADMIN_USER: z.string().min(1).optional(),
+  ADMIN_PASS: z.string().min(8).optional(),
 });
 
 /**
@@ -28,6 +31,8 @@ const sonuc = envSema.safeParse({
   NEXT_PUBLIC_SITE_URL: bosluklariTemizle(process.env.NEXT_PUBLIC_SITE_URL),
   MONGODB_URI: bosluklariTemizle(process.env.MONGODB_URI),
   MONGODB_DB: bosluklariTemizle(process.env.MONGODB_DB),
+  ADMIN_USER: bosluklariTemizle(process.env.ADMIN_USER),
+  ADMIN_PASS: bosluklariTemizle(process.env.ADMIN_PASS),
 });
 
 if (!sonuc.success) {
