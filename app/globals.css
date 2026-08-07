@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════════════════════
+   Sinaptiklab tasarım token'ları — BRIEF §5 "ölçüm laboratuvarı"
+   Kural: bileşenlerde hex yazmak yasak; yalnızca bu token'lar.
+   ════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --kagit: #f1f2ed; /* zemin — kemik beyazı, tezgâh laminatı */
+  --kagit-alt: #e7e9e2; /* kart, kod bloğu zemini */
+  --murekkep: #12161b; /* ana metin — grafit */
+  --murekkep-2: #4a5158; /* ikincil metin */
+  --doku: #c9ccc3; /* hairline çizgi, ızgara */
+  --sinyal: #1b3bff; /* elektrik mavisi — link, odak, aktif */
+  --sinyal-dip: #0a1c99; /* hover / basılı */
+  --olcum: #ffc400; /* ölçüm sarısı — SADECE işaretleme, max %3 alan */
+  --uyari: #b4341c;
+  --onay: #0c6e5e;
+
+  /* Tip ölçeği — 1.25 majör üçlü, büyük kademeler akışkan (BRIEF §5.3) */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: clamp(1.65rem, 1.42rem + 1.1vw, 1.953rem);
+  --fs-3xl: clamp(1.95rem, 1.55rem + 1.9vw, 2.441rem);
+  --fs-4xl: clamp(2.3rem, 1.78rem + 2.7vw, 3.052rem);
+
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --icerik-genislik: 1280px;
+  --govde-olcu: 68ch; /* 62-72 karakter satır uzunluğu */
+}
+
+[data-theme="dark"] {
+  --kagit: #0a0d11;
+  --kagit-alt: #141a20;
+  --murekkep: #e8eae5;
+  --murekkep-2: #9ba3ab;
+  --doku: #2a3138;
+  --sinyal: #5c7bff;
+  --sinyal-dip: #93a8ff;
+  --olcum: #ffd24d;
+}
+
+/* Sistem koyu tercihi: kullanıcı açıkça "light" seçmediyse uygula */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --kagit: #0a0d11;
+    --kagit-alt: #141a20;
+    --murekkep: #e8eae5;
+    --murekkep-2: #9ba3ab;
+    --doku: #2a3138;
+    --sinyal: #5c7bff;
+    --sinyal-dip: #93a8ff;
+    --olcum: #ffd24d;
+  }
+}
+
+/* Token'ları Tailwind utility'lerine bağla (bg-kagit, text-murekkep, border-doku…) */
+@theme inline {
+  --color-*: initial;
+  --color-kagit: var(--kagit);
+  --color-kagit-alt: var(--kagit-alt);
+  --color-murekkep: var(--murekkep);
+  --color-murekkep-2: var(--murekkep-2);
+  --color-doku: var(--doku);
+  --color-sinyal: var(--sinyal);
+  --color-sinyal-dip: var(--sinyal-dip);
+  --color-olcum: var(--olcum);
+  --color-uyari: var(--uyari);
+  --color-onay: var(--onay);
+
+  --font-display: var(--font-display);
+  --font-govde: var(--font-govde);
+  --font-mono: var(--font-mono);
+
+  --text-xs: var(--fs-xs);
+  --text-sm: var(--fs-sm);
+  --text-base: var(--fs-base);
+  --text-lg: var(--fs-lg);
+  --text-xl: var(--fs-xl);
+  --text-2xl: var(--fs-2xl);
+  --text-3xl: var(--fs-3xl);
+  --text-4xl: var(--fs-4xl);
+
+  /* Enstrüman hissi: radius maks 4px (BRIEF §5.5) */
+  --radius-*: initial;
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-md: 4px;
+}
+
+/* ── Taban stiller ── */
+
+html {
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+
+body {
+  background: var(--kagit);
+  color: var(--murekkep);
+  font-family: var(--font-govde);
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: var(--sinyal);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+a:hover {
+  color: var(--sinyal-dip);
+}
+
+::selection {
+  background: var(--sinyal);
+  color: var(--kagit);
+}
+
+/* Görünür odak halkası: --sinyal, 2px offset (BRIEF §9.2) */
+:focus-visible {
+  outline: 2px solid var(--sinyal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── Ölçüm cetveli motifi: bölüm ayırıcı (dekoratif değil, derinlik taşır) ── */
+.cetvel {
+  height: 8px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--doku) 0,
+    var(--doku) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  background-size: 100% 4px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--doku);
+}
+
+/* ── Tema anahtarı ikon görünürlüğü (components/layout/TemaAnahtari.tsx) ── */
+.tema-gunes {
+  display: none;
+}
+[data-theme="dark"] .tema-gunes {
+  display: block;
+}
+[data-theme="dark"] .tema-ay {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tema-gunes {
+    display: block;
+  }
+  :root:not([data-theme="light"]) .tema-ay {
+    display: none;
+  }
+}
+
+/* ── Hareket: yalnız üç yerde (BRIEF §5.6) — sayfa geçişi 180ms fade+lift ── */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both vt-cikis;
+}
+::view-transition-new(root) {
+  animation: 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both vt-giris;
+}
+@keyframes vt-cikis {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-giris {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
