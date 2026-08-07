@@ -32,3 +32,6 @@ test-results/
 .vercel
 .turbo
 *.tsbuildinfo
+
+# lighthouse ci artefaktlari
+.lighthouseci/
