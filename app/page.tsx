@@ -1,4 +1,17 @@
-export default function AnaSayfa() {
+import { IcerikKarti } from "@/components/content/IcerikKarti";
+import { sonYayinlar } from "@/lib/db/queries/contents";
+import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
+
+export default async function AnaSayfa() {
+  // DB yoksa/erişilemiyorsa bölüm sessizce atlanır — build DB'siz de geçmeli
+  // (bilinçli sessizlik: console.error bile yok, build günlüğü kirlenmesin).
+  let yayinlar: IcerikOzetDTO[] = [];
+  try {
+    yayinlar = await sonYayinlar(6);
+  } catch {
+    yayinlar = [];
+  }
+
   return (
     <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
       <section className="py-20 sm:py-28">
@@ -16,6 +29,25 @@ export default function AnaSayfa() {
       </section>
 
       <div className="cetvel" aria-hidden />
+
+      {yayinlar.length > 0 && (
+        <>
+          <section aria-labelledby="son-yayinlar" className="py-14">
+            <h2 id="son-yayinlar" className="font-display text-2xl font-bold">
+              Son yayınlar
+            </h2>
+            <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {yayinlar.map((yayin) => (
+                <li key={yayin.id}>
+                  <IcerikKarti icerik={yayin} />
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="cetvel" aria-hidden />
+        </>
+      )}
 
       <section aria-labelledby="ne-geliyor" className="py-14">
         <h2 id="ne-geliyor" className="font-display text-2xl font-bold">
