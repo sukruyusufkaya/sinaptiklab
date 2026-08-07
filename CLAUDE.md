@@ -32,4 +32,6 @@ Next.js 16 App Router + React 19 · TS `strict` + `noUncheckedIndexedAccess` (`a
 
 ## Faz durumu
 
-- **Faz 0 (sürüyor):** rakip taraması + anahtar kelime havuzu + pillar/cluster taslağı üretildi; ADR 0001-0006 yazıldı; kablo çerçeveleri ve pillar/cluster ağacı kullanıcı onayı bekliyor.
+- **Faz 0 — TAMAM (2026-08-08):** rakip analizi + anahtar kelime havuzu (`docs/arastirma/`), ADR 0001-0006, kablo çerçeveleri ve pillar/cluster ağacı (12 pillar / 124 cluster) onaylandı.
+- **Faz 1 — teknik iş tamam, dış bağlantılar bekliyor:** Next.js 16 iskeleti, token'lar, tipografi (next/font/google — sapma kaydı ADR 0001), layout kabuğu, MongoDB katmanı + zod şemaları + ensure-indexes, Vitest(14)/Playwright(5)/axe yeşil, yerel Lighthouse ~0.97/1/1/1. **Bekleyen kullanıcı aksiyonları:** GitHub remote (CI kanıtı), Vercel bağlantısı (fra1 + canlı DoD), Atlas `MONGODB_URI`, sinaptiklab.com satın alma.
+- Anahtar kelime hacimleri doğrulanamadı: Semrush API kredisi 0, Ahrefs planı API'siz — biri açılırsa tek toplu sorguyla doğrula.
