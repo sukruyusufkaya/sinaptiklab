@@ -15,11 +15,19 @@ const envSema = z.object({
   MONGODB_DB: z.string().min(1).default("sinaptiklab"),
 });
 
+/**
+ * CI ortamları tanımsız secret'ları BOŞ STRING olarak geçirir (GitHub Actions
+ * `env: X: ${{ secrets.X }}`); boş string "değer yok" sayılır ki optional ve
+ * default'lar doğru işlesin.
+ */
+const bosluklariTemizle = (deger: string | undefined) =>
+  deger === undefined || deger.trim() === "" ? undefined : deger;
+
 const sonuc = envSema.safeParse({
-  NODE_ENV: process.env.NODE_ENV,
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-  MONGODB_URI: process.env.MONGODB_URI,
-  MONGODB_DB: process.env.MONGODB_DB,
+  NODE_ENV: bosluklariTemizle(process.env.NODE_ENV),
+  NEXT_PUBLIC_SITE_URL: bosluklariTemizle(process.env.NEXT_PUBLIC_SITE_URL),
+  MONGODB_URI: bosluklariTemizle(process.env.MONGODB_URI),
+  MONGODB_DB: bosluklariTemizle(process.env.MONGODB_DB),
 });
 
 if (!sonuc.success) {
