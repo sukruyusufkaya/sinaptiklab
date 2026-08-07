@@ -13,8 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "db:indexes": "tsx scripts/ensure-indexes.ts",
-    "fonts:sync": "node scripts/sync-fonts.mjs"
+    "db:indexes": "tsx scripts/ensure-indexes.ts"
   },
   "dependencies": {
     "mongodb": "^7.5.0",
@@ -25,9 +24,6 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
-    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
-    "@fontsource-variable/jetbrains-mono": "^5.3.0",
-    "@fontsource-variable/newsreader": "^5.3.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22",

@@ -22,7 +22,6 @@ npm run dev
 | `npm test`                                    | birim testleri (Vitest)                                    |
 | `npm run build && npm run test:e2e`           | E2E + erişilebilirlik (Playwright + axe) — önce build şart |
 | `npm run db:indexes`                          | MongoDB index'lerini idempotent kurar                      |
-| `npm run fonts:sync`                          | fontsource woff2 dosyalarını `app/fonts/` altına yeniler   |
 
 ## Kurallar (özet — tamamı BRIEF §14)
 
@@ -30,4 +29,4 @@ npm run dev
 - Client component'te DB/sır yok; veri çekmek için `useEffect` yok (RSC/Server Action var).
 - Her commit tek iş, Conventional Commits; faz DoD'si kapanmadan sonraki faza geçilmez.
 
-Fontlar (Bricolage Grotesque, Newsreader, JetBrains Mono) OFL lisansıyla self-host edilir; lisans metinleri `app/fonts/` altındadır.
+Fontlar (Bricolage Grotesque, Newsreader, JetBrains Mono — OFL) `next/font/google` ile **build zamanında** indirilip self-host edilir; runtime'da Google CDN'e istek gitmez (gerekçe: ADR 0001).

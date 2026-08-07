@@ -40,6 +40,9 @@ test.describe("iskelet dumanı testi", () => {
     expect(acik.violations).toEqual([]);
 
     await page.getByRole("button", { name: /tema/i }).click();
+    // Link rengi 120ms geçişle değişir; axe ara (interpolasyon) rengini
+    // yakalamasın diye geçişin bitmesi beklenir.
+    await page.waitForTimeout(300);
     const koyu = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
       .analyze();

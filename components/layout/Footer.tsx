@@ -35,8 +35,10 @@ export function Footer() {
           <ul className="mt-3 space-y-2">
             {KURUMSAL.map((madde) => (
               <li key={madde.href}>
+                {/* prefetch kapalı: rotalar sonraki fazlarda açılacak (404 önlemi) */}
                 <Link
                   href={madde.href}
+                  prefetch={false}
                   className="text-sm text-murekkep no-underline hover:text-sinyal"
                 >
                   {madde.etiket}
@@ -52,6 +54,7 @@ export function Footer() {
               <li key={madde.href}>
                 <Link
                   href={madde.href}
+                  prefetch={false}
                   className="text-sm text-murekkep no-underline hover:text-sinyal"
                 >
                   {madde.etiket}

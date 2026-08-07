@@ -23,9 +23,12 @@ export function Header() {
         </Link>
         <nav aria-label="Ana gezinme" className="flex flex-wrap items-center gap-x-4 gap-y-1">
           {NAV.map((madde) => (
+            // prefetch kapalı: hedef rotalar sonraki fazlarda açılacak; prefetch
+            // şimdilik 404 üretip konsolu kirletiyor. Rota açılınca kaldırılacak.
             <Link
               key={madde.href}
               href={madde.href}
+              prefetch={false}
               className="font-mono text-sm text-murekkep-2 no-underline hover:text-sinyal"
             >
               {madde.etiket}
@@ -36,6 +39,7 @@ export function Header() {
           <TemaAnahtari />
           <Link
             href="/giris"
+            prefetch={false}
             className="font-mono text-sm text-murekkep-2 no-underline hover:text-sinyal"
           >
             Giriş

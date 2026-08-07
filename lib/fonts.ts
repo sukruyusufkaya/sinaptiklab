@@ -1,119 +1,48 @@
-import localFont from "next/font/local";
+import { Bricolage_Grotesque, JetBrains_Mono, Newsreader } from "next/font/google";
 
 /**
- * Tipografi self-host stratejisi (BRIEF §5.3):
- * Fontsource woff2 dosyaları subset (latin / latin-ext) başına ayrı dosya olarak
- * gelir; Türkçe glifler (ğ, ş, İ…) latin-ext'tedir. next/font/local tek ailede
- * unicode-range'li çoklu subset desteklemediği için her subset ayrı aile olarak
- * tanımlanır ve font-family ZİNCİRİ ile birleştirilir: tarayıcı glif bazında bir
- * sonraki aileye düşer (CSS font matching). unicode-range declaration'ları
- * indirmeyi subset bazında sınırlar.
- *
- * DİKKAT: next/font çağrıları derleme zamanında ayrıştırılır — tüm değerler
- * YAZILI LİTERAL olmak zorunda (değişken/sabit kullanmak build'i kırar).
+ * Tipografi self-host stratejisi (BRIEF §5.3 + ADR 0001 sapma notu):
+ * next/font/google fontları BUILD ZAMANINDA indirir ve /_next/static altından
+ * servis eder — runtime'da Google CDN'e tek istek gitmez. localFont yerine bunu
+ * kullanmamızın nedeni: latin + latin-ext subset'lerini TEK aile içinde
+ * unicode-range'li @font-face'lerle birleştirip size-adjust'lı fallback'i
+ * ailenin arkasına koyabilmesi. (Subset başına ayrı localFont ailesi + zincir
+ * denemesi, yanlış metrikli fallback yüzünden CLS 0.337 / LCP 4.4s üretti —
+ * ölçüm: 2026-08-08 Lighthouse koşusu.)
  */
 
-// ── Display: Bricolage Grotesque (wght 200-800 + wdth 75-100 + opsz) ──
-const bricolageLatin = localFont({
-  src: "../app/fonts/bricolage-grotesque-latin-standard-normal.woff2",
-  weight: "200 800",
+/**
+ * display stratejisi (LCP ölçümüne dayalı, bkz. ADR 0001):
+ * - Başlık (Bricolage): "swap" — marka kimliği; başlıklar nadiren LCP elemanı.
+ * - Gövde/mono: "optional" — LCP elemanı gövde metnidir; swap yeniden boyaması
+ *   LCP'yi font inişine kilitliyordu (ölçüm: 4.4s). optional + preload ile hızlı
+ *   bağlantıda font ilk boyamada girer, yavaş bağlantıda metrik-uyumlu fallback
+ *   kalır ve LCP ≈ FCP olur. İtalik ve wdth ekseni kullanılmaya başlanınca
+ *   (Faz 3, MDX) yeniden eklenecek — şimdilik preload yükünü şişirmesin.
+ */
+const display = Bricolage_Grotesque({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  axes: ["opsz"],
   display: "swap",
-  preload: true,
-  adjustFontFallback: false,
-  declarations: [
-    { prop: "font-stretch", value: "75% 100%" },
-    {
-      prop: "unicode-range",
-      value:
-        "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD",
-    },
-  ],
-});
-const bricolageExt = localFont({
-  src: "../app/fonts/bricolage-grotesque-latin-ext-standard-normal.woff2",
-  weight: "200 800",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: "Arial",
-  declarations: [
-    { prop: "font-stretch", value: "75% 100%" },
-    {
-      prop: "unicode-range",
-      value:
-        "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF",
-    },
-  ],
 });
 
-// ── Gövde: Newsreader (wght 200-800, normal + italik) ──
-const newsreaderLatin = localFont({
-  src: [
-    { path: "../app/fonts/newsreader-latin-wght-normal.woff2", style: "normal" },
-    { path: "../app/fonts/newsreader-latin-wght-italic.woff2", style: "italic" },
-  ],
-  weight: "200 800",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: false,
-  declarations: [
-    {
-      prop: "unicode-range",
-      value:
-        "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD",
-    },
-  ],
-});
-const newsreaderExt = localFont({
-  src: [
-    { path: "../app/fonts/newsreader-latin-ext-wght-normal.woff2", style: "normal" },
-    { path: "../app/fonts/newsreader-latin-ext-wght-italic.woff2", style: "italic" },
-  ],
-  weight: "200 800",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: "Times New Roman",
-  declarations: [
-    {
-      prop: "unicode-range",
-      value:
-        "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF",
-    },
-  ],
+const govde = Newsreader({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  display: "optional",
 });
 
-// ── Yardımcı/kod: JetBrains Mono (wght 100-800) ──
-const jetbrainsLatin = localFont({
-  src: "../app/fonts/jetbrains-mono-latin-wght-normal.woff2",
-  weight: "100 800",
-  display: "swap",
+const mono = JetBrains_Mono({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  display: "optional",
   preload: false,
-  adjustFontFallback: false,
-  declarations: [
-    {
-      prop: "unicode-range",
-      value:
-        "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD",
-    },
-  ],
-});
-const jetbrainsExt = localFont({
-  src: "../app/fonts/jetbrains-mono-latin-ext-wght-normal.woff2",
-  weight: "100 800",
-  display: "swap",
-  preload: false,
-  adjustFontFallback: "Arial",
-  declarations: [
-    {
-      prop: "unicode-range",
-      value:
-        "U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF",
-    },
-  ],
 });
 
 /** <html> üzerine inline CSS değişkeni olarak basılır; globals.css bunları tüketir. */
 export const fontDegiskenleri = {
-  "--font-display": `${bricolageLatin.style.fontFamily}, ${bricolageExt.style.fontFamily}, sans-serif`,
-  "--font-govde": `${newsreaderLatin.style.fontFamily}, ${newsreaderExt.style.fontFamily}, Georgia, serif`,
-  "--font-mono": `${jetbrainsLatin.style.fontFamily}, ${jetbrainsExt.style.fontFamily}, ui-monospace, monospace`,
+  "--font-display": `${display.style.fontFamily}, sans-serif`,
+  "--font-govde": `${govde.style.fontFamily}, Georgia, serif`,
+  "--font-mono": `${mono.style.fontFamily}, ui-monospace, monospace`,
 } as const;
