@@ -1,0 +1,728 @@
+[
+  {
+    "domain": "webrazzi.com",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Türkiye'nin köklü girişim/teknoloji haber yayını; haber + Insights (premium analiz) + etkinlik üçlü modeliyle çalışıyor. Yapay zeka ayrı kategori ve haftalık 'Yapay Zeka Gündemi' video serisiyle çok yoğun işleniyor; ancak içerik ağırlıklı olarak yabancı kaynaklı haberlerin kaynaklı Türkçe aktarımı, teknik derinlik (kod, tutorial) yok.",
+    "ia": "Tarih bazlı haber URL'leri (/2026/08/07/slug/), kategori hub'ları /kategori/{konu}/ (Dijital, E-Ticaret, Girişim, Mobil, Teknoloji, Yapay Zeka, Yatırım, Web3), ayrıca /insights/, /etkinlik/{yıl}/{ad}/ ve /yazar/{isim}/ yazar arşivleri. TR + EN olmak üzere 4 sitemap (ana + news) robots.txt'te bildirilmiş.",
+    "schemaUsage": "Makale sayfasında HTML kaynağından doğrulandı (3 adet ld+json bloğu): NewsArticle, Person, Organization, WebSite, ImageObject, SearchAction. BreadcrumbList tespit edilemedi.",
+    "geoSurfaces": "llms.txt YOK (404). robots.txt'te AI botlarına açık davet: GPTBot, ClaudeBot, CCBot, Google-Extended, PerplexityBot, Bytespider ve Amazonbot için ayrı ayrı 'Allow: /' tanımlı — bilinçli bir GEO/erişim stratejisi. /feed/ RSS mevcut ama robots.txt'te /feed/ Disallow edilmiş. .md çıktı tespit edilemedi.",
+    "eeat": "Yazarlar gerçek kimlikli: her haberde yazar adı + /yazar/{isim}/ profil sayfası (Tuğçe İçözü örneğinde LinkedIn, X, Facebook linkleri ve 16+ makale arşivi). Ancak profil sayfasında biyografi ve uzmanlık beyanı yok, unvan sadece 'Yazar'. Teknik editör/inceleme süreci ibaresi tespit edilemedi. Makalede dış kaynak atıf pratiği iyi: Suno resmi blogu, Reuters, şirketin topluluk kuralları sayfasına link verilmiş.",
+    "contentDepth": "İncelenen makale (~650-700 kelime) kod bloğu içermiyor; kaynak linkleri var ve açıkça belirtilmiş ('CEO'nun blog gönderisinde'). Yayın tarihi görünür, güncelleme tarihi görünmüyor. İçerik yabancı gelişmenin özgün kurgulu ama aktarım niteliğinde Türkçe haberi; özgün saha verisi/deney yok. Sponsorlu içerik açıkça işaretleniyor.",
+    "monetization": "Çok bacaklı: Insights premium üyelik paketleri, etkinlik biletleri (Webrazzi Summit, Fintech, New HR Summit), display reklam alanları, işaretli sponsorlu içerik ve e-posta bülteni.",
+    "strengths": [
+      "robots.txt ile AI botlarına bilinçli tam erişim — GEO farkındalığı yüksek, LLM'lerce taranmayı aktif istiyor",
+      "Düzgün JSON-LD (NewsArticle + Person) ve TR/EN çift dilli news sitemap altyapısı",
+      "Gerçek kimlikli yazar kadrosu ve sosyal profil bağlantılı yazar sayfaları",
+      "Haberlerde dış kaynağa link verme alışkanlığı (Reuters, resmi bloglar) — TR medyada nadir",
+      "Haber + premium analiz (Insights) + etkinlik biletiyle çeşitlendirilmiş gelir; topluluk/marka gücü"
+    ],
+    "weaknesses": [
+      "Teknik derinlik sıfır: kod bloğu, tutorial, çalışan repo, benchmark yok — YZ'yi iş/yatırım haberi olarak işliyor",
+      "llms.txt yok; RSS feed'i robots.txt'te Disallow edilmiş (çelişkili sinyal)",
+      "Güncelleme tarihi gösterilmiyor, içerik sürümleme kavramı yok",
+      "Yazar profillerinde biyografi/uzmanlık/unvan yok — kimlik var ama otorite kanıtı zayıf",
+      "İçeriğin büyük kısmı yabancı haberlerin aktarımı; özgün Türkçe teknik kaynak üretmiyor"
+    ],
+    "lessons": [
+      "Webrazzi YZ'yi 'sektör haberi' olarak kapladı ama 'nasıl yapılır' katmanı tamamen boş — Sinaptiklab'ın kod + çalışan repo'lu tutorial hattı doğrudan rakipsiz alan",
+      "AI botlarına Allow veren robots.txt yaklaşımını al, üstüne Webrazzi'de olmayan llms.txt + sayfa başına .md çıktı ekleyerek GEO'da bir adım öne geç",
+      "Güncelleme tarihi ve sürümlü içerik hiçbir emsalde yok — 'Bu rehber v2.1, şu tarihte X sürümüyle test edildi' formatı hem SEO hem GEO'da ayrıştırıcı",
+      "Yazar sayfalarını Webrazzi'nin bıraktığı yerden ileri taşı: unvan, uzmanlık beyanı, teknik editör onayı ve kaynakça politikası sayfası ekle (E-E-A-T farkı)",
+      "Insights premium + etkinlik modeli, Sinaptiklab'ın öğrenme patikaları için doğrulanmış bir TR gelir şablonu; ücretsiz haber/sözlük ile huni kur, derin içeriği paketle"
+    ]
+  },
+  {
+    "domain": "shiftdelete.net",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Kendini 'Türkiye'nin en büyük teknoloji haber sitesi' olarak tanımlayan, tüketici elektroniği ağırlıklı yüksek hacimli haber/inceleme/video sitesi. Teknik SEO altyapısı güçlü (kapsamlı JSON-LD, Yoast üretimi llms.txt) ama editoryal derinlik zayıf: kısa, kaynak linksiz aktarım haberleri; ana sayfada yazar görünürlüğü yok. robots.txt'teki 'ai-train=no' sinyali ile llms.txt yayınlaması çelişkili bir YZ stratejisine işaret ediyor.",
+    "ia": "Kök seviyesinde düz slug URL'leri (shiftdelete.net/makale-slug — tarihsiz, kategorisiz), kategori hub'ları (Teknoloji Haberleri, Oyun, Videolar), marka sayfaları (Samsung, Xiaomi, Honor...), SDN Network yan site ağı (Pembe Teknoloji, Sihirli Elma vb.). WordPress tabanlı; sitemap_index.xml + news-sitemap.xml + page-sitemap.xml.",
+    "schemaUsage": "Makalede: NewsArticle, WebPage, ImageObject, BreadcrumbList, WebSite, Organization, Person. Ana sayfada: CollectionPage, WebSite, Organization, BreadcrumbList. İki emsal arasında en kapsamlı JSON-LD kullanımı.",
+    "geoSurfaces": "llms.txt VAR (Yoast SEO v27.5 otomatik üretimi: site tanımı, güncel makaleler, kategori/marka sayfaları, sitemap referansı). Ancak robots.txt'te 'Content-Signal: ai-train=no, search=yes, ai-input=no' — AI eğitimine ve AI-input kullanımına itiraz ediyor; llms.txt ile çelişkili karma sinyal. Görünür RSS linki yok. .md çıktı tespit edilemedi.",
+    "geoSurfacesNote": "",
+    "eeat": "Çift yüzlü: ana sayfada yazar isimleri hiç görünmüyor ('uzman ekibimiz' söylemi), ama yazar profil sayfaları şaşırtıcı derecede dolu — Hakan Hasırcıoğlu örneğinde fotoğraf, biyografi, e-posta, 4 sosyal ağ linki ve 2572 içerik sayacı. Biyografi 'Karşılaştırmalı Edebiyat öğrencisi' — teknik otorite kanıtı zayıf. Teknik editör/inceleme süreci ibaresi tespit edilemedi. Kaynakça pratiği yok.",
+    "contentDepth": "İncelenen makale ~421 kelime; gövdede kod bloğu yok. Dış kaynak LİNKİ yok — Suno, SynthID, Sony/Universal/Warner sadece isim olarak geçiyor, tıklanabilir atıf verilmemiş (aynı haberi Webrazzi Reuters + resmi blog linkiyle vermişti). Yayın tarihi görünür, güncelleme tarihi yok. İçerik yabancı haberin kısa, atıfsız Türkçe aktarımı.",
+    "monetization": "Display reklam (Bildirt SDK reklam/bildirim altyapısı tespit edildi); sponsorlu içerik veya affiliate izi ana sayfada belirgin değil; video/YouTube içerik kolu mevcut.",
+    "strengths": [
+      "En kapsamlı JSON-LD uygulaması (NewsArticle+Person+BreadcrumbList+Organization zinciri tam)",
+      "llms.txt yayınlayan (Yoast otomatiği de olsa) tek emsal — TR'de erken GEO yüzeyi",
+      "Çok yüksek yayın hacmi ve news-sitemap ile hızlı indekslenme altyapısı",
+      "Marka bazlı hub sayfaları (Samsung, Xiaomi...) ile programatik SEO benzeri kapsama",
+      "Yan site ağı (SDN Network) ile iç link ve kitle çeşitlendirmesi"
+    ],
+    "weaknesses": [
+      "Makalelerde sıfır dış kaynak linki — iddialar atıfsız; 'kaynaklı içerik' kültürü yok",
+      "robots.txt 'ai-train=no, ai-input=no' derken llms.txt yayınlamak çelişkili; ai-input=no sinyali LLM yanıtlarında kaynak olarak kullanılmayı da reddediyor",
+      "Kısa (~420 kelime) aktarım haberleri; kod, tutorial, özgün test verisi yok (inceleme kolu hariç)",
+      "Ana sayfada yazar kimliği gizli, 'uzman ekibimiz' anonimliği; yazar biyografileri teknik otorite taşımıyor",
+      "Güncelleme tarihi ve içerik sürümleme yok; görünür RSS bile sunulmuyor"
+    ],
+    "lessons": [
+      "ShiftDelete 'ai-input=no' ile LLM yanıtlarında kaynak olmayı fiilen reddediyor — Sinaptiklab tersini yaparak (AI botlarına açık robots + elle kürasyonlu llms.txt) TR teknoloji sorgularında LLM'lerin atıf yapabileceği boşluğu doldurabilir",
+      "Atıfsız haber pratiği (aynı Suno haberini linksiz vermeleri) Sinaptiklab'ın 'her iddia sources[] ile' kuralını somut, gösterilebilir bir farklılaştırıcı yapıyor — yan yana karşılaştırma bile içerik pazarlaması olur",
+      "llms.txt'i Yoast otomatiği değil, editoryal ürün olarak kur: sözlük ve kanonik rehber sayfalarını öne çıkaran, LLM tüketimi için yazılmış kürasyonlu bir dosya",
+      "Kapsamlı JSON-LD zincirlerini (NewsArticle/TechArticle + Person + BreadcrumbList + Organization) gün 1'den kopyala; TR'de bu düzeyi tutturan siteyle ancak eşitlenirsin, üstüne DefinedTerm (sözlük) ve HowTo/FAQ tipleriyle geçersin",
+      "Marka hub'ları modelinin Sinaptiklab karşılığı: model/araç bazlı kanonik sayfalar (Claude, GPT, Llama, LangGraph...) — sürümlü, kaynaklı, sözlüğe bağlı yaşayan sayfalar",
+      "İki emsalde de güncelleme tarihi yok; 'son test tarihi + sürüm' damgası hem kullanıcı güveni hem LLM'lerin tazelik sinyali için açık alan"
+    ]
+  },
+  {
+    "domain": "technopat.net",
+    "category": "topluluk",
+    "reachable": false,
+    "summary": "Türkiye'nin en büyük teknoloji topluluklarından biri (haber + dev XenForo forumu 'Technopat Sosyal'), ancak site tüm YZ botlarını hem robots.txt hem Cloudflare seviyesinde engellediği için içerik sayfalarına erişilemedi (ana sayfa, /yapay-zeka/ kategorisi ve makale sayfaları tümü HTTP 403). robots.txt fiilen çekildi ve YZ'ye kapalı duruş net biçimde belgelendi; site yapısına dair bulgular WebSearch sonuçlarından doğrulandı.",
+    "strengths": [
+      "Ayrı /yapay-zeka/ haber kategorisi ve forumda 'Yapay Zeka Geliştirme' bölümü (bolum/yapay-zeka-gelistirme.374, Rehber ve Python filtreleriyle) var — Türkçe YZ talebini kanıtlıyor (WebSearch ile doğrulandı)",
+      "Çok canlı soru-cevap trafiği: 'Yapay zekâ ile site tasarlamak için rehber var mı?', 'Bir sitedeki bilgileri yapay zekaya öğretme nasıl yapılır?' gibi 4 milyon+ ID'li güncel forum konuları",
+      "Bilinçli ve gelişmiş bot politikası: robots.txt'de 'Content-Signal: search=yes,ai-train=no,use=reference' gibi yeni nesil direktif kullanıyor — teknik olarak takip eden bir ekip olduğunu gösteriyor"
+    ],
+    "weaknesses": [
+      "GPTBot, ClaudeBot, CCBot, Google-Extended, Bytespider, meta-externalagent, Amazonbot, Applebot-Extended'e 'Disallow: /' — YZ asistan yanıtlarında kaynak olarak görünme (GEO) kanalını bilinçli olarak kapatmış",
+      "Engel sadece robots.txt'te değil; sunucu/Cloudflare katmanında da uygulanıyor (tüm sayfa istekleri 403) — YZ araçları bu içeriğe hiç ulaşamıyor",
+      "robots.txt'te sitemap satırı yok (fiilen gözlendi)"
+    ],
+    "ia": "Haber tarafı kategori bazlı (/yapay-zeka/ gibi), forum /sosyal/ altında: /sosyal/kategori/<ad>.<id>/, /sosyal/bolum/<ad>.<id>/, /sosyal/konu/<slug>.<id>/ şeması (WebSearch sonuçlarındaki URL'lerden gözlendi); iç sayfa detayları 403 nedeniyle tespit edilemedi",
+    "contentDepth": "Tespit edilemedi — içerik sayfaları 403 döndü; forum başlıklarından uygulamalı 'rehber' kültürü olduğu görülüyor ama kod/kaynak/tarih pratiği doğrulanamadı",
+    "eeat": "Tespit edilemedi (sayfalara erişilemedi)",
+    "schemaUsage": "tespit edilemedi (tüm sayfalar 403)",
+    "geoSurfaces": "robots.txt: TÜM büyük YZ botlarına Disallow: / + 'Content-Signal: search=yes,ai-train=no,use=reference' (fiilen çekildi); llms.txt: tespit edilemedi (istek 403 ile engellendi, 404 değil); sitemap satırı robots.txt'te yok; RSS/.md çıktı tespit edilemedi",
+    "monetization": "Tespit edilemedi (sayfalara erişilemedi)",
+    "lessons": [
+      "Türkiye'nin en güçlü teknik topluluğu YZ asistanlarına bilinçli KAPALI → ChatGPT/Claude/Perplexity Türkçe YZ sorularında Technopat'ı kaynak gösteremiyor; Sinaptiklab tam tersi stratejiyle (YZ botlarına açık + llms.txt + atıf dostu yapı) bu boşluğu doğrudan kapabilir",
+      "Forumdaki soru başlıkları ('siteyi yapay zekaya öğretme', 'YZ ile site tasarımı rehberi', 'YZ aracı önerisi') Sinaptiklab için hazır içerik/patika talep haritası — bu soruların kanonik, kaynaklı, repo'lu cevapları yazılmalı",
+      "Technopat'ın cevapları forum gönderisi formatında dağınık; Sinaptiklab aynı sorulara sürümlü, tek-kanonik-URL'li rehberle hem SEO hem GEO'da öne geçebilir",
+      "'Content-Signal' gibi yeni direktifleri Türkiye'de kullanan az site var; Sinaptiklab bunu tersinden kullanabilir: search=yes, ai-train/use=reference'a İZİN veren açık bir YZ politikası sayfası güven + GEO sinyali olur"
+    ]
+  },
+  {
+    "domain": "donanimhaber.com",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Türkiye'nin en büyük teknoloji haber sitesi + forumu; 2000'e kadar uzanan arşiv (sitemap index'te 313 aylık posts sitemap'i), özel 'Yapay Zeka' kategorisi, güçlü yazar kimlikleri ve haber sonunda dış kaynak linkleme pratiği var. Ancak içerik ağırlıklı olarak yabancı kaynaklardan uyarlama tüketici haberi; geliştirici derinliği (kod, uygulamalı tutorial) yok ve llms.txt gibi GEO yüzeyleri eksik.",
+    "strengths": [
+      "Güçlü E-E-A-T: editör sayfaları gerçek kimlikli — İlkcan Girgin örneği: unvan ('Donanım ve Teknoloji Editörü'), bio, kurumsal e-posta, Twitter linki, 7.664 haberlik arşiv, 2011'den beri üyelik (fiilen gözlendi)",
+      "Haber sonunda kaynak linkleme pratiği var: AMD haberi CNBC linki; YZ-virüs haberi Engadget + NYT + Science dergisi DOI referansı veriyor",
+      "Tam tarih+saat damgası her haberde ('07 Ağustos 2026, 21:17'), ana sayfada göreli zaman ('1 sa.')",
+      "Kusursuz teknik SEO altyapısı: sitemap index (313 aylık sitemap, 2000-2026), ayrı news-sitemap ve tag sitemap index, temiz /slug--id URL şeması",
+      "Özel 'Yapay Zeka' kategorisi + Rehber bölümü ('Nedir?', 'Nasıl Yapılır?', 'Öneri' taksonomisi) + dev forum topluluğu ve haber altı yorum/görüntülenme metrikleri"
+    ],
+    "weaknesses": [
+      "YZ haberleri büyük oranda yabancı kaynaktan uyarlama/çeviri izlenimi veriyor (AMD/Taalas haberi CNBC'den uyarlanmış görünüyor) — özgün saha verisi yok",
+      "Hiçbir incelenen sayfada kod bloğu yok; 'rehber' içerikleri tüketici seviyesinde ('WhatsApp kullanıcı adı alma', 'en iyi YZ'li telefonlar') — geliştirici/uygulayıcı segmenti tamamen boş",
+      "llms.txt yok (404 doğrulandı)",
+      "Yoğun monetizasyon: Amazon affiliate tag'leri, display reklam, sponsorlu içerik — güven algısını sulandırıyor",
+      "Güncelleme tarihi ayrıca gösterilmiyor (sadece yayın tarihi gözlendi)"
+    ],
+    "ia": "Konu bazlı üst kategoriler (Donanım/Yazılım/Apple/Mobil/Popüler Bilim/Rehber) + 'Yapay Zeka' özel bölümü; URL şeması /slug--id (ör. /devrim-niteliginde-...--209032); rehber taksonomisi 'Nedir? / Nasıl Yapılır? / Öneri'; forum ayrı alanda; DH Arşiv ile tarihsel erişim",
+    "contentDepth": "Kod bloğu: yok (incelenen 2 makale + rehber listesinde). Kaynak: var, haber sonunda dış link/DOI. Tarih: tam yayın tarihi var, ayrı güncelleme tarihi gözlenmedi. Özgünlük: ağırlıkla yabancı haber uyarlaması; orta uzunlukta, alt başlıklı haber formatı",
+    "eeat": "Güçlü: /editor/<ad> yazar sayfaları gerçek kimlik, unvan, bio, kurumsal e-posta, sosyal link, tam makale arşivi ve uzmanlık kategorileri içeriyor; teknik editör unvanları haber üstünde görünüyor",
+    "schemaUsage": "tespit edilemedi (çekilen HTML çıktısında açık application/ld+json script'i görülmedi; sayfa yapısı NewsArticle/BreadcrumbList uyumlu görünse de kesin JSON-LD tespiti yapılamadı)",
+    "geoSurfaces": "llms.txt: YOK (404). robots.txt: YZ botlarına özel kural YOK — GPTBot/ClaudeBot/CCBot fiilen serbest (sadece api/üye/parametre dizinleri disallow); 3 sitemap bildirimi (sitemap.xml, tagSitemapIndex.xml, news-sitemap). RSS/.md çıktı: tespit edilemedi",
+    "monetization": "Display reklam, Amazon.com.tr affiliate linkleri (tag=web-desktop-anasayfa-21 gözlendi), sponsorlu ürün içerikleri, DH Arşiv",
+    "lessons": [
+      "DH YZ botlarına açık ama içeriği çeviri-haber seviyesinde → GEO'da 'Türkçe YZ haberi' alanını dolduruyor fakat 'Türkçe YZ tekniği/uygulaması' alanı boş; Sinaptiklab kod+repo'lu tutorial'larla bu katmanı sahiplenebilir",
+      "Kaynak gösterme pratiği var ama gevşek (haber sonunda tek link); Sinaptiklab'ın her iddiada zorunlu sources[] + DOI/sürüm bilgisi yaklaşımı ölçülebilir bir farklılaştırıcı",
+      "'Nedir?' rehberleri tüketici dilinde ve YZ terminolojisinde kanonik değil → kanonik Türkçe YZ sözlüğü (her terim tek URL, tanım+kaynak+İngilizce karşılık) hem SEO hem GEO'da DH'nin önüne geçebilir",
+      "DH'nin llms.txt'i yok; Sinaptiklab küratörlü llms.txt + güncelleme tarihli sürümlü içerikle YZ asistanlarına daha 'sindirilebilir' yüzey sunabilir",
+      "DH güncelleme tarihi göstermiyor; Sinaptiklab'ın 'sürümlü içerik + görünür güncelleme geçmişi' vaadi tazelik sinyalinde avantaj",
+      "KVKK/regülasyon dosyası benzeri hiçbir şey yok — bu dikey tamamen boş"
+    ]
+  },
+  {
+    "domain": "shiftdelete.net",
+    "category": "haber",
+    "reachable": true,
+    "summary": "technopat.net erişilemediği (YZ botlarına tam engel) için aynı kategoriden ikame olarak analiz edildi. Türkiye'nin büyük tüketici teknoloji haber sitelerinden; teknik SEO/GEO altyapısı şaşırtıcı derecede iyi (kapsamlı JSON-LD, Yoast üretimi llms.txt, news-sitemap) ama içerik katmanı zayıf: kaynaklar belirsiz ('Çin merkezli kaynaklara göre'), sızıntı/spekülasyon ağırlıklı, kod ve uygulamalı derinlik yok.",
+    "strengths": [
+      "Kapsamlı JSON-LD fiilen tespit edildi: NewsArticle, WebPage, ImageObject, BreadcrumbList, WebSite, Organization, Person (yazarda jobTitle, sosyal hesaplar, Gravatar) + ana sayfada CollectionPage",
+      "llms.txt VAR (Yoast SEO v27.5 üretimi): sayfa linkleri, yazılar, karşılaştırmalar, kategoriler, markalar ve sitemap indeksi listeleniyor — Türkiye'de nadir bir GEO yüzeyi",
+      "Yazar profilleri gerçek kimlikli: /author/<ad> sayfaları, unvan ('Haber Müdürü'), sosyal medya linkleri JSON-LD'ye gömülü",
+      "ISO formatlı datePublished + tam tarih; news-sitemap.xml + sitemap_index.xml + page-sitemap.xml robots.txt'te bildirilmiş",
+      "Belirgin YZ haber akışı ve video (SDN TV), inceleme, rehber format çeşitliliği"
+    ],
+    "weaknesses": [
+      "Atıf pratiği zayıf: 'Çin merkezli kaynaklardan gelen bilgilere göre', 'sızdırılan verilere göre' gibi linksiz, doğrulanamaz kaynaklar — incelenen iki makalede de tek bir spesifik dış link yok",
+      "İçerik sızıntı/spekülasyon ağırlıklı (iPhone 18 dummy modeli, doğrulanmamış spesifikasyonlar) — 'saha verisi' değil söylenti gazeteciliği",
+      "Kod bloğu yok, geliştirici içeriği yok; derinlik 'orta' — nedensellik/analiz katmanı eksik",
+      "Ana sayfa listelemelerinde yazar adı görünmüyor (sadece makale içinde)",
+      "Çelişkili YZ duruşu: llms.txt yayınlarken robots.txt'te 'Content-Signal: ai-train=no, search=yes, ai-input=no' diyor — ai-input=no ile YZ asistanlarında kaynak olma hedefi kendi içinde tutarsız",
+      "Yorum bölümleri incelenen makalelerde boş — topluluk katılımı zayıf"
+    ],
+    "ia": "Düz URL şeması: shiftdelete.net/<slug> (ID'siz); kategoriler: teknoloji haberleri, oyun, video, inceleme, rehber; yazar sayfaları /author/<ad>; llms.txt'te kategori ve marka hub'ları listeleniyor",
+    "contentDepth": "Kod: yok. Kaynak: belirsiz/linksiz atıflar. Tarih: ISO datePublished var, ayrı güncelleme tarihi gözlenmedi. Özgünlük: çeviri değil, özgün Türkçe yazım — ama doğrulanmamış sızıntıya dayalı spekülatif içerik",
+    "eeat": "Orta-iyi: gerçek isimli yazarlar, unvan ve sosyal linkler JSON-LD'de mevcut; ancak teknik editör/doğrulama süreci izi yok, kaynakça pratiği zayıf olduğu için güven katmanı yapısal olarak eksik",
+    "schemaUsage": "NewsArticle, WebPage, ImageObject, BreadcrumbList, WebSite, Organization, Person, CollectionPage (fiilen tespit edildi)",
+    "geoSurfaces": "llms.txt: VAR (Yoast SEO v27.5 otomatik üretimi). robots.txt: YZ botlarına özel engel yok ama 'Content-Signal: ai-train=no, search=yes, ai-input=no' sinyali var; 3 sitemap bildirimi. RSS/.md çıktı: tespit edilemedi",
+    "monetization": "Reklam ağı (Bildirt SDK gözlendi), çerez yönetimi; incelenen sayfalarda bariz affiliate/sponsorlu içerik tespit edilemedi",
+    "lessons": [
+      "llms.txt'in Yoast eklentisiyle otomatik üretilebildiğini kanıtlıyor → Sinaptiklab otomatik değil KÜRATÖRLÜ llms.txt yapmalı: öğrenme patikaları, sözlük ve kanonik rehberler öncelik sırasıyla; bu, 'llms.txt var' kutusunu işaretlemekten fazlasını sağlar",
+      "Linksiz 'kaynaklara göre' gazeteciliği Türk teknoloji medyasının normu → Sinaptiklab'ın her iddiada tıklanabilir sources[] zorunluluğu doğrudan ölçülebilir fark; 'Saha verisi, uydurma yok' sloganı bu zaafın tam karşıtı",
+      "Kapsamlı JSON-LD masrafsız ve ulaşılabilir (WordPress+Yoast ile) → Sinaptiklab en az bu seviyeyi (Article+Person+Organization+BreadcrumbList) gün 1'de kurmalı, üstüne TechArticle/HowTo/DefinedTerm ile fark yaratmalı",
+      "ai-input=no sinyali gibi tutarsız YZ politikaları yaygın → Sinaptiklab bilinçli 'YZ asistanlarına açık kaynak' politikasını açıkça yayınlayarak hem GEO hem güven sinyali üretebilir",
+      "Sızıntı/spekülasyon içerik hızlı trafik getiriyor ama atıflanabilir değil; YZ asistanları doğrulanabilir içeriği tercih eder → sürümlü, kaynaklı, repo'lu içerik GEO'da uzun vadeli üstünlük sağlar"
+    ]
+  },
+  {
+    "domain": "webtekno.com",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Türkiye'nin en büyük tüketici teknoloji haber sitelerinden biri; milyonlarca sayfalık arşiv, günlük yüksek tempolu üretim ve video/rehber/karşılaştırma formatları. Yapay zekâ ayrı bir ana kategori (61+ sayfa) ama içerik neredeyse tamamen tüketici haberi formatında; teknik derinlik, kod ve eğitim içeriği yok. Teknik SEO tarafı çok olgun (zengin JSON-LD, çift sitemap, bilinçli AI bot politikası) fakat GEO yüzeyleri eksik (llms.txt 404).",
+    "ia": "Kök-düz URL şeması: /baslik-h{ID}.html (dizin yok, ID'li). Ana nav: Yapay Zekâ, Mobil, Ürün, Oyun, Otomobil, Uygulama/Yazılım, Donanım, Sinema-Dizi + Haber/Video/En Çok Okunanlar hub'ları. Sitemap index 434 alt sitemap (~430 içerik + 2 video + yazar + kategori + etiket sitemap'leri); ayrıca newsmap.xml (Google News). Etiket ve arama sayfaları robots.txt ile taranmaya kapalı.",
+    "contentDepth": "Kod bloğu yok. Kaynak pratiği yarım: makalede Tom's Guide ve Notebookcheck test sonuçlarına isimle atıf var ama dış link verilmemiş. Yayın + güncelleme tarihi ISO formatta mevcut ve görünür (ör. yayın 2026-08-07T13:58, güncelleme 17:16). İçerik çeviri değil, özgün Türkçe derleme/analiz; incelemelerde spec tabloları ve H1-H3 hiyerarşisi düzgün. Tutorial/eğitim içeriği sınırlı (tek tük prompt rehberi), derinlemesine öğretim materyali gözlenmedi.",
+    "eeat": "Yazar byline'ları gerçek isimli; JSON-LD Person'da url, foto ve jobTitle ('Product Content Manager') var — şema tarafı güçlü. Ama yazar profil sayfası zayıf: bio yok, kimlik/uzmanlık beyanı yok, sadece e-posta + makale listesi; aynı yazar otomobilden oyuna her konuda yazıyor (uzmanlık sinyali dağınık). Teknik editör veya kaynakça standardı gözlenmedi.",
+    "geoSurfaces": "llms.txt YOK (404 doğrulandı). robots.txt bilinçli AI politikası içeriyor: GPTBot ve OAI-SearchBot'a açık 'Allow: /', ayrıca Content-Signal 'ai-train=no, search=yes, ai-input=yes' (eğitime hayır, AI yanıtlarında kullanıma evet). RSS var (/rss.xml). .md çıktı veya llms-full benzeri yüzey yok.",
+    "schemaUsage": "Ham HTML'de (curl ile) doğrulandı: NewsArticle, BreadcrumbList, Person (jobTitle'lı), NewsMediaOrganization, ImageObject, Rating, SpeakableSpecification, WebPage, WebSite, ContactPoint, ListItem.",
+    "monetization": "Display reklam + affiliate/kupon ekonomisi belirgin: 'webtekno' kupon kodları, Amazon indirim yönlendirmeleri, satın alma rehberleri. Video içerik (YouTube) ikinci gelir/erişim kanalı.",
+    "strengths": [
+      "Devasa ölçek ve tazelik: 434 alt sitemap'lik arşiv + saatlik yayın temposu, Google News entegrasyonu (newsmap.xml)",
+      "Çok zengin ve doğrulanmış JSON-LD seti (NewsArticle + Speakable + Rating + jobTitle'lı Person)",
+      "Bilinçli, ayrıştırılmış AI bot politikası (Content-Signal: ai-train=no, ai-input=yes — sektörde nadir)",
+      "Yayın VE güncelleme tarihinin makine-okunur ve görünür olması",
+      "Güçlü kategori hub'ları ve temiz URL hijyeni (etiket/arama sayfaları kapalı)"
+    ],
+    "weaknesses": [
+      "Kaynaklara isimle atıf var ama LİNK yok — iddialar doğrulanabilir değil",
+      "Sıfır kod bloğu, sıfır teknik tutorial; YZ kategorisi tamamen tüketici haberi",
+      "Yazar sayfaları bio'suz ve uzmanlık beyansız; herkes her konuda yazıyor",
+      "llms.txt yok; GEO yüzeyi robots.txt sinyaliyle sınırlı",
+      "Affiliate/kupon ağırlıklı monetizasyon içerik tarafsızlığı algısını zedeleyebilir"
+    ],
+    "lessons": [
+      "Linksiz atıf pratiği ('Tom's Guide'a göre...' ama URL yok) → Sinaptiklab'ın her iddiada zorunlu sources[] + doğrudan link politikası ölçülebilir bir farklılaştırıcı",
+      "YZ kategorisi 61+ sayfa ama tamamı haber → Türkçe derinlemesine teknik içerik (çalışan repo'lu tutorial) boşluğu tamamen açık; en büyük oyuncu bu alana hiç girmemiş",
+      "Speakable, Rating ve jobTitle'lı Person şemaları örnek alınmalı — Sinaptiklab buna TechArticle/HowTo/Code + DefinedTerm (sözlük) ekleyerek şema tarafında öne geçebilir",
+      "Content-Signal ile ai-train=no diyen büyük yayıncı, AI yanıtlarında kullanılmaya evet diyor → GEO yarışı TR'de başladı; Sinaptiklab tam açık (llms.txt + md çıktı) stratejiyle daha 'alıntılanabilir' konumlanabilir",
+      "Güncelleme tarihi gösterme pratiği TR'de var ama sürümleme (changelog, 'vX güncellendi çünkü...') yok → sürümlü içerik hâlâ boş alan"
+    ]
+  },
+  {
+    "domain": "teknoblog.com",
+    "category": "haber",
+    "reachable": true,
+    "summary": "2009'dan beri yayında olan (17 yıllık arşiv), küçük ekipli (15 yazar, Küstür kardeşler çekirdekli) WordPress+Yoast tabanlı teknoloji haber/inceleme sitesi. En dikkat çekici bulgu: çalışan bir llms.txt dosyası ve açık, atıf-şartlı AI kullanım politikası var — TR'de GEO'ya bilinçli hamle yapan nadir sitelerden. İçerik yabancı haber kaynaklarının linkli-atıflı Türkçe aktarımı ağırlıklı; kod ve eğitim içeriği yok.",
+    "ia": "WordPress + Yoast SEO. Türkçe slug'lı kök URL şeması (/openai-chatgpt-ucretsiz-metin-sohbet-siniri-kaldirildi/). Kategoriler: PUSULA, TEKNOKART, Teknoloji, İncelemeler, İpucu, DOSYA, FIRSATLAR, Satın Alma Rehberi + marka bazlı özel taksonomiler (telefon/tablet/saat/marka). Sitemap index 92 alt sitemap (87 post-sitemap, 2009-2026 arşiv + author/category/taxonomy sitemap'leri).",
+    "contentDepth": "Kod bloğu yok. Kaynak pratiği webtekno'dan iyi: dış kaynağa DOĞRUDAN LİNK veriliyor (ör. Engadget makale URL'si + OpenAI sayfası). Yayın tarihi saatiyle görünür; güncelleme tarihi GÖRÜNMÜYOR. Tipik makale ~750-900 kelime, özgün Türkçe yazım ama içerik büyük ölçüde yabancı kaynaklı haberin aktarımı/yorumu. İncelemelerde puanlama (8.8/10) kullanılıyor.",
+    "eeat": "15 yazarlık author sitemap; yazar sayfalarında kısa ama gerçek bio (ör. 'Medya, Kültür ve Kimlik üzerine yüksek lisans yaptı') + X/LinkedIn/Instagram linkleri; JSON-LD Person'da sameAs ile sosyal profil bağlanmış. Resmi unvan/teknik editör beyanı yok; küçük ekip, uzmanlık genel 'teknoloji yazarı' düzeyinde.",
+    "geoSurfaces": "llms.txt VAR ve yapılandırılmış: yayıncı bilgisi, editör profili (Sabri Küstür), 40+ URL'lik öne çıkan içerik/son yazılar listesi, sitemap referansı ve açık AI politikası — 'içeriklerin LLM eğitiminde ve AI yanıt üretiminde kaynak olarak kullanılmasına izin verilir; Teknoblog + orijinal URL atıfı zorunlu; tam metin kopyalama/yeniden dağıtım yasak'. robots.txt'de AI botlara özel engel yok (sadece eski crawler'lar engelli). RSS /feed/ mevcut. .md çıktı yok.",
+    "schemaUsage": "Ham HTML'de (curl ile) doğrulandı: NewsArticle (x2), BreadcrumbList, Person (sameAs'li), Organization, NewsMediaOrganization, SpeakableSpecification, SearchAction, ItemList, ImageObject, ReadAction, WebPage, WebSite.",
+    "monetization": "Şeffaf etiketli affiliate ('REKLAM — Bu içerikte satış ortaklığı bağlantıları bulunmaktadır'), 'Fırsatlar' fiyat/indirim bölümü, display reklam, YouTube/Instagram kanal büyütme.",
+    "strengths": [
+      "TR'de nadir: çalışan llms.txt + açık, atıf-şartlı AI/LLM kullanım politikası (GEO bilinci)",
+      "Dış kaynaklara doğrudan linkle atıf pratiği (Engadget URL'si makale içinde)",
+      "Affiliate içeriğin açıkça 'REKLAM' etiketiyle işaretlenmesi (şeffaflık)",
+      "17 yıllık arşiv ve domain otoritesi; Yoast'la düzenli sitemap hijyeni",
+      "Yazar sayfalarında gerçek bio + sameAs'li sosyal profiller (temel E-E-A-T mevcut)"
+    ],
+    "weaknesses": [
+      "Güncelleme tarihi gösterilmiyor — içerik tazeliği kanıtlanamıyor",
+      "Kod bloğu ve teknik tutorial hiç yok; YZ içeriği haber aktarımı düzeyinde",
+      "Küçük ekip, sınırlı üretim hacmi; içerik çoğunlukla yabancı haberin Türkçeleştirilmesi",
+      "Eğitim patikası, sözlük, referans içerik gibi kalıcı (evergreen) varlık yok",
+      "llms.txt var ama llms-full.txt / .md çıktı gibi derin GEO yüzeyleri yok"
+    ],
+    "lessons": [
+      "llms.txt'i bir TR teknoloji sitesi ZATEN yaptı → Sinaptiklab 'ilk' olamaz ama llms.txt + llms-full.txt + sayfa başı .md çıktı + DefinedTerm sözlük şemasıyla derinlikte açık ara öne geçebilir",
+      "Teknoblog'un 'atıf zorunlu, tam metin yasak' AI politikası iyi bir şablon — Sinaptiklab bunu sürüm/lisans bilgisiyle (ör. içerik sürümü + kanonik URL) zenginleştirip standart koyabilir",
+      "Linkli atıf yapan tek emsal bile kaynakçayı yapılandırmıyor (dipnot/sources bloğu yok) → makale sonu yapılandırılmış kaynakça bloğu hem okur hem LLM için ayrıştırıcı",
+      "Güncelleme tarihi eksikliği → Sinaptiklab'ın görünür 'son güncelleme + değişiklik günlüğü' pratiği hem SEO tazelik sinyali hem güven farklılaştırıcısı",
+      "İki emsalde de sıfır kod, sıfır çalışan repo → 'her tutorial çalışan repo ile' vaadi TR pazarında rakipsiz; haber aktarımı yerine birincil/saha içerik üretimi konumlandırmayı doğruluyor"
+    ]
+  },
+  {
+    "domain": "egirisim.com",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Türkiye girişimcilik/teknoloji ekosistemi odaklı, tek kişilik editöryal ağırlıklı (kurucu Hilmi Öğütcü) WordPress haber sitesi. Yüksek yayın temposu (günlük 'Ekosistemden güncel gelişmeler' derlemeleri + yatırım haberleri), ancak içerik derinliği düşük: basın bülteni formatında 3-4 paragraflık haberler, dış kaynak atıfı neredeyse yok. SEO altyapısı (Rank Math) düzgün kurulmuş ama GEO yüzeyleri (llms.txt, YZ bot politikası) hiç yok.",
+    "ia": "URL şeması: /yyyy/aa/gg/baslik-slug/ (WordPress tarih bazlı). Kategoriler /kategori/girisim/ gibi; taksonomi: Girişim, Yatırım, Teknoloji, Finansal Teknoloji, Dijital, Kitle Fonlama, E-ticaret, Etkinlik, Yapay Zeka. Statik hub sayfaları var (/girisim-101-programi/, /summit/egirisim-summit-2025/). Etiket sistemi şirket/fon adlarıyla çalışıyor (ör. 'FutureBright Ventures', 'Ingosa') ve altında 4 ilgili makale listeleniyor. Sitemap index 62 alt sitemap (59 post sitemap → binlerce yazılık arşiv).",
+    "contentDepth": "Kod bloğu yok (incelenen iki makalede de). Kaynakça/atıf pratiği zayıf: incelenen yatırım haberinde dış kaynak linki sıfır, sadece iç linkler; günlük derleme yazısında yalnızca bir başvuru formu linki var, haber kaynaklarına atıf yok. İçerik basın bülteni + CEO/yatırımcı alıntısı formatında, bağımsız analiz yok. Yayın tarihi sayfada görünür (ör. 6 Ağustos 2026); güncelleme tarihi sayfada görünmüyor (JSON-LD'de dateModified var ama datePublished ile aynı). İçerik özgün derleme/haber, çeviri değil.",
+    "eeat": "Yazar sayfası gerçek kimlikli: /author/hilmiogutcu/ — tam ad, 'egirişim kurucusu ve baş editör' unvanı, 2012'den beri ekosistem içeriği ürettiğini söyleyen kısa biyografi, 4 sosyal medya linki (Facebook, Instagram, LinkedIn, X); fotoğraf görünmüyor. Ana sayfa listelerinde byline görünmüyor, makale sayfasında görünüyor. Teknik editör, kaynakça politikası, düzeltme politikası izi tespit edilemedi.",
+    "schemaUsage": "Ham HTML'de 2 JSON-LD bloğu doğrulandı (Rank Math üretimi): BlogPosting + Person + [NewsMediaOrganization, Organization] + WebPage + WebSite + ImageObject; ikinci blokta BreadcrumbList. Not: haber içeriğine rağmen NewsArticle değil BlogPosting kullanılıyor; datePublished/dateModified JSON-LD'de mevcut.",
+    "geoSurfaces": "llms.txt yok (404 doğrulandı). robots.txt standart WordPress (yalnız /wp-admin/ disallow); YZ botlarına (GPTBot, ClaudeBot, CCBot, PerplexityBot, Google-Extended) özel hiçbir kural yok — varsayılan olarak hepsi serbest. Sitemap: sitemap_index.xml (Rank Math). RSS: /feed/ + /comments/feed/ mevcut. .md çıktı yüzeyi tespit edilemedi. Bülten kayıt formu incelenen sayfalarda görünmüyor.",
+    "monetization": "Footer'da 'Reklam ve Sponsorluk' sayfası; kendi etkinliği (egirişim Summit) ve program sayfaları (Girişim 101) muhtemel sponsorluk yüzeyleri. Premium üyelik/paywall görünmüyor; bülten monetizasyonu görünmüyor.",
+    "strengths": [
+      "Çok yüksek yayın temposu ve taze içerik (aynı gün saat damgalı derlemeler; sitemap'te günlük güncelleme)",
+      "14 yıllık arşiv ve alan otoritesi: 59 post sitemap'lik içerik havuzu, TR girişim haberlerinde referans konumu",
+      "Temiz teknik SEO tabanı: Rank Math, BlogPosting+Breadcrumb JSON-LD, tarih bazlı tutarlı URL şeması, RSS",
+      "Gerçek kimlikli kurucu-editör markası (E-E-A-T'nin 'kim yazıyor' ayağı sağlam)"
+    ],
+    "weaknesses": [
+      "Kaynak gösterimi pratikte yok: yatırım tutarları ve şirket iddiaları dış kaynağa bağlanmıyor, basın bülteni aktarımı",
+      "Derinlik yok: kod, veri, analiz, tutorial içerik tipi yok; 'Yapay Zeka' kategorisi salt ürün duyurusu haberciliği",
+      "GEO yüzeyleri sıfır: llms.txt yok, YZ bot politikası tanımsız, bülten/e-posta yakalama görünmüyor",
+      "Görünür güncelleme tarihi yok ve haber içeriğinde NewsArticle yerine BlogPosting şeması kullanılıyor",
+      "Tek yazara bağımlılık: incelenen tüm güncel içerik tek byline'da (otobüs faktörü + uzmanlık çeşitliliği sınırı)"
+    ],
+    "lessons": [
+      "Kaynaksız yatırım/istatistik haberciliği → Sinaptiklab'ın her iddiaya sources[] zorunluluğu doğrudan farklılaştırıcı; aynı haberi kaynaklı+arşiv linkli vermek GEO'da alıntılanma avantajı sağlar",
+      "TR YZ haber akışında 'derinlik katmanı' boş: egirisim duyuruyu veriyor, kimse 'bu model/araç gerçekte ne yapıyor' teknik incelemesini yapmıyor — duyuru + çalışan repo'lu deneme yazısı ikilisi bu boşluğu doldurur",
+      "llms.txt + açık YZ bot politikası TR haber sitelerinde standart değil; Sinaptiklab bunu ilk günden koyarak GEO'da öne geçebilir",
+      "Görünür 'yayın + son güncelleme' tarihi ve sürümlü içerik, egirisim'in statik haberlerine karşı tazelik sinyali üstünlüğü verir",
+      "Haber değil ama haber-yanı içerik (ör. 'bu hafta TR YZ ekosistemi' kaynaklı özeti) egirisim'in formatını kaynaklı/analitik versiyonla taklit edip arama niyetini çalabilir"
+    ]
+  },
+  {
+    "domain": "evrimagaci.org",
+    "category": "egitim",
+    "reachable": true,
+    "summary": "Türkiye'nin en büyük bağımsız popüler bilim platformu (2010'dan beri); editör onaylı makaleler + devasa topluluk katmanı (soru-cevap, sözlük, akademi, quiz, oyunlaştırma) + şeffaf yayın/düzeltme politikaları. Güven mimarisi (içerik tipi etiketleri, çeviri kaynağı + arşiv linki, düzeltme politikası) TR web'inde emsalsiz; Sinaptiklab için asıl emsal rakipten çok 'güven yüzeyi şablonu'. Dikkat: site varsayılan bot erişimini filtreliyor — WebFetch tüm sayfalarda 403 aldı, tarayıcı User-Agent'lı curl ile erişildi.",
+    "ia": "Makale URL şeması: /{slug}-{id} (ör. /neandertallerin-yok-olma-nedeni-akraba-evliligi-olmayabilir-23545); içerik tipine göre önekli desenler (/blog/, /soru/, /tur/, /eser/, /quiz/...) ve kısa URL sistemi (/s/{id}, /q/{id}...) — hepsi llms.txt'te belgelenmiş. Hub'lar: /makale, /guncel-bilim-haberleri, /akademi (yapılandırılmış okuma listeleri = öğrenme patikası), /sozluk (bilim sözlüğü), /kategoriler + /bilim-agaci (görsel kategori hiyerarşisi), /soru-cevap, /podcast, /video.",
+    "contentDepth": "Kod bloğu yok (popüler bilim formatı). Kaynakça pratiği güçlü: makale sonunda 'Kaynaklar ve İleri Okuma' bölümü; incelenen makalede 'Çeviri Kaynağı: BBC Science Focus Magazine | Arşiv Bağlantısı' ile hem orijinal hem web.archive.org arşiv linki veriliyor. Yayın tarihi (datetime=2026-08-05 08:57:49) VE görünür 'Güncellenme Tarihi: 5 Ağustos 2026 09:15' mevcut. İncelenen makale etiketli çeviri; site ayrıca 'İçerik Tipleri' sayfasıyla özgünlük seviyelerini sınıflandırıyor (Yazar Görüşü / Editör Görüşü / Sponsorlu İçerik / Duyuru etiketleri arayüzde görüldü). Q&A tarafında 'Sadece Kaynaklı Cevaplar' filtresi var.",
+    "eeat": "Byline'lar gerçek: incelenen makalede orijinal yazar 'Michael Day — Yazar' + 'Damla Şahin Uçar — Editör' ayrımı (çift kimlik: yazar + elden geçiren editör). /ekibimiz ekip sayfası, /tarihce, yayın politikası, düzeltme politikası, gelir kaynakları şeffaflık sayfası ve kimlik doğrulamalı 'Onaylı Kullanıcılar' sistemi var. 'Birden fazla editör tarafından durmaksızın elden geçirilme' iddiası çıktı bilgisinde açıkça yazılı.",
+    "schemaUsage": "Tespit edilemedi: ham HTML'de (ana sayfa + makale) 'application/ld+json' ve 'schema.org' dizgisi 0 kez geçiyor; JSON-LD veya microdata yok (JS ile enjekte ediliyorsa sunucu çıktısında görünmüyor). Open Graph etiketleri mevcut (og:type=article, og:site_name, og:url, og:title).",
+    "geoSurfaces": "llms.txt VAR ve TR'de gördüğümüz en kapsamlısı: İngilizce yazılmış, tüm bölümleri, URL desenlerini, politika sayfalarını ve oyunlaştırma sistemini açıklıyor; ama aynı dosyada 'izinsiz otomatik veri toplama yasaktır' notu var. robots.txt: Sitemap /sitemaps; /api/, /panel, /ajax/ vb. disallow; YZ botlarına (GPTBot, ClaudeBot vb.) özel kural yok, ancak sunucu katmanında varsayılan/bot User-Agent'lara 403 dönüyor (WebFetch engellendi) — YZ crawler erişimi fiilen belirsiz. RSS: /rss.xml + podcast RSS. .md çıktı tespit edilemedi.",
+    "monetization": "Topluluk destekli model: Kreosus + Patreon (TRY/USD, 'ayda 1 kahve' çağrısı makale içinde), destekçilere 'Tüm Reklamları Kapat' (reklamsız deneyim), Agora Bilim Pazarı (e-ticaret), 'Reklam Ver' sayfası, 'Sponsorlu İçerik' etiketi ve 'Gelir Kaynaklarımız' şeffaflık sayfası.",
+    "strengths": [
+      "Güven mimarisi: görünür güncelleme tarihi, çeviri kaynağı + arşiv linki, düzeltme politikası, içerik tipi/özgünlük etiketleri, gelir şeffaflığı — hepsi bir arada",
+      "Kanonik kaynak varlıkları: bilim sözlüğü (/sozluk), akademi okuma patikaları, kategori ağacı — GEO'da 'tanım sorusu' trafiğini çeken yüzeyler",
+      "Kapsamlı ve özenli llms.txt (URL desenleri dahil) — TR'de istisna",
+      "Oyunlaştırılmış topluluk (UP/ATP, onaylı kullanıcı, şehir toplulukları) ile içerik üretimini ölçekleme",
+      "Çeşitlendirilmiş topluluk-destekli gelir modeli (bağış + reklamsız ayrıcalık + pazar yeri)"
+    ],
+    "weaknesses": [
+      "Yapısal veri tespit edilemedi: makalelerde JSON-LD/Article şeması ham HTML'de yok — güven sinyalleri makinece okunur formatta değil",
+      "Agresif bot filtreleme (varsayılan UA'lara 403) + llms.txt'teki 'otomatik toplama yasak' beyanı GEO hedefiyle çelişiyor; YZ asistanlarının siteyi kaynak göstermesi erişim katmanında riskli",
+      "Güncel bilim haberleri ağırlıklı olarak etiketli çeviri/derleme; YZ-mühendislik alanında özgün teknik üretim yok",
+      "Kod, çalışan repo, uygulamalı tutorial içerik tipi yok — teknik öğrenme ihtiyacına cevap vermiyor",
+      "Kapsam popüler bilim geneli; Türkçe YZ/teknik alan derinliği (KVKK, regülasyon, model kıyaslama) boş"
+    ],
+    "lessons": [
+      "Evrim Ağacı'nın güven şablonunu (görünür güncelleme tarihi + düzeltme politikası + içerik tipi etiketi + kaynak & arşiv linki) YZ/teknik alana taşıyan ilk site olmak: 'Saha verisi, uydurma yok' iddiasının kanıtlanabilir arayüz karşılığı budur",
+      "Sözlük + akademi modeli birebir kopyalanabilir boşluk: kanonik Türkçe YZ sözlüğü ve öğrenme patikaları TR'de teknik alanda sahipsiz — Evrim Ağacı bunu popüler bilimde yapıp trafiğini kanıtladı",
+      "GEO çelişkisini fırsata çevir: Evrim Ağacı YZ botlarını fiilen 403'lüyor ve toplama yasağı ilan ediyor; Sinaptiklab tersine 'YZ asistanları alıntılayabilir' açık politikası + JSON-LD + temiz llms.txt ile TR YZ sorgularında atıf kaynağı konumunu alabilir",
+      "llms.txt'i onların yaptığı gibi URL desenleri ve politika linkleriyle yaz, ama ek olarak Article/TechArticle JSON-LD koy — onların en görünür teknik eksiği yapısal veri",
+      "Çeviri içerikte bile kaynak+arşiv linki standardı alıntılanabilirliği artırıyor; Sinaptiklab özgün saha verisi + kaynak arşivleme ile bunun bir üstünü sunmalı",
+      "Topluluk katmanını (soru-cevap, 'sadece kaynaklı cevaplar' filtresi) MVP'ye değil yol haritasına koy: içerik ölçekleme ve dwell-time makinesi ama editoryal yükü büyük"
+    ]
+  },
+  {
+    "domain": "bthaber.com",
+    "category": "haber",
+    "reachable": true,
+    "summary": "31 yıllık arşive sahip, 'Haftalık Bilişim Teknolojileri ve Ekonomisi Gazetesi' kimliğiyle kurumsal BT pazarına konuşan köklü bir haber yayını. İçerik ağırlıklı olarak basın bülteni ve etkinlik/araştırma (Bilişim 500) ekosistemi etrafında dönüyor; teknik derinlik, kod ve kaynak linki yok. robots.txt üzerinden GPTBot/ClaudeBot dahil tüm büyük AI botlarını açıkça engelliyor, yani GEO yüzeyini bilinçli olarak terk etmiş durumda.",
+    "ia": "URL şeması: /haberler/<slug> (kök altında tek 'haberler' dizini). Ana menü: Bilişim Dünyası, Çocuk, Gündem, Dosya, İnsan Kaynakları, Künye. Sitemap index'i sitemap-pages.xml + aylık sitemap-news-YYYY-MM.xml (2009-11'den bugüne ~188 dosya) şeklinde disiplinli bir arşiv yapısı sunuyor; ancak robots.txt'te sitemap satırı bildirilmemiş.",
+    "geoSurfaces": "llms.txt: YOK (HTTP 404). robots.txt: AI botları AÇIKÇA engelli — ClaudeBot, GPTBot, Google-Extended, CCBot, Applebot-Extended, Amazonbot, Bytespider, meta-externalagent + Cloudflare 'Content-Signal: search=yes, ai-train=no, use=reference' direktifi. RSS/feed linki ana sayfada görünmüyor. .md çıktı tespit edilemedi.",
+    "eeat": "Makalelerde yazar imzası YOK (incelenen iki makalede de yalnızca alıntı yapılan kurum sözcüleri var). Künye sayfası şeffaf: yayıncı 'Bilişim Zirvesi Etkinlik Organizasyon Ltd. Şti.', isim+unvanlı kadro (Neslihan Aksun - Sorumlu Yazı İşleri Müdürü, Ayhan Sevgi, Handan Aybars), tam adres ve telefon. Yazar sayfası / bireysel yazar profili tespit edilemedi. Teknik editör pratiği görünmüyor.",
+    "contentDepth": "Kod bloğu: yok. Kaynak gösterimi: kaynak ADI anılıyor (Bilişim 500 araştırması, EY Küresel Siber Güvenlik Araştırması) ama hiçbirine LİNK verilmiyor, metodoloji yok. Yayın tarihi görünür ('20 Temmuz 2026'), güncelleme tarihi görünmüyor. İçerik ~450 kelimelik basın bülteni aktarımı; hazır kurum alıntıları, bağımsız analiz yok. Özgün habercilikten çok PR yeniden yayını.",
+    "schemaUsage": "tespit edilemedi (WebFetch markdown dönüşümünde ana sayfa ve iki makale sayfasında JSON-LD/script izi görülmedi; script etiketleri dönüşümde düşmüş olabileceği için kesin yokluk iddia edilemez)",
+    "monetization": "Etkinlik ekosistemi ana motor: Bilişim Zirvesi, C-Connect CIO toplantıları, CSuite etkinliği. Ek olarak: Bilişim 500 araştırma raporu satışı, basılı gazete (3.500 tiraj), banner reklam (Brady), e-bülten aboneliği.",
+    "strengths": [
+      "31 yıllık dijital arşiv + 2009'dan beri aylık news-sitemap disiplini (Google News gözünde güçlü tarihsel otorite)",
+      "Etkinlik + araştırma raporu (Bilişim 500) + yayın üçlüsüyle kurumsal Türkiye BT pazarında güçlü ağ ve gelir çeşitliliği",
+      "Şeffaf künye: gerçek isimler, unvanlar, şirket, adres, telefon",
+      "C-level / kurumsal karar verici kitlesine doğrudan erişim"
+    ],
+    "weaknesses": [
+      "Makalelerde yazar imzası yok — haber düzeyinde EEAT sinyali sıfır",
+      "Sayılar kaynak adıyla anılıyor ama hiçbir dış link/metodoloji verilmiyor (ör. 'yapay zekâ gelirleri yüzde 58 arttı' iddiası linksiz)",
+      "İçerik basın bülteni ağırlıklı ve sığ (~450 kelime), bağımsız analiz ve teknik derinlik yok; kod/tutorial hiç yok",
+      "robots.txt tüm büyük AI botlarını engelliyor — ChatGPT/Claude/Perplexity yanıtlarında kaynak olma şansını bilinçli kapatmış",
+      "llms.txt yok, RSS görünmüyor, robots.txt'te sitemap bildirilmemiş, güncelleme tarihi pratiği yok"
+    ],
+    "lessons": [
+      "En büyük fırsat: BTHaber AI botlarını robots.txt ile engelliyor → kurumsal Türkçe BT/YZ haber alanında GEO yüzeyi tamamen boş; Sinaptiklab AI-açık robots + llms.txt ile bu alıntılanma boşluğunu doğrudan doldurabilir",
+      "Kaynaksız sayı kültürü ('yüzde 58 arttı', linksiz araştırma atfı) yaygın norm → Sinaptiklab'ın her iddiada zorunlu sources[] + DOI/rapor linki pratiği somut ve görünür bir farklılaştırıcı",
+      "Yazarsız haber normu → gerçek kimlikli, unvanlı, biyografili yazar sayfaları Türkçe BT medyasında istisna olur ve EEAT'te öne geçirir",
+      "Basın bülteni yeniden yayını yerine bağımsız doğrulama/analiz ('saha verisi, uydurma yok') konumlandırması bu segmentte karşılıksız",
+      "Bilişim 500 modeli ders niteliğinde: kendi tescilli veri setini/raporunu üretmek hem otorite hem gelir üretiyor — Sinaptiklab için 'Türkiye YZ ekosistem verisi' tarzı yıllık kaynaklı rapor benzer bir hendek yaratabilir",
+      "Etkinlik+yayın bağı (C-Connect/CSuite) topluluk ve gelir modelinin içerikten bağımsız ayakta durabildiğini gösteriyor; ancak içerik kalitesini taşımıyor — içerik kalitesiyle gelen genç teknik kitleyi BTHaber yakalayamıyor"
+    ]
+  },
+  {
+    "domain": "log.com.tr",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Yüksek tempolu, tüketici odaklı Türkçe teknoloji haber sitesi (WordPress izlenimi: sitemap_index.xml + /feed + author/ URL'leri). Günde çok sayıda kısa haber üretiyor, yazar imzalı ve news-sitemap'li düzgün bir teknik SEO altyapısı var; ancak içerik ağırlıklı olarak yabancı kaynaklardan (ör. Engadget) derleme, tek-birkaç paragraf derinliğinde ve teknik öğretici değeri yok.",
+    "ia": "Kök seviyede slug URL şeması (www.log.com.tr/<haber-slug>/). Kategoriler tematik markalı: HABER, TEST (incelemeler), ASFALT (otomotiv), RADAR (havacılık/uzay), PLAY (oyun/eğlence), DOSYA, UYGULAMA, NASIL YAPILIR, KAMPANYA. sitemap_index.xml + sitemap-news.xml (saatli publication_date alanlarıyla) + /feed robots.txt'te bildirilmiş.",
+    "geoSurfaces": "llms.txt: YOK (HTTP 404). robots.txt: AI botlarına özel hiçbir kural yok — GPTBot/ClaudeBot/PerplexityBot/CCBot serbest (yalnızca ia_archiver, OmniExplorer_Bot, FreeFind, BecomeBot gibi eski botlar engelli; arama parametresi/tag/embed sayfaları disallow). RSS /feed footer'da mevcut. Sitemap satırları robots.txt'te bildirilmiş. .md çıktı tespit edilemedi.",
+    "eeat": "Makalelerde gerçek isimli yazar imzası VAR (Can TUNÇER, Emir BOSTANOĞLU) ve yazar arşiv sayfasına link veriliyor. Ancak yazar sayfası yalnızca makale listesi: fotoğraf, biyografi, unvan, uzmanlık alanı, sosyal medya linki görünmüyor — ince/boş EEAT kabuğu. Teknik editör veya düzeltme pratiği görünmüyor.",
+    "contentDepth": "Kod bloğu: incelenen makalelerde yok ('Nasıl Yapılır' kategorisi olmasına rağmen). Kaynak gösterimi kısmen var: resmi kaynak linki (uyap.gov.tr) ve dış kaynak atfı (Engadget, Black Hat USA) geçiyor. Yayın tarihi saat düzeyinde görünür (07 Ağustos 2026, 16:24), güncelleme tarihi görünmüyor. İçerik tek paragraf-birkaç paragraf arası kısa derleme; eleştirel analiz yok. Etiket hijyeni zayıf: haberle ilgisiz popüler etiketler (#iPhone17, #Mercedes-Benz CLA) sayfaya iliştirilmiş.",
+    "schemaUsage": "tespit edilemedi (üç sayfada da markdown çıktısında JSON-LD izi görülmedi; sitemap_index.xml/feed yapısı Yoast benzeri bir WordPress SEO eklentisine işaret ediyor ancak JSON-LD çıktısı doğrulanamadı)",
+    "monetization": "Display reklam ('reklamı kapat' seçeneği görülüyor), sponsorlu ürün incelemeleri (TCL, HUAWEI, NUBIA vurgulu), market/kampanya içerikleri (BİM, A101 fırsat listeleri — affiliate potansiyeli), iOS/Android uygulamaları.",
+    "strengths": [
+      "Yüksek yayın temposu: aynı gün içinde çok sayıda YZ haberi, saatli publication_date'li news-sitemap (Google News/Discover'a uygun altyapı)",
+      "Gerçek isimli yazar imzaları ve yazar arşiv sayfaları mevcut",
+      "Temiz teknik SEO tabanı: robots.txt'te bildirilen sitemap_index + sitemap-news + RSS feed",
+      "AI crawlerlara tamamen açık — GEO tarafında pasif de olsa erişilebilir",
+      "Kısmi kaynak atıf pratiği var (resmi kurum linki, Engadget/Black Hat referansı)"
+    ],
+    "weaknesses": [
+      "İçerik ağırlıkla yabancı kaynak derlemesi/çevirisi; özgün araştırma veya teknik analiz yok",
+      "Derinlik çok düşük: haberler tek-birkaç paragraf, eleştirel bağlam yok; kod bloğu 'Nasıl Yapılır' kategorisine rağmen görünmüyor",
+      "Yazar sayfaları biyografisiz/unvansız — imza var ama uzmanlık kanıtı yok",
+      "Güncelleme tarihi pratiği yok; etiketler haberle ilgisiz popüler terimlerle doldurulmuş (etiket spam görünümü)",
+      "llms.txt yok; GEO'ya yönelik bilinçli hiçbir yüzey (özet blok, kaynakça standardı, sözlük) yok",
+      "Tüketici-genelci kapsam: kurumsal/teknik YZ derinliği (regülasyon, KVKK, mimari) tamamen kapsam dışı"
+    ],
+    "lessons": [
+      "Hız+hacim oyununda LOG ile yarışılmaz; farklılaşma derinlikte: LOG'un 1 paragraflık derleme haberine karşı Sinaptiklab'ın kaynaklı, bağlamlı, sürümlü analizi aynı sorguda 'alıntılanabilir tek kaynak' olur",
+      "Türkçe YZ haberciliği neredeyse tamamen yabancı kaynak çevirisi → Türkiye'ye özgü özgün veri/saha içeriği (yerli model testleri, KVKK dosyaları, TR vaka analizleri) boş alan",
+      "İmza var ama biyografi yok normu → foto+unvan+uzmanlık+sosyal kanıtlı zengin yazar profilleri hem Google EEAT hem LLM güven sinyali olarak ucuz ve etkili bir üstünlük",
+      "'Nasıl Yapılır' kategorisi kodsuz → çalışan repo'lu, sürüm numaralı tutorial formatı Türkçe alanda fiilen rakipsiz",
+      "İlgisiz etiket doldurma gibi taksonomi çöplüğüne karşı Sinaptiklab'ın kanonik sözlük + kontrollü taksonomi yaklaşımı hem UX hem GEO (varlık netliği) avantajı",
+      "LOG AI botlarına açık ama GEO için hiçbir aktif yüzey sunmuyor (llms.txt yok, özet/kaynakça standardı yok) → 'açık ama optimize değil' rakibe karşı llms.txt + yapılandırılmış kaynakça + tarihli sürümleme ile aktif GEO farkı yaratılabilir"
+    ]
+  },
+  {
+    "domain": "towardsdatascience.com",
+    "category": "teknik-yayin",
+    "reachable": true,
+    "summary": "Katkıcı (contributor) modelli, editör küratörlüğünde dev bir veri bilimi/YZ yayını; WordPress+Yoast altyapısı, günlük yayın temposu ve çok geniş arşiv (27 post-sitemap). Teknik SEO'su güçlü ama robots.txt ile TÜM büyük YZ botlarını (GPTBot, ClaudeBot, anthropic-ai, CCBot, PerplexityBot, OAI-SearchBot vb.) engelliyor — yani GEO'dan bilinçli olarak çekilmiş durumda.",
+    "ia": "Kök seviyede slug URL'ler (towardsdatascience.com/<makale-slug>/), kategori taksonomisi: Data Science, Machine Learning, Large Language Models, Agentic AI, Data Visualization, Operations Research, Data Engineering. Hub'lar: Latest, Editor's Picks, Deep Dives, The Variable (bülten). sitemap_index.xml altında 27 post + 1 page + 1 category sitemap; en son lastmod 2026-08-07 (günlük güncel).",
+    "contentDepth": "İncelenen makalede (matplotlib-vs-plotly) ~8-10 Python kod bloğu var; yayın tarihi görünür (Aug 7, 2026) ama güncelleme tarihi YOK; dış kaynak/atıf neredeyse yok (dokümantasyona bile link verilmemiş); resmi TOC yok; ~2.000 kelime, özgün katkıcı içeriği (çeviri değil). Çalışan repo/companion kod deposu standardı gözlemlenmedi.",
+    "eeat": "Yazar adı ve yazar arşiv sayfası var (/author/thomas_reid/) ama sayfada bio, unvan, kimlik doğrulama, sosyal/dış link YOK — sadece makale listesi. Editoryal katman var ('TDS Editors', Editor's Picks küratörlüğü) fakat makale bazında teknik editör/hakem bilgisi görünmüyor.",
+    "geoSurfaces": "llms.txt: 404 (yok). robots.txt: standart botlara açık, ancak YZ botlarına toplu Disallow: / (GPTBot, ChatGPT-User, CCBot, anthropic-ai, ClaudeBot, Claude-Web, PerplexityBot, OAI-SearchBot, Google-Extended benzeri geniş liste) + 10 sn crawl-delay. Sitemap: var ve taze. RSS: /feed/ isteğimize 403 döndü — kesin durum tespit edilemedi. .md çıktı: tespit edilemedi.",
+    "schemaUsage": "Ham HTML'de Yoast JSON-LD graph doğrulandı: Article, Person, Organization, WebSite, WebPage, BreadcrumbList, ImageObject(x3), SearchAction, ReadAction. (TechArticle değil, düz Article.)",
+    "monetization": "Görünür paywall/reklam tespit edilmedi; model katkıcı tabanlı: 'Write For TDS' CTA'ları + 'TDS Author Payment Program' (yazara ödeme) + bülten. Muhtemel B2B/sponsor gelirleri sayfada tespit edilemedi.",
+    "strengths": [
+      "Devasa ve taze arşiv: 27 post-sitemap, lastmod 2026-08-07 — günlük yayın temposu",
+      "Temiz topikal taksonomi (Agentic AI, LLM gibi güncel kategoriler ayrı hub)",
+      "Tam Yoast JSON-LD grafı (Article+Person+Breadcrumb+SearchAction) — Google SEO tarafı sağlam",
+      "Editoryal küratörlük katmanı (Editor's Picks, Deep Dives) ile sinyal/gürültü yönetimi",
+      "Yazara ödeme programı ile sürdürülebilir katkıcı havuzu"
+    ],
+    "weaknesses": [
+      "TÜM büyük YZ botları robots.txt ile engelli — ChatGPT/Claude/Perplexity yanıtlarında kaynak olma yarışından bilinçli çekilmiş",
+      "llms.txt yok",
+      "Makalede dış kaynak/atıf pratiği zayıf (incelenen makalede sıfıra yakın)",
+      "Güncelleme tarihi gösterilmiyor, içerik sürümleme yok",
+      "Yazar sayfaları E-E-A-T açısından boş: bio, unvan, kimlik, dış profil linki yok",
+      "Tutorial'lara eşlik eden çalışan repo standardı yok"
+    ],
+    "lessons": [
+      "En büyük fırsat: TDS YZ botlarını topluca engelliyor → Sinaptiklab robots'u YZ botlarına açık tutup llms.txt yayınlarsa, TDS'in çekildiği GEO alanı (Türkçe'de tamamen) boş",
+      "Kaynaksız makale kültürü → Sinaptiklab'ın 'her iddia kaynaklı / zorunlu sources[]' kuralı somut ve görünür farklılaştırıcı; makale şablonuna Kaynakça bloğunu zorunlu koy",
+      "Güncelleme tarihi + sürümlü içerik (kütüphane sürümü etiketi) TDS'te yok → 'Bu tutorial X v1.2 ile test edildi, son doğrulama: tarih' kalıbı hem SEO hem güven sinyali",
+      "Yazar sayfalarını TDS'in aksine gerçek bio + unvan + LinkedIn/GitHub + 'teknik editör onayı' ile kur; JSON-LD Person'a sameAs ekle",
+      "Yoast tarzı tam JSON-LD grafını taban çizgisi al ama Article yerine TechArticle + citation alanlarıyla bir adım öteye geç",
+      "Editor's Picks / Deep Dives tarzı küratör hub'ları düşük maliyetli IA deseni — öğrenme patikalarıyla birleştirilebilir"
+    ]
+  },
+  {
+    "domain": "huggingface.co",
+    "category": "kurumsal-blog",
+    "reachable": true,
+    "summary": "Blog (resmi + topluluk makaleleri) ve Learn (12 ücretsiz kurs) yüzeyleri incelendi. Kod + çalışan repo + atıf kültürü çok güçlü, robots.txt herkese (YZ botları dahil) tamamen açık ve RSS mevcut; buna karşın makale şeması zayıf (SocialMediaPosting) ve Türkçe kurs çevirileri gönüllü emeğiyle, eksik (WIP) durumda.",
+    "ia": "Blog: resmi yazılar /blog/<slug> (ör. /blog/smollm3), topluluk yazıları /blog/<kullanıcı>/<slug> (ör. /blog/ngxson/make-your-own-rag); 'Community Article' etiketiyle ayrışıyor; etiketler (NLP, Audio, CV, Robotics, Security, Quantization), 60 sayfalık sayfalama, Trending sıralaması. Learn: /learn/<kurs-adı> altında 12 kurs (LLM, Agents, Deep RL, Diffusion, Audio, CV, Robotics, Smol, Context, Cookbook, ML for Games, ML for 3D); LLM kursu 12 bölüm. Sitemap index: models/datasets/spaces/blog/doc/papers alt sitemap'leri.",
+    "contentDepth": "Topluluk makalesi (make-your-own-rag): ~8-10 Python kod bloğu, 8 kaynaklı ayrı 'References' bölümü (arXiv dahil), companion repo linki (ngxson/demo_simple_rag_py), yayın tarihi görünür (Oct 29, 2024). Resmi yazı (smollm3): çok yazarlı, kaynaklı benchmark tabloları, hiperparametre düzeyinde detay, makale/model kartı linkleri. Kurslar: Jupyter notebook + Colab/SageMaker entegrasyonu, altyazılı videolar, ücretsiz ve reklamsız; içerik özgün, çeviriler topluluk katkısı. Zayıf nokta: LLM kursu atıf metadatası 2022 tarihli, sayfada güncelleme tarihi/kütüphane sürümü görünmüyor.",
+    "eeat": "Güçlü: gerçek isimli, profilli, çok yazarlı künyeler (smollm3: Elie Bakouch vb.; kurs: Lewis Tunstall, Merve Noyan dahil 8+ yazar biyografili); upvote/yorum ile topluluk doğrulaması (376 ve 787 upvote gözlendi); org rozeti (HuggingFaceTB) resmi içeriği ayırıyor. Ancak topluluk makalelerinde editoryal/teknik hakem katmanı görünmüyor.",
+    "geoSurfaces": "llms.txt: 404 (yok). robots.txt: 'User-agent: * / Allow: /' — YZ botlarına hiçbir kısıt yok. RSS: /blog/feed.xml HTTP 200 (var). Sitemap: kapsamlı index (models, datasets, spaces, blog, doc, papers). .md çıktı: tespit edilemedi.",
+    "schemaUsage": "Topluluk makalesinin ham HTML'inde JSON-LD doğrulandı: SocialMediaPosting, Person(x2), Organization, ImageObject — yani Article/TechArticle yerine SocialMediaPosting kullanılıyor. /learn sayfasında JSON-LD tespit edilemedi.",
+    "monetization": "İçerik tarafı tamamen ücretsiz ve reklamsız; para platformdan geliyor (Enterprise/Team abonelikleri — blogda 'Team/Enterprise org makaleleri ana bölüme taşınır' notuyla kurumsal upsell'e bağlanmış). Kurslarda sertifika yok ('sertifika programı üzerinde çalışıyoruz' notu).",
+    "strengths": [
+      "robots.txt tamamen açık + RSS mevcut → GEO açısından ideal duruş; HF içerikleri YZ asistan yanıtlarında kaynak olmaya uygun",
+      "Kod + companion repo + References bölümü standardı (topluluk makalesinde bile 8 kaynak, arXiv linkleri)",
+      "Çok yazarlı, gerçek kimlikli, profilli künyeler ve topluluk doğrulaması (upvote/yorum)",
+      "12 ücretsiz kurs, notebook/Colab/video ile çok formatlı öğrenme; resmi/topluluk içeriği net etiketle ayrışıyor",
+      "Ürün (Hub) ile içerik döngüsü: makale → model kartı → repo → Space zinciri"
+    ],
+    "weaknesses": [
+      "Makale şeması SocialMediaPosting — TechArticle/Article yerine; öğrenme sayfalarında JSON-LD tespit edilemedi",
+      "llms.txt yok",
+      "Türkçe desteği gönüllü çeviriye dayalı ve WIP: LLM kursunun TR çevirisi eksik, katkıcılar (@tanersekmen, @mertbozkir vb.) gönüllü; blog tarafında Türkçe içerik gözlemlenmedi",
+      "Tazelik sinyali zayıf: kurs atıf metadatası 2022, sayfada güncelleme tarihi/kütüphane sürüm bilgisi görünmüyor",
+      "Topluluk makalelerinde editoryal kalite güvencesi/teknik hakemlik katmanı yok",
+      "Sertifika henüz yok (motivasyon/tamamlama teşviki eksik)"
+    ],
+    "lessons": [
+      "Türkçe boşluk somut: HF'nin TR kurs çevirileri gönüllü ve yarım → Sinaptiklab'ın kanonik Türkçe sözlük + tam Türkçe öğrenme patikaları, 'çevirisi beklenen' değil 'ana dili Türkçe' konum sağlar",
+      "'Her tutorial çalışan repo ile' iddiası HF topluluk pratiğinin aynısı → bunu Türkçe'de standartlaştıran ilk platform olmak savunulabilir hendek; repo linkini içerik şablonunda zorunlu alan yap",
+      "HF'nin şema zaafiyeti fırsat: SocialMediaPosting yerine TechArticle + citation + author.sameAs + dateModified ile hem SEO hem GEO'da daha okunur yapılandırılmış veri sun",
+      "GEO duruşunu HF'den kopyala (açık robots + RSS) ve bir adım öteye taşı: llms.txt ikisinde de yok — Sinaptiklab llms.txt + sayfa başına .md çıktısıyla erken hamle yapabilir",
+      "Sürümleme zaafını sömür: 'Transformers vX ile test edildi, son doğrulama: tarih' etiketi HF kurslarında bile yok — Sinaptiklab'ın sürümlü içerik vaadi burada farklılaşır",
+      "Resmi/topluluk içerik ayrımı + upvote modeli, Sinaptiklab'ın 'editör onaylı' vs 'topluluk katkısı' katmanlaması için hazır desen; sertifika boşluğu (HF'de hâlâ yok) Türkçe patikalarda tamamlama sertifikasıyla doldurulabilir"
+    ]
+  },
+  {
+    "domain": "simonwillison.net",
+    "category": "teknik-yayin",
+    "reachable": true,
+    "summary": "Simon Willison'ın (Datasette/LLM CLI yaratıcısı) 2002'den beri yayında olan kişisel teknik blogu; günümüzde YZ/LLM alanının küresel olarak en çok atıf alan bağımsız kaynaklarından biri. Gücü teknik SEO donanımından değil, içerik tipolojisi (entry/link/quote/note), saat düzeyinde tarihleme, yoğun iç bağlantı ve tamamen birinci elden deneyime dayalı özgün içerikten geliyor. JSON-LD ve llms.txt gibi modern GEO yüzeyleri hiç yok.",
+    "ia": "URL şeması /YYYY/Mon/DD/slug/ (kalıcı, tarih tabanlı). Navigasyon içerik türüne göre ayrılmış: Entries (uzun yazı), Links (link-blog), Quotes (alıntı), Notes, Guides. Tag sistemi sayaçlı (/tags/openai/ 444 içerik gibi), yıl arşivleri 2002-2026 arası tam. TIL (Today I Learned) ayrı bir alan olarak bağlantılı. Hub yapısı tag sayfaları üzerinden kurulmuş.",
+    "contentDepth": "İncelenen makalede ('Things we learned about LLMs in 2024') kod bloğu ve terminal komutları var (llm -m gemini... örneği), maliyet hesabı adım adım gösterilmiş. 50+ dış atıf: arXiv makaleleri, resmi duyurular, tweetler linkli. Yayın tarihi saat düzeyinde görünür ('Posted 31st December 2024 at 6:07 pm'); ayrı güncelleme tarihi görülmedi. İçerik tamamen özgün, çeviri değil; kendi donanımı, kendi denemeleri, kendi araçları üzerinden birinci elden gözlem.",
+    "eeat": "Tek gerçek kimlikli yazar; makale sayfasında Mastodon/Bluesky/Twitter profilleri bağlantılı. Uzmanlık kanıtı içerik gövdesinde (kendi açık kaynak araçları, konferans konuşmaları). Ayrı yazar sayfası formatı, teknik editör veya biçimsel kaynakça bölümü görülmedi — atıflar metin içine gömülü.",
+    "schemaUsage": "JSON-LD yok — ana sayfa ve makale sayfasının ham HTML'inde 'application/ld+json' ve 'schema.org' için grep 0 eşleşme döndürdü.",
+    "geoSurfaces": "llms.txt: 404 (yok). robots.txt: /admin/ ve /search/ engelli; ChatGPT-User'a açık izin istisnası tanımlı, diğer YZ botlarına (GPTBot, ClaudeBot, CCBot...) özel engel yok. Sitemap.xml: 200 (robots.txt'de bildirilmiş). Atom feed: /atom/everything/ (link rel=alternate ile tanımlı). Markdown (.md) çıktı ucu görülmedi.",
+    "monetization": "GitHub Sponsors ($10/ay), sponsorlara özel aylık bülten, sayfa başında tekil sponsorluk (gözlemde: Dynatrace). Reklam ağı yok; kendi açık kaynak araçları dolaylı itibar motoru.",
+    "strengths": [
+      "İçerik tipolojisi (entry/link/quote/note) her gün yayın yapmayı ve GEO'da parça parça alıntılanabilir küçük birimler üretmeyi mümkün kılıyor",
+      "Saat düzeyinde tarihleme + 2002'den beri kırılmamış kalıcı URL şeması: güven ve tazelik sinyali çok güçlü",
+      "Aşırı yoğun iç bağlantı ve sayaçlı tag sayfaları konu otoritesi hub'ları oluşturuyor",
+      "Tamamen birinci elden deney/gözlem — 'saha verisi' konumlandırmasının küresel kanıtlanmış emsali",
+      "50+ dış atıfla iddia-kaynak disiplini; sponsor modeliyle bağımsızlık korunmuş"
+    ],
+    "weaknesses": [
+      "JSON-LD/schema.org hiç yok (ham HTML'de doğrulandı)",
+      "llms.txt yok (404)",
+      "Güncelleme tarihi (dateModified) pratiği görülmedi; eski yazıların güncelliği okuyucuya işaretlenmiyor",
+      "Yapılandırılmış öğrenme patikası yok; Guides dışında akış kronolojik, yeni başlayan için giriş rampası zayıf",
+      "Tek kişiye bağımlı model; sözlük/terminoloji gibi kanonik referans yüzeyi yok"
+    ],
+    "lessons": [
+      "Alanın en çok atıf alan YZ kaynağı JSON-LD'siz ve llms.txt'siz kazanıyor → GEO'da asıl belirleyici içerik kalitesi + tarih + kalıcı URL; Sinaptiklab bunlara EK olarak JSON-LD (TechArticle/DefinedTerm) ve llms.txt koyarsa teknik yüzeyde net farklılaşır",
+      "Entry/link/quote/note tipolojisini Türkçe'ye taşı: günlük Türkçe YZ link-blog'u + kısa notlar formatı Türkiye'de boş; sık yayın LLM'lerin tazelik sinyalini besler",
+      "Sayaçlı tag/hub sayfaları yerine Sinaptiklab'ın kanonik sözlük maddeleri hub görevi görebilir — her makale ilgili sözlük maddesine bağlanır (Willison'da bu katman yok)",
+      "'Posted + saat' pratiğini al, üstüne görünür 'Güncellendi' alanı ve sürüm notu ekle — sürümlü içerik iddiamız burada somut fark yaratır",
+      "Robots.txt'te YZ botlarına tam açıklık + ChatGPT-User'a açık izin: GEO hedefleyen site için taranabilirlik bilinçli bir tercih olmalı, Sinaptiklab robots politikasını baştan yazmalı"
+    ]
+  },
+  {
+    "domain": "eugeneyan.com",
+    "category": "teknik-yayin",
+    "reachable": true,
+    "summary": "Eugene Yan'ın (Anthropic'te Member of Technical Staff; öncesinde Amazon, Alibaba, Lazada) kişisel teknik yayını; uygulamalı ML/LLM sistemleri üzerine uzun-form sentez makaleleriyle tanınıyor. En güçlü yanları akademik düzeyde kaynakça disiplini (incelenen makalede 50+ tam künyeli atıf), her yazıya BibTeX 'cite this' bloğu ve /start-here/ küratörlü giriş. JSON-LD ve llms.txt yok; yayın frekansı düşük ama makale başına derinlik çok yüksek.",
+    "ia": "Düz URL şeması: /writing/slug/ (tarihsiz, kalıcı). Navigasyon: Writing (212 yazı), Speaking (31 konuşma), Prototyping (19 prototip), About, Search. Emoji tabanlı küratörlük tagları (50k+ okunanlar, favoriler) + klasik tag sayfaları (/tag/llm/). /start-here/ sayfası yeni okuyucu için küratörlü giriş rampası.",
+    "contentDepth": "İncelenen makalede ('Patterns for Building LLM-based Systems & Products', 66 dk okuma) yazılım kodu bloğu görülmedi; LaTeX formüller var. Kaynakça akademik formatta: 50+ arXiv/konferans referansı tam künyeyle sayfa sonunda + metin içi linkler. HTML'de datetime='2023-07-30' time etiketi mevcut ama tarih makale görünümünde belirgin öne çıkmıyor; görünür güncelleme tarihi görülmedi. İçerik özgün sentez + birinci elden deneyim ('From experience with Obsidian-Copilot', 'Personally, I've found that hybrid retrieval works better').",
+    "eeat": "Unvan ve işveren ana sayfada açık: 'Member of Technical Staff at Anthropic'; kariyer geçmişi (Amazon, Alibaba, Lazada) listeli. Ayrı About sayfası var. Ham HTML'de BibTeX @article bloğu ve 'cite this' ifadesi doğrulandı — okuyucuya resmi alıntılama formatı sunuluyor. Tek yazar, teknik editör görülmedi.",
+    "schemaUsage": "JSON-LD yok — ana sayfa ve makale sayfasının ham HTML'inde 'application/ld+json' için grep 0 eşleşme döndürdü.",
+    "geoSurfaces": "llms.txt: 404 (yok). robots.txt: tek satır 'Sitemap: https://eugeneyan.com/sitemap.xml' — hiçbir bota kısıt yok, YZ botlarına tam açık. Sitemap.xml: 200. RSS: /rss/ bağlantısı ana sayfada. .md çıktı ucu görülmedi.",
+    "monetization": "Newsletter (11.800+ abone), eğitim yan siteleri (ApplyingML.com, Applied-LLMs.org), ürün/prototipler (AlignEval, Obsidian Copilot, AI Reading Club). Reklam veya sponsor görülmedi; model itibar → kariyer/ürün.",
+    "strengths": [
+      "Akademik kaynakça disiplini: 50+ tam künyeli atıf — 'her iddia kaynaklı' yaklaşımının en iyi küresel örneği",
+      "Her yazıda BibTeX 'cite this' bloğu: başkalarının atıf yapmasını aktif kolaylaştırıyor, akademik ve LLM atıf akışını besliyor",
+      "/start-here/ küratörlü giriş + emoji-küratörlük tagları: 212 yazılık arşivi yeni okuyucuya patika gibi sunuyor",
+      "Uzun-form kanonik sentez makaleleri ('patterns' formatı) alanın referans metni haline gelmiş",
+      "Kimlik/unvan şeffaflığı (Anthropic + geçmiş işverenler) E-E-A-T sinyalini tek başına taşıyor"
+    ],
+    "weaknesses": [
+      "JSON-LD yok (ham HTML'de doğrulandı), llms.txt yok (404)",
+      "Yayın tarihi makale görünümünde belirgin değil (HTML time etiketi var ama öne çıkmıyor); güncelleme tarihi pratiği görülmedi",
+      "İncelenen amiral makalede çalıştırılabilir kod bloğu/repo bağlantısı yok — teori-sentez ağırlıklı",
+      "Düşük yayın frekansı; tazelik sinyali zayıf, güncel gelişme takibi yok",
+      "Tek yazar, tek dil; yapılandırılmış sözlük/terminoloji katmanı yok"
+    ],
+    "lessons": [
+      "BibTeX 'cite this' bloğunu Türkçeleştirerek kopyala: her Sinaptiklab makalesine 'Bu yazıya atıf' bloğu (APA + BibTeX) — Türkçe YZ içeriğinde kimsede yok, akademik ve GEO atıfını aynı anda besler",
+      "Tam künyeli sources[] pratiği bizim zorunlu kaynakça şemamızın kanıtlanmış emsali; Yan'dan farklı olarak kaynakları yapılandırılmış veri (JSON-LD citation) olarak da işaretleyerek öne geç",
+      "/start-here/ modelini tam öğrenme patikasına büyüt: Yan'da tek küratörlü sayfa var, Sinaptiklab seviyeli/önkoşullu patika ile bu embriyoyu kurumsallaştırabilir",
+      "'Patterns' tarzı uzun kanonik sentez makalesi formatı LLM yanıtlarında referans oluyor → Türkçe'de 'RAG desenleri', 'LLM değerlendirme desenleri' gibi kanonik sentezler tamamen boş alan",
+      "Yan'ın zayıf noktası tazelik ve kod — Sinaptiklab her sentez makalesini çalışan repo + sürüm notu + görünür güncelleme tarihiyle yayınlayarak aynı formatı bir seviye ileri taşıyabilir",
+      "İki emsalde de llms.txt yok: Sinaptiklab'ın llms.txt + YZ botlarına açık robots politikası düşük maliyetli, ölçülebilir bir GEO farklılaştırıcısı"
+    ]
+  },
+  {
+    "domain": "lilianweng.github.io",
+    "category": "teknik-yayin",
+    "reachable": true,
+    "summary": "Lil'Log, OpenAI güvenlik ekibinden Lilian Weng'in 2017'den beri yürüttüğü kişisel teknik blog; derin literatür sentezi yazıları (hallüsinasyon, reward hacking, scaling laws) ile alanın en çok atıf alan bireysel kaynaklarından biri. Statik site (Hugo tarzı), sıfır monetizasyon, tamamen içerik otoritesiyle ayakta. Yayın sıklığı düşük (yılda 2-4 yazı) ama her yazı ders kitabı derinliğinde.",
+    "ia": "Çok sade taksonomi: /posts/YYYY-MM-DD-slug/ URL şeması (tarih URL'de gömülü), /tags/, /archives/, /categories/, /faq/, /search/ sayfaları. Sitemap.xml'de ~130+ URL, her URL'de lastmod etiketi var (2017-2026). Hub/kategori mimarisi yok; keşif tag ve arşiv üzerinden.",
+    "contentDepth": "İncelenen makale (Extrinsic Hallucinations in LLMs): görünür yayın tarihi + 29 dk tahmini okuma süresi, içindekiler tablosu, LaTeX matematik notasyonu, makale sonunda 24 maddelik akademik referans listesi (arXiv linkli), ayrıca metin + BibTeX formatında 'bu yazıya nasıl atıf yapılır' Citation bloğu. Bu makalede kod bloğu tespit edilemedi (matematik ağırlıklı). İçerik tamamen özgün literatür sentezi, çeviri değil. FAQ'da açık güncelleme politikası: eski yazılar periyodik güncellenir, değişiklikler mavi renkle işaretlenir.",
+    "eeat": "Yazar tek kişi: 'Author: Lilian Weng' her yazıda görünür; ancak sitede unvan/çalıştığı yer/biyografi sayfası yok (otorite tamamen site dışı itibardan geliyor). FAQ sayfasında hata bildirimi daveti, çeviri izni politikası (orijinal link şartıyla) ve 'kapsamlı literatür taraması zordur, eksik makaleyi bildirin' dürüstlüğü var. Google Scholar profil linki footer'da.",
+    "geoSurfaces": "llms.txt: YOK (404 doğrulandı). robots.txt: tüm botlara tam izin (User-agent: * / boş Disallow), AI botları için özel kural yok, Sitemap satırı var. RSS feed mevcut (index.xml). .md çıktı tespit edilemedi.",
+    "schemaUsage": "tespit edilemedi (ana sayfa ve makale HTML'inde application/ld+json izi görülmedi)",
+    "monetization": "Yok — reklam, sponsor, abonelik, ürün tespit edilemedi; tamamen ücretsiz kişisel blog.",
+    "strengths": [
+      "Her yazı sonunda akademik referans listesi + arXiv linkleri: 'kaynaklı iddia' pratiğinin altın standardı",
+      "BibTeX'li Citation bloğu — LLM'ler ve akademisyenler bu bloğu doğrudan alıntılıyor, GEO görünürlüğünü besliyor",
+      "Açık güncelleme politikası (değişiklikler mavi işaretli) + URL'de tarih: sürümlü içerik güveni",
+      "lastmod'lu temiz sitemap, tüm botlara açık robots.txt: taranabilirlik kusursuz",
+      "Düşük frekans / çok yüksek derinlik stratejisi: az yazıyla devasa otorite ve backlink birikimi"
+    ],
+    "weaknesses": [
+      "JSON-LD / yapılandırılmış veri tespit edilemedi — teknik SEO yüzeyi minimal",
+      "llms.txt yok; GEO görünürlüğü tamamen içerik kalitesine ve dış atıflara dayanıyor",
+      "Yazar sayfası/biyografi yok — E-E-A-T sinyali site içinde zayıf, otorite site dışından geliyor",
+      "İncelenen makalede çalışan kod/repo yok — teori ağırlıklı, uygulamalı öğrenme yüzeyi yok",
+      "Yayın sıklığı çok düşük ve güncel haber/gündem kapsanmıyor; Türkçe içerik yok"
+    ],
+    "lessons": [
+      "Citation bloğu (metin + BibTeX) maliyeti sıfır, GEO getirisi yüksek — Sinaptiklab her makaleye 'Bu yazıya atıf' bloğu koymalı; Türkçe YZ içeriğinde bunu yapan yok",
+      "Güncelleme politikasını görünür kıl: 'değişiklikler işaretlenir' + lastmod — Sinaptiklab'ın 'sürümlü içerik' vaadi Lil'Log'un bu pratiğinin sistemleştirilmiş hali olmalı (changelog bileşeni)",
+      "Lil'Log'un boşluğu: referans var ama çalışan repo yok — Sinaptiklab'ın 'her tutorial çalışan repo ile' vaadi derinlik + uygulanabilirlik kombinasyonuyla farklılaşır",
+      "JSON-LD ve llms.txt yokken bile LLM yanıtlarında kaynak olabiliyor; yani asıl GEO kaldıracı atıf yapılabilir, yoğun, kendi başına yeterli (self-contained) sayfalar — ama Sinaptiklab sıfırdan başladığı için schema + llms.txt'yi de eklemeli, çünkü Weng'in hazır itibar avantajı bizde yok",
+      "URL'de tarih + içindekiler + okuma süresi + tag taksonomisi: sade Hugo mimarisi bile yetiyor; platform karmaşıklığına değil içerik sözleşmesine yatırım yap"
+    ]
+  },
+  {
+    "domain": "latent.space",
+    "category": "teknik-yayin",
+    "reachable": true,
+    "summary": "Latent.Space, swyx'in kurduğu 'AI Engineer' kitlesine odaklı Substack tabanlı bülten + podcast + topluluk ekosistemi; 200.000+ abone ve 10M+ izleyici iddiasıyla kategori tanımlayıcı bir marka. Yayın temposu yüksek (3-5 günde bir), içerik formatı çeşitli: podcast bölümü, uygulamalı inceleme (ör. GPT-5 hands-on), trend analizi ve AINews haber özetleri. Medya değil ekosistem stratejisi: bülten, podcast, Discord, Paper Club ve AI Engineer Summit konferansı birbirini besliyor.",
+    "ia": "Substack altyapısı: /p/slug makale şeması (URL'de tarih yok), /archive, /about, /podcast. Sitemap.xml doğrudan URL listesi (~550 URL, 2023-2026) + ayrıca news_sitemap.xml (Google News yüzeyi). Kategori/etiket sistemi tespit edilemedi — keşif kronolojik arşive dayanıyor, konu bazlı hub yok.",
+    "contentDepth": "İncelenen makale (GPT-5 hands-on review): görünür yayın tarihi, 3 yazarlı (avatar + profil linkli), beta erişimle yapılmış özgün deneysel test içeriği; yoğun görsel/diyagram/benchmark grafiği; dış linkler var (YouTube demo, ürün siteleri, X hesapları) ama akademik format kaynakça yok. Tam kod bloğu tespit edilemedi (kod ekran görüntüsüyle gösterilmiş). Paywall tespit edilemedi — incelenen içerik tamamen açık. İçerik özgün, çeviri değil.",
+    "eeat": "Çok yazarlı gerçek kimlikler: yazarlarda isim + unvan (ör. 'CTO @ raindrop.ai') + profil linki. About sayfasında kurucu (swyx), eski ortak sunucu (Alessio), konuk sunucular ve sosyal kanıt metrikleri (200K+ abone, US Tech Top 10 podcast iddiası). Danışman/konuk ağı (Karpathy, Willison vb.) itibar transferi sağlıyor. Sistematik kaynakça pratiği yok — güven, isimlerin ve ilk elden deneyimin üzerinden kuruluyor.",
+    "geoSurfaces": "llms.txt: YOK (404 doğrulandı). robots.txt: BLEXBot tamamen engelli; diğer tüm botlar (*) için /action/, /publish, /sign-in gibi işlevsel yollar kısıtlı ama içerik açık; AI botlarına (GPTBot/ClaudeBot/CCBot) özel kural yok; iki sitemap satırı (sitemap.xml + news_sitemap.xml). Substack RSS altyapısı platform standardı; ana sayfada feed linki tespit edilemedi. .md çıktı tespit edilemedi.",
+    "schemaUsage": "tespit edilemedi (incelenen sayfaların WebFetch çıktısında application/ld+json izi görülmedi; Substack'in platform seviyesinde eklediği işaretleme bu yöntemle doğrulanamadı)",
+    "monetization": "Substack abonelik modeli (Subscribe akışı mevcut) ancak incelenen içeriklerde paywall görülmedi; About sayfasında sponsorluk/gelir modeli açıklanmıyor. Asıl değer motoru görünürde konferans (AI Engineer Summit) ve marka ekosistemi.",
+    "lessons": [
+      "Kategori sahiplenme oyunu: swyx 'AI Engineer' terimini icat edip etrafına bülten+podcast+konferans ördü — Sinaptiklab da Türkçe'de bir kategori terimini (ör. kanonik Türkçe YZ sözlüğündeki karşılıklar) tanımlayıp sahiplenebilir; sözlük tam bu kaldıraç",
+      "Latent.Space'in boşluğu: hız ve isim-otoritesi var ama sistematik kaynakça yok, konu taksonomisi yok, arşiv keşfi zayıf — Sinaptiklab'ın sources[] zorunluluğu + konu hub'ları + öğrenme patikaları doğrudan bu boşluğa oynar",
+      "news_sitemap.xml kullanımı: güncel YZ haber içeriği üreteceksek Google News sitemap'i ilk günden kurulmalı",
+      "Ekosistem modeli tek başına içerikten güçlü: bülten + topluluk (Discord/Paper Club) + etkinlik döngüsü aboneliği kalıcılaştırıyor — Sinaptiklab için Türkçe Paper Club / okuma grubu düşük maliyetli, yüksek bağlılık üreten bir kopyalanabilir taktik",
+      "Çok yazarlı unvanlı kimlik (isim + şirket + profil) E-E-A-T'yi kaynakçasız bile taşıyabiliyor; Sinaptiklab hem gerçek kimlikli yazar sayfaları HEM kaynakça zorunluluğu ile ikisini birden yaparak iki modelden de üstün konumlanır",
+      "İlk elden deneyim içeriği (hands-on, beta erişim, benchmark) LLM'lerin alıntıladığı 'başka yerde olmayan bilgi' üretiyor — Sinaptiklab'ın 'saha verisi, uydurma yok' konumu için Türkiye'ye özgü ölçüm/test içerikleri (ör. Türkçe LLM benchmark'ları) aynı işlevi görür"
+    ],
+    "strengths": [
+      "Yüksek yayın temposu (3-5 günde bir) + format çeşitliliği (podcast, inceleme, trend analizi, haber özeti)",
+      "Gerçek kimlikli, unvanlı çok yazarlı model + ağır konuk ağı: güçlü E-E-A-T sinyali",
+      "İlk elden/özel erişimli içerik (GPT-5 beta hands-on): taklit edilemez özgünlük",
+      "news_sitemap.xml + standart sitemap: haber yüzeyi için teknik hazırlık",
+      "Bülten-podcast-Discord-PaperClub-konferans ekosistemi: içerik markadan ürüne dönüşmüş"
+    ],
+    "weaknesses": [
+      "Sistematik kaynakça/atıf pratiği yok — linkler dağınık, akademik format referans listesi tespit edilemedi",
+      "Konu taksonomisi/hub yapısı tespit edilemedi; ~550 URL'lik arşiv kronolojik listeden ibaret, keşfedilebilirlik zayıf",
+      "llms.txt yok; JSON-LD bu incelemede tespit edilemedi",
+      "Substack'e bağımlı mimari: URL şeması (/p/slug, tarihsiz), tasarım ve teknik SEO yüzeyi platform kısıtlarında",
+      "Güncelleme/sürüm politikası tespit edilemedi — hızlı eskiyen YZ içeriğinde bakım sinyali yok"
+    ]
+  },
+  {
+    "domain": "pinecone.io/learn",
+    "category": "kurumsal-blog",
+    "reachable": true,
+    "summary": "Vektör veritabanı şirketi Pinecone'un ürün hunisine bağlı, çok katmanlı eğitim hub'ı. 'Learn' bölümü kategori + seri (chapter'lı) mimarisiyle ansiklopedik cornerstone içerik ile güncel derin analiz yazılarını birleştiriyor; llms.txt + MCP sunucularıyla GEO'ya en bilinçli yatırım yapan emsallerden biri. Buna karşın incelenen makalelerde kod bloğu ve çalışan repo bağlantısı yoktu, cornerstone içerik 2023 tarihli ve görünür güncelleme tarihi taşımıyordu.",
+    "ia": "URL şeması: /learn/[slug]/ ve seri için /learn/series/[seri-adi]/[bolum-slug]/ (ör. /learn/series/beyond-retrieval/rag-applicability-problem/). Hub kategorileri: Latest, Core Components, Deep Dives, Use Cases, ML Foundations, Missing Manuals; ayrıca whitepaper/e-book vitrin alanları. Sitemap.xml tek dosya, ~1200+ URL; /learn/, /blog/, /research/, /customers/, /solutions/ ayrı bölümler; lastmod değerleri 2023-06-28'den 2026-08-06'ya uzanıyor (aktif bakım sinyali).",
+    "contentDepth": "İncelenen iki makalede de kod bloğu YOK ve GitHub repo/notebook bağlantısı YOK. Seri makalesi (~2500+ kelime) akademik atıf içeriyor: 'Stanford DHO/Open Scholarship team (2024)', 'Kästner et al. (2020), ICSE-SEIP'. Cornerstone 'vector-database' makalesi 'Roie Schwaber-Cohen · 2023-05-03' tarihli, görünür güncelleme tarihi yok; atıfları çoğunlukla iç bağlantı + araç referansı (FAISS, LangChain, LlamaIndex). İçerik özgün İngilizce üretim, çeviri değil. Seri makalesinde makale gövdesinde tarih/yazar görünmüyordu.",
+    "eeat": "Hub sayfasında yazar fotoğrafı + isim görünüyor (Arjun Patel, Lea Wang-Tomic; makalede Roie Schwaber-Cohen). HTML'de Person tipi JSON-LD mevcut. Ancak incelenen makalelerde yazar unvanı, biyografi veya ayrı yazar sayfası bağlantısı gözlemlenmedi; seri makalesinde yazar hiç görünmüyordu. Teknik editör/hakem pratiğine dair iz tespit edilemedi.",
+    "geoSurfaces": "llms.txt: VAR (HTTP 200) ve zengin — marka anlatısı, ürün özeti ve 'For Agents' bölümü: 'Pinecone MCP Server — Full text search across articles' (pinecone.io/mcp) + 'Pinecone Docs MCP Server' (docs.pinecone.io/mcp). docs.pinecone.io/llms.txt de 200. llms-full.txt 404. robots.txt: YZ botlarına özel kural YOK (GPTBot/ClaudeBot/PerplexityBot/CCBot geçmiyor), sadece /admin/* ve bazı PDF/landing sayfaları disallow; sitemap deklarasyonu var. RSS/feed bağlantısı gözlemlenmedi.",
+    "schemaUsage": "Makale ham HTML'inde iki adet application/ld+json bloğu tespit edildi; @type değerleri: Article, ImageObject, Organization, Person, WebPage. FAQPage/HowTo izi tespit edilemedi.",
+    "monetization": "Tamamen ürün odaklı (product-led content): 'Start for free', 'Start Building', 'Get a Demo', 'Download Ebook' CTA'ları; cornerstone makale içinde 'Sign up free' (app.pinecone.io) bağlantıları. Reklam/sponsorluk yok; içerik doğrudan vektör DB ürün hunisi.",
+    "strengths": [
+      "llms.txt + çift MCP sunucusu ('For Agents' bölümü) ile ajan/LLM trafiğine bilinçli yüzey — GEO'da öncü pratik",
+      "Seri (chapter) mimarisi: /learn/series/... URL şeması ile çok bölümlü derin anlatı (Beyond Retrieval)",
+      "Article/Person/Organization JSON-LD düzenli uygulanmış",
+      "Sitemap'te 2026-08-06'ya kadar güncel lastmod — aktif içerik bakımı",
+      "Yeni içerikte akademik atıf pratiği (arXiv/ICSE kaynakları)"
+    ],
+    "weaknesses": [
+      "İncelenen makalelerde kod bloğu ve çalışan repo/notebook bağlantısı yok — 'learn' vaadiyle çelişiyor",
+      "Cornerstone içerik 2023 tarihli, görünür 'güncellendi' tarihi yok; seri makalesinde tarih hiç görünmüyor",
+      "Yazar sayfası/biyografi/unvan gözlemlenmedi; E-E-A-T yüzeysel (sadece isim+foto)",
+      "RSS/feed tespit edilemedi",
+      "İçerik ürün anlatısına eğilimli; llms.txt'in yarısı pazarlama metni"
+    ],
+    "lessons": [
+      "llms.txt'i pazarlama broşürü değil içerik indeksi olarak kurmak + MCP benzeri 'ajanlara yüzey' fikri: Türkçe'de neredeyse hiç örneği yok, Sinaptiklab erken uygulayıcı olabilir",
+      "Seri/chapter URL mimarisi (series/[patika]/[bolum]) Sinaptiklab'ın öğrenme patikaları için doğrudan şablon",
+      "Pinecone'un cornerstone'ları 2023'te donmuş ve güncelleme tarihi göstermiyor → Sinaptiklab'ın sürümlü içerik (v1.2, 'şu tarihte şu sürümle test edildi') vaadi somut farklılaştırıcı",
+      "Learn makalelerinde kod ve repo yok → 'her tutorial çalışan repo ile' iddiası bu ligin bile üstüne çıkar",
+      "Article+Person JSON-LD asgari standart; Sinaptiklab buna FAQPage/HowTo/TechArticle ekleyerek şema derinliğinde öne geçebilir",
+      "Yazar sayfasızlık boşluğu: gerçek kimlikli, unvanlı, kaynakçalı yazar sayfaları hem Google E-E-A-T hem GEO alıntılanabilirliği için fark yaratır"
+    ]
+  },
+  {
+    "domain": "neptune.ai/blog",
+    "category": "kurumsal-blog",
+    "reachable": false,
+    "summary": "Erişilemiyor: neptune.ai'nin tüm URL'leri (blog, robots.txt, llms.txt dahil) HTTP 308 kalıcı yönlendirme ile openai.com/index/openai-to-acquire-neptune/ adresine gidiyor. WebSearch doğrulaması: OpenAI, Neptune'ü satın aldı; bağımsız hizmet 5 Mart 2026'da kapatıldı ve site içeriği yayından kalktı. Yerine aynı kategoride (MLOps/ML mühendisliği kurumsal teknik blog) evidentlyai.com/blog ikame olarak analiz edildi (ayrı kayıt).",
+    "ia": "Gözlemlenemedi — tüm yollar openai.com'a 308 yönlendiriyor.",
+    "contentDepth": "Gözlemlenemedi — içerik yayından kaldırılmış.",
+    "eeat": "Gözlemlenemedi.",
+    "geoSurfaces": "robots.txt ve llms.txt dahil tüm istekler openai.com'a 308 yönlendiriliyor; hiçbir yüzey ayakta değil.",
+    "schemaUsage": "tespit edilemedi (site yayında değil)",
+    "monetization": "Gözlemlenemedi (tarihsel olarak ürün odaklı MLOps deney takibi platformuydu; şirket OpenAI'ye satıldı).",
+    "strengths": [],
+    "weaknesses": [
+      "Sitenin tamamı yayından kalktı; yıllarca biriktirilen MLOps içerik külliyatı ve backlink sermayesi tek kararla buharlaştı"
+    ],
+    "lessons": [
+      "Neptune'ün devasa MLOps blog külliyatı (deney takibi, model izleme, MLOps araç karşılaştırmaları) Mart 2026'da yayından kalktı → bu sorgu uzayı şu an kısmen sahipsiz; Sinaptiklab Türkçe'de bu konuları (deney takibi, model izleme, MLOps) hızla kapatarak hem SEO hem GEO'da boşluğu doldurabilir",
+      "Kurumsal blog içeriği ürünün/şirketin kaderine bağlı: satın alma = içeriğin ölümü. Sinaptiklab'ın bağımsız yayın kimliği ve 'içerik kalıcılığı/arşiv garantisi' vaadi güven farklılaştırıcısı olur",
+      "LLM'lerin eğitim verisinde hâlâ neptune.ai alıntıları var ama linkler artık kırık → aynı konularda güncel, erişilebilir Türkçe kaynak olmak GEO'da ikame atıf şansı yaratır"
+    ]
+  },
+  {
+    "domain": "evidentlyai.com/blog",
+    "category": "kurumsal-blog",
+    "reachable": true,
+    "summary": "Neptune.ai/blog erişilemez olduğu için aynı kategoride seçilen ikame: açık kaynak LLM değerlendirme/ML izleme şirketi Evidently AI'nin blog + kılavuz ekosistemi. İçerik tarafı sınıfının en iyilerinden — özgün deneyler, Colab defterleri, arXiv atıfları, çift tarih (yayın+güncelleme), unvanlı yazar sayfaları. Buna karşın teknik GEO yüzeyleri şaşırtıcı derecede zayıf: llms.txt yok, makale HTML'inde JSON-LD izi yok, RSS görünmüyor.",
+    "ia": "Blog: /blog/[slug] düz şema; hub filtreleri: Latest, LLM Evals, ML Monitoring, Tutorials, Evidently, Community. Blogun yanında ayrı içerik hub'ları: /llm-guide/ (kanonik kılavuzlar, ör. /llm-guide/llm-as-a-judge, ilgili kılavuz ağıyla), /mlops-guides, /mlops-tutorials, /courses, /ml-system-design ('800 ML and LLM use cases' veritabanı). Sitemap.xml mevcut (200).",
+    "contentDepth": "Yüksek. 'embedding-drift-detection' makalesi özgün deney içeriyor: 'We created artificial shifts on three datasets and chose five embedding drift detection methods to test' — karşılaştırma grafikleri, hız tabloları, herkese açık veri setleri + paylaşılan Colab defterleri (colab.research.google.com bağlantısı) + GitHub örnek notebook'u. arXiv atıfları: 'Failing Loudly: An Empirical Study of Methods for Detecting Dataset Shift' (arxiv.org/pdf/1810.11953). Kılavuzda akademik atıflar: 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena' (Zheng et al., 2023), 'Chain-of-Thought Prompting' (Wei et al., 2022). Çift tarih pratiği: 'Published: May 17, 2023' + 'Last updated: July 16, 2025'; kılavuzda 'Last updated: May 19, 2026'. Özgün İngilizce üretim, çeviri değil. İçerik gövdesinde kod bloğu az; kod defterlere/repoya taşınmış.",
+    "eeat": "Güçlü: makalede iki yazar unvanlarıyla — 'Olga Filippova, Lead Data Scientist, Evidently AI' ve 'Elena Samuylova, Co-founder and CEO, Evidently AI' — ve yazar sayfası bağlantıları (/authors/olga-fillipova). Kaynakça pratiği tutarlı (arXiv/paper linkleri). Teknik editör/hakem sürecine dair ayrı bir iz tespit edilemedi. Blog listeleme sayfasında yazar ve tarih görünmüyor (sadece makale içinde).",
+    "geoSurfaces": "llms.txt: YOK (404). robots.txt: YZ botlarına özel kural yok; ilginç disallow'lar: /case-studies/, /product/, /integrations/, /*.pdf — vaka çalışmaları ve PDF'ler bilinçli olarak arama dışı. Sitemap deklarasyonu var. Blog sayfasında RSS/atom link etiketi tespit edilemedi.",
+    "schemaUsage": "tespit edilemedi — incelenen makalenin ham HTML'inde 'application/ld+json' izi bulunamadı (grep sonucu boş).",
+    "monetization": "Ürün + eğitim hunisi: Evidently Cloud 'Start for free' / 'Try open source' CTA'ları, 'LLM evaluation for AI builders: applied course' kayıt çağrısı, 'LLM-as-a-Judge: a Complete Guide' indirilebilir kaynağı, bülten kaydı. Reklam yok.",
+    "strengths": [
+      "Özgün deney/benchmark içeriği: 5 yöntemi 3 veri setinde karşılaştırıp Colab defterleriyle yayınlıyor — alıntılanma mıknatısı",
+      "Çift tarih şeffaflığı: 'Published' + 'Last updated' birlikte gösteriliyor",
+      "Unvanlı, gerçek kimlikli yazarlar + /authors/ sayfaları",
+      "Tutarlı arXiv/akademik atıf pratiği",
+      "/llm-guide/ kanonik kılavuz hub'ı: TOC'lu, 5000+ kelimelik, birbirine bağlı kılavuz ağı — konu otoritesi mimarisi"
+    ],
+    "weaknesses": [
+      "llms.txt yok (404) — GEO yüzeyi eksik",
+      "Makale HTML'inde JSON-LD/schema.org izi tespit edilemedi",
+      "RSS/feed bağlantısı blog sayfasında görünmüyor",
+      "Blog listeleme sayfasında tarih ve yazar gösterilmiyor (tazelik sinyali listede kayıp)",
+      "Vaka çalışmaları ve PDF'ler robots.txt ile arama dışı bırakılmış — sosyal kanıt içeriği indekslenmiyor"
+    ],
+    "lessons": [
+      "İçerik mükemmel ama teknik GEO yüzeyi (llms.txt, JSON-LD, RSS) boş → Sinaptiklab 'iyi içerik + tam teknik yüzey' kombinasyonuyla daha küçük külliyatla bile LLM atıflarında öne geçebilir",
+      "Özgün deney formatı ('X yöntemi karşılaştırdık, defterler burada') = Sinaptiklab'ın 'saha verisi, uydurma yok' konumlandırmasının kanıtlanmış çalışma örneği; Türkçe'de hiç yapılmıyor",
+      "'Published + Last updated' çift tarih pratiği birebir alınmalı; Sinaptiklab bunu sürüm notlarıyla ('vX.Y ile yeniden test edildi') bir adım öteye taşıyabilir",
+      "/llm-guide/ modeli: blog akışından ayrı, kanonik, sürekli güncellenen kılavuz hub'ı — Sinaptiklab'ın Türkçe YZ sözlüğü + kılavuz mimarisi için şablon; her sözlük maddesi ilgili kılavuza bağlanmalı",
+      "Kodun Colab/GitHub'a taşınıp makalede bağlantılanması yeniden üretilebilirlik algısı yaratıyor; Sinaptiklab'ın 'çalışan repo' zorunluluğu bunun kurumsallaşmış hali olur",
+      "Blog listesinde tarih/yazar göstermeme hatasından kaçın: liste sayfasında da tarih+yazar+sürüm etiketi göstermek hem kullanıcıya hem tarayıcı botlarına tazelik sinyali verir"
+    ]
+  },
+  {
+    "domain": "deeplearning.ai (The Batch)",
+    "category": "haber",
+    "reachable": true,
+    "summary": "Andrew Ng'nin eğitim platformunun üzerine oturan haftalık YZ haber bülteni; kurs hunisinin tepesindeki içerik motoru. Sabit editoryal şablon (What's new / How it works / Why it matters), yoğun birincil kaynak linkleme ve sayı-numaralı arşiv ile son derece disiplinli bir haber operasyonu; buna karşın bireysel yazar kimliği ve makale içi kod neredeyse yok.",
+    "ia": "URL şeması: /the-batch/issue-NNN (haftalık sayılar) + /the-batch/[makale-slug] (tekil haberler) + /the-batch/tag/[etiket]. Bölümler: Weekly Issues, Andrew's Letters, Data Points, ML Research; konu etiketleri: Business, Science, Culture, Hardware, AI Careers. Kurslar /courses/[ad], blog /blog/category/[kategori]. Tek sitemap.xml (~900+ URL: ~150 kurs, ~700 Batch/blog içeriği, lastmod damgalı). Sayfalama ile 24+ sayfalık arşiv.",
+    "contentDepth": "Kod bloğu YOK (issue-365 ve DeepSeek-R1 makalesi fiilen kontrol edildi; teknik konularda bile yalnızca açıklayıcı metin). Kaynak gösterimi ÇOK GÜÇLÜ: arXiv, GitHub, Hugging Face, resmi API dokümanları, benchmark siteleri doğrudan linkli. Yayın tarihi + okuma süresi görünür ('Published ...', 'X min read'); güncelleme tarihi görülmedi. İçerik özgün İngilizce; her haber sabit alt başlıklarla (What's new / How it works / Performance / Behind the news / Why it matters / We're thinking) yapılandırılmış.",
+    "eeat": "Bireysel E-E-A-T zayıf, kurumsal otorite güçlü: haftalık sayı 'Dear friends... Andrew' imzalı mektupla açılıyor ama tekil haber makalelerinde isimli yazar satırı ve yazar sayfası YOK; anonim editoryal ses. Otorite tamamen marka (DeepLearning.AI / Andrew Ng) üzerinden kuruluyor. Teknik editör/kaynakça sayfası pratiği görülmedi.",
+    "geoSurfaces": "llms.txt YOK (404 doğrulandı). robots.txt bilinçli ve ayrıştırılmış YZ bot politikası içeriyor: cevap-anı botlarına İZİN (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User, Applebot, Google-Extended), eğitim/tarama botlarına BLOK (GPTBot, ClaudeBot, CCBot, Bytespider, meta-externalagent, Applebot-Extended). Sitemap robots.txt'te deklare. RSS/feed ve .md çıktı tespit edilemedi.",
+    "schemaUsage": "tespit edilemedi (WebFetch markdown dönüşümünde script/JSON-LD etiketleri görünmüyor; ana sayfa, hub ve iki makale sayfasında schema.org izi gözlemlenmedi)",
+    "monetization": "Kendi kurs ekosistemi: 'Enroll Now' CTA'lı kurslar/uzmanlık programları, learn.deeplearning.ai üzerinden üyelik, bülten içinde 'A MESSAGE FROM DEEPLEARNING.AI' formatında öz-tanıtım kurs blokları. Üçüncü taraf reklam/sponsorluk gözlemlenmedi; bülten ücretsiz ve kurs hunisine besleme yapıyor.",
+    "strengths": [
+      "Sabit editoryal şablon (What's new / How it works / Why it matters) — hem okuyucu hem LLM'ler için öngörülebilir, çıkarımı kolay yapı",
+      "Her iddiada birincil kaynak linki (arXiv, resmi dokümantasyon, GitHub, HF) — 'kaynaklı habercilik' fiilen uygulanıyor",
+      "Sayı numaralı (issue-365) kalıcı URL arşivi + etiket taksonomisi — atıf almaya elverişli kalıcı yüzey",
+      "GEO-bilinçli robots.txt: cevap botlarına açık, eğitim botlarına kapalı — sofistike ve bilinçli politika",
+      "Haber → kurs hunisi entegrasyonu: içerik doğrudan gelir modeline bağlı"
+    ],
+    "weaknesses": [
+      "Tekil haberlerde yazar satırı ve yazar sayfası yok — bireysel E-E-A-T sinyali üretilmiyor",
+      "Teknik konularda dahi makale içi kod bloğu yok; 'nasıl yapılır' katmanı kurslara kilitli",
+      "llms.txt yok; güncelleme tarihi (dateModified) görünür değil",
+      "JSON-LD/schema kullanımı tespit edilemedi — yapılandırılmış veri fırsatı boşta görünüyor",
+      "Bülten içi öz-tanıtım kurs blokları editoryal tarafsızlık algısını inceltebilir"
+    ],
+    "lessons": [
+      "Sabit bölüm şablonunun Türkçe kanonik karşılığını kur ('Ne oldu / Nasıl çalışıyor / Neden önemli / Kaynaklar') — GEO çıkarımı ve okunabilirlik aynı anda kazanılır; Türkçede bu formatın oturmuş örneği yok",
+      "The Batch haberleri imzasız → Sinaptiklab gerçek isim+unvan+yazar sayfası ve Person şemasıyla bireysel E-E-A-T'de doğrudan farklılaşır",
+      "Makale içi kod yok → 'her tutorial çalışan repo ile' konumlandırması The Batch'in bilinçli bıraktığı boşluğu doldurur",
+      "llms.txt yok → Sinaptiklab llms.txt + açık YZ bot politikasını 1. günden yayınlayarak GEO yüzeyinde öne geçer; robots.txt'teki 'cevap botuna izin / eğitim botuna blok' ayrımı ise aynen örnek alınmalı",
+      "Sayı numaralı kalıcı arşiv (issue-NNN) sürümlü içerik vaadinin yayın tarafındaki karşılığı — Türkçe haftalık kaynaklı YZ bülteni pazarda boş alan",
+      "Haber → eğitim hunisi modeli Sinaptiklab'ın öğrenme patikalarıyla birebir kopyalanabilir: her haber ilgili patika/sözlük maddesine iç link vermeli"
+    ]
+  },
+  {
+    "domain": "magazine.sebastianraschka.com (Ahead of AI)",
+    "category": "teknik-yayin",
+    "reachable": true,
+    "summary": "Tek uzman yazarın (Sebastian Raschka, PhD) Substack üzerindeki derin teknik LLM yayını; 200.000+ aboneye ulaşan, özgün diyagramlar ve arXiv atıflarıyla beslenen uzun-form içerik. Gücü tamamen bireysel otorite ve içerik derinliğinden geliyor; bilgi mimarisi ise düz bir arşivden ibaret ve platform (Substack) sınırları içinde.",
+    "ia": "Substack standart şeması: tüm makaleler düz /p/[slug] altında; navigasyon Home, Notes, LLM Gallery, Support, kitap linkleri, Archive, About. Konu hub'ı/etiket taksonomisi YOK — yalnızca kronolojik arşiv + 'Most Popular' küratörlüğü. sitemap.xml düz 71 URL (lastmod + changefreq: makaleler monthly, indeksler daily/weekly) + ayrı news_sitemap.xml.",
+    "contentDepth": "İncelenen makalede satır içi kod bloğu yoktu; kod GitHub repo'sunda yaşıyor (rasbt/LLMs-from-scratch'e doğrudan link, ör. Gemma 4 from-scratch implementasyonu) ve makalede kod ekran görüntüsü/figürü var. Atıf pratiği GÜÇLÜ: arXiv linkli hakemli kaynaklar (CCA, mHC, Cross-Layer Attention vb.). Yayın tarihi görünür; 'Last updated: ...' pratiği mevcut (önceki makaleye güncelleme damgasıyla atıf gözlemlendi). Diyagramlar tamamen özgün (kendi mimari çizimleri + LLM architecture gallery). İçerik %100 özgün İngilizce, çeviri değil.",
+    "eeat": "Bireysel E-E-A-T ders kitabı örneği: 'Sebastian Raschka, PhD' imzası + profil linki + avatar her makalede; About sayfasında doğrulanabilir kimlik (eski UW-Madison istatistik profesörü, eski Lightning AI kıdemli mühendisi, 'Build a Large Language Model (From Scratch)' kitabının yazarı, Lex Fridman #490 konuğu). 'Bağımsız ve tarafsız' konumlandırması açıkça beyan ediliyor. Teknik editör/ayrı kaynakça sayfası pratiği görülmedi — otorite tek kişide toplu.",
+    "geoSurfaces": "llms.txt YOK (404 doğrulandı). robots.txt'te YZ botlarına özel HİÇBİR kural yok (yalnızca BLEXBot bloklu + Substack'in varsayılan path disallow'ları); GPTBot/ClaudeBot/CCBot vb. catch-all altında serbest. sitemap.xml + news_sitemap.xml deklare. /feed geçerli RSS 2.0 ve content:encoded ile TAM metin veriyor (GEO/toplayıcı dostu) — ancak fetch anında feed'de yalnızca 1 öğe vardı. .md çıktı tespit edilemedi.",
+    "schemaUsage": "tespit edilemedi (WebFetch markdown dönüşümünde script etiketleri görünmüyor; ana sayfa, arşiv ve makale sayfasında JSON-LD izi gözlemlenmedi — Substack platform çıktısı olduğundan kontrol yazarın elinde değil)",
+    "monetization": "Substack abonelik modeli: ücretsiz + isteğe bağlı ücretli destek ('Supporting Ahead of AI'; fiyat incelenen sayfalarda görüntülenmedi, incelenen makaleler ücretsizdi). İkincil gelir: kitaplar (LLMs From Scratch, Reasoning From Scratch) site navigasyonundan doğrudan linkli. '200.000+ okuyucu' sosyal kanıt olarak kullanılıyor. Reklam/sponsorluk gözlemlenmedi.",
+    "strengths": [
+      "Tek isimli, doğrulanabilir uzman kimliği (PhD, eski profesör, kitap yazarı) — bireysel E-E-A-T'nin en güçlü hali",
+      "Özgün mimari diyagramlar + LLM architecture gallery — kopyalanamaz görsel varlık",
+      "arXiv linkli titiz atıf pratiği + GitHub repo destekli içerik (LLMs-from-scratch)",
+      "'Last updated' damgası ve sitemap'te lastmod/changefreq — içerik tazeliği sinyali fiilen üretiliyor",
+      "Tam metinli RSS feed — LLM/toplayıcı erişimine tamamen açık, GEO dostu dağıtım"
+    ],
+    "weaknesses": [
+      "Bilgi mimarisi düz: konu hub'ı, etiket, öğrenme sırası yok — 71 URL yalnızca kronolojik arşivde",
+      "llms.txt yok, robots.txt'te bilinçli YZ bot politikası yok — GEO yüzeyi platform varsayılanına terk edilmiş",
+      "Kod makale gövdesinde değil repo'da; makale içinde çalıştırılabilir kod bloğu incelenen örnekte yoktu",
+      "Tek yazar riski: yayın tamamen bir kişinin kapasitesine bağlı, ölçeklenemez",
+      "Substack kısıtları: URL şeması, şema işaretlemesi ve site mimarisi üzerinde kontrol yok; feed tek öğeyle sınırlıydı"
+    ],
+    "lessons": [
+      "Yazar sayfası mimarisini Raschka modelinden kur: gerçek isim + unvan + doğrulanabilir geçmiş + yayın listesi; Sinaptiklab bunu çok-yazarlı + teknik editör katmanıyla ölçekleyerek tek-yazar riskini de aşar",
+      "'Last updated' görünürlüğü + sitemap lastmod pratiği, Sinaptiklab'ın 'sürümlü içerik' vaadinin kanıtlanmış karşılığı — üstüne görünür değişiklik günlüğü (changelog) eklenerek öteye taşınabilir",
+      "Düz arşiv + hub yokluğu → aynı derinlikte içerik üretilse bile taksonomi + öğrenme patikası + kanonik sözlük çapraz-linklemesi Sinaptiklab'ı gezilebilirlikte açık ara öne geçirir",
+      "Kodun repo'da, açıklamanın makalede olması iyi ama eksik → makale içi çalıştırılabilir kod bloğu + sürümlü repo kombinasyonu somut farklılaştırıcı",
+      "Tam metinli RSS iyi GEO pratiği — Sinaptiklab tam RSS + llms.txt + sayfa başına .md çıktı üçlüsüyle her iki emsalin de sunmadığı bir GEO yüzeyi kurar",
+      "Türkçede Raschka tarzı özgün derin mimari anlatım hiç yok; bu kategori çeviriyle değil özgün Türkçe derin teknik içerikle doldurulmalı — 'çeviri değil saha verisi' konumlandırmasıyla birebir örtüşüyor",
+      "Kişisel marka + kitap/kurs ikincil gelir modeli: Sinaptiklab yazarlarının bireysel markalarını platform çatısı altında büyütmek hem E-E-A-T hem gelir çeşitlendirmesi sağlar"
+    ]
+  }
+]
