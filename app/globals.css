@@ -225,3 +225,44 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   Shiki kod blokları — lib/mdx/derle.tsx üretir (BRIEF §6.3).
+   defaultColor:false → token renkleri yalnız --shiki-light/--shiki-dark
+   CSS değişkenlerinde gelir; hangisinin uygulanacağını buradaki kurallar
+   seçer: açıkta light, [data-theme="dark"] ile ve sistem-koyu+attr'sizde dark.
+   ════════════════════════════════════════════════════════════════════ */
+
+.shiki {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  background: var(--kagit-alt); /* Shiki'nin tema zemini yerine tezgâh zemini */
+  color: var(--shiki-light);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  max-height: 32rem;
+  overflow: auto;
+}
+.shiki span {
+  color: var(--shiki-light);
+}
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .shiki,
+  :root:not([data-theme="light"]) .shiki span {
+    color: var(--shiki-dark);
+  }
+}
+
+/* Satır vurgusu — kod içi `// [!code highlight]` notasyonu
+   (lib/mdx/derle.tsx satirVurguDonusturucu) `.highlighted` sınıfını basar.
+   Sol bordür border yerine inset gölgeyle: satır hizası kaymaz. */
+.shiki .line.highlighted {
+  display: inline-block;
+  min-width: 100%;
+  box-shadow: inset 2px 0 0 0 var(--sinyal);
+  background: color-mix(in srgb, var(--sinyal) 8%, transparent);
+}

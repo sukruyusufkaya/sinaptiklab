@@ -16,10 +16,14 @@
     "db:indexes": "tsx scripts/ensure-indexes.ts"
   },
   "dependencies": {
+    "@shikijs/rehype": "^4.4.2",
     "mongodb": "^7.5.0",
     "next": "16.3.0",
+    "next-mdx-remote": "^6.0.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "remark-gfm": "^4.0.1",
+    "shiki": "^4.4.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {
