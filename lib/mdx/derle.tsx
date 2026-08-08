@@ -188,12 +188,15 @@ const SHIKI_TEMALARI = { light: "github-light", dark: "github-dark" };
 
 export async function mdxDerle(
   kaynak: string,
+  ekBilesenler?: import("mdx/types").MDXComponents,
 ): Promise<{ icerik: ReactElement; toc: TocMaddesi[] }> {
   const toc: TocMaddesi[] = [];
   try {
     const { content } = await compileMDX({
       source: kaynak,
-      components: mdxBilesenleri,
+      // ekBilesenler aynı ada sahip varsayılanı ezer (örn. IcerikSayfasi'nın
+      // kaynak-veri bağlanmış <Kaynak> sürümü — kenar notları için).
+      components: { ...mdxBilesenleri, ...ekBilesenler },
       options: {
         mdxOptions: {
           remarkPlugins: [remarkGfm],

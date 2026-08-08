@@ -96,6 +96,12 @@
 
 html {
   color-scheme: light;
+  scroll-behavior: smooth; /* çapa gezinmesi; reduced-motion altında kapatılır */
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 [data-theme="dark"] {
   color-scheme: dark;
@@ -169,6 +175,28 @@ a:hover {
   background-position: bottom;
   background-repeat: no-repeat;
   border-bottom: 1px solid var(--doku);
+}
+
+/* ── Kenar notu (BRIEF §5.5): gövde sütunundan sağ paya taşar; yalnız xl+.
+   Tufte deseni: float + negatif sağ marj → makale ızgarasının 3. kolonuna
+   düşer (IcerikSayfasi: 64px iz + 68ch gövde + 280px kenar, gap 40px). ── */
+.kenar-notu {
+  display: none;
+}
+@media (min-width: 80rem) {
+  .kenar-notu {
+    display: block;
+    float: right;
+    clear: right;
+    width: 260px;
+    margin-right: -300px;
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    font-size: var(--fs-xs);
+    line-height: 1.5;
+    border-left: 1px solid var(--doku);
+    padding-left: 0.75rem;
+  }
 }
 
 /* ── Tema anahtarı ikon görünürlüğü (components/layout/TemaAnahtari.tsx) ── */
