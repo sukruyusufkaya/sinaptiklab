@@ -16,6 +16,8 @@ const envSema = z.object({
   // Geçici /admin koruması (ADR 0007) — Faz 7'de Auth.js rol sistemiyle değişecek
   ADMIN_USER: z.string().min(1).optional(),
   ADMIN_PASS: z.string().min(8).optional(),
+  // IndexNow anahtarı (public/<key>.txt ile eşleşir; yoksa bildirim atlanır)
+  INDEXNOW_KEY: z.string().min(8).optional(),
 });
 
 /**
@@ -33,6 +35,7 @@ const sonuc = envSema.safeParse({
   MONGODB_DB: bosluklariTemizle(process.env.MONGODB_DB),
   ADMIN_USER: bosluklariTemizle(process.env.ADMIN_USER),
   ADMIN_PASS: bosluklariTemizle(process.env.ADMIN_PASS),
+  INDEXNOW_KEY: bosluklariTemizle(process.env.INDEXNOW_KEY),
 });
 
 if (!sonuc.success) {

@@ -103,9 +103,14 @@ test.describe("okuma deneyimi (gerçek makale)", () => {
 });
 
 test.describe("konu haritası (DB gerekli)", () => {
+  // Sayfa DB'siz de 200 döner (dayanıklı prerender); bu yüzden sonda durum
+  // koduna değil, gerçek pillar kartının varlığına bakar.
   let konuVar: boolean | undefined;
   test.beforeEach(async ({ request }) => {
-    konuVar ??= (await request.get("/konu")).status() === 200;
+    if (konuVar === undefined) {
+      const yanit = await request.get("/konu");
+      konuVar = yanit.status() === 200 && (await yanit.text()).includes('href="/konu/');
+    }
     test.skip(!konuVar, "topics tohumlanmamış — DB erişimi olmayan ortam");
   });
 
