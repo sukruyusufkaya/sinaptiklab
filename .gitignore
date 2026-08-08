@@ -35,3 +35,4 @@ test-results/
 
 # lighthouse ci artefaktlari
 .lighthouseci/
+coverage/
