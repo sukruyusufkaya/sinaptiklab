@@ -12,7 +12,7 @@ const NAV = [
 
 export function Header() {
   return (
-    <header className="border-b border-doku">
+    <header className="sticky top-0 z-30 border-b border-doku bg-kagit/85 backdrop-blur-sm">
       <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-6 gap-y-2 px-[var(--gutter)] py-3">
         <Link
           href="/"

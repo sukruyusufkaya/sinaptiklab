@@ -18,6 +18,8 @@ const envSema = z.object({
   ADMIN_PASS: z.string().min(8).optional(),
   // IndexNow anahtarı (public/<key>.txt ile eşleşir; yoksa bildirim atlanır)
   INDEXNOW_KEY: z.string().min(8).optional(),
+  // Vercel build bilgisi (footer kalibrasyon satırı; yerelde tanımsız)
+  VERCEL_GIT_COMMIT_SHA: z.string().optional(),
 });
 
 /**
@@ -36,6 +38,7 @@ const sonuc = envSema.safeParse({
   ADMIN_USER: bosluklariTemizle(process.env.ADMIN_USER),
   ADMIN_PASS: bosluklariTemizle(process.env.ADMIN_PASS),
   INDEXNOW_KEY: bosluklariTemizle(process.env.INDEXNOW_KEY),
+  VERCEL_GIT_COMMIT_SHA: bosluklariTemizle(process.env.VERCEL_GIT_COMMIT_SHA),
 });
 
 if (!sonuc.success) {

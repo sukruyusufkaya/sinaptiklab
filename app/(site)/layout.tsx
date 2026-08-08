@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { OlayBeacon } from "@/components/analytics/OlayBeacon";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 
@@ -17,6 +18,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       >
         İçeriğe atla
       </a>
+      <OlayBeacon />
       <Header />
       <main id="icerik" className="flex-1">
         {children}

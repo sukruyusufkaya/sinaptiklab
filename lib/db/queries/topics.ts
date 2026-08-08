@@ -78,3 +78,39 @@ export function pillarDetay(slug: string): Promise<PillarDetayDTO | null> {
     tags: [ICERIK_LISTE_TAG],
   })();
 }
+
+export interface SiteIstatistikleriDTO {
+  yayindaIcerik: number;
+  pillarSayisi: number;
+  clusterSayisi: number;
+  toplamKaynak: number;
+}
+
+async function istatistiklerHam(): Promise<SiteIstatistikleriDTO> {
+  const db = await getDb();
+  const [yayindaIcerik, pillarSayisi, clusterSayisi, kaynakToplami] = await Promise.all([
+    db.collection<Content>("contents").countDocuments({ status: "published" }),
+    db.collection<Topic>("topics").countDocuments({ kind: "pillar" }),
+    db.collection<Topic>("topics").countDocuments({ kind: "cluster" }),
+    db
+      .collection<Content>("contents")
+      .aggregate<{ toplam: number }>([
+        { $match: { status: "published" } },
+        { $group: { _id: null, toplam: { $sum: { $size: "$sources" } } } },
+      ])
+      .toArray(),
+  ]);
+  return {
+    yayindaIcerik,
+    pillarSayisi,
+    clusterSayisi,
+    toplamKaynak: kaynakToplami[0]?.toplam ?? 0,
+  };
+}
+
+/** Ana sayfa ölçüm şeridi — kendi verimizden gerçek sayılar (§14/7 uyumlu). */
+export function siteIstatistikleri(): Promise<SiteIstatistikleriDTO> {
+  return unstable_cache(istatistiklerHam, ["site-istatistikleri"], {
+    tags: [ICERIK_LISTE_TAG],
+  })();
+}

@@ -1,4 +1,8 @@
 import Link from "next/link";
+import { env } from "@/lib/env";
+
+// Statik prerender'da hesaplanır → build tarihi (enstrüman kalibrasyon satırı)
+const BUILD_TARIHI = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium" }).format(new Date());
 
 const KURUMSAL = [
   { href: "/hakkinda", etiket: "Hakkında" },
@@ -65,10 +69,10 @@ export function Footer() {
         </nav>
       </div>
       <div className="border-t border-doku">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-[var(--gutter)] py-4">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-2 px-[var(--gutter)] py-4">
           <p className="font-mono text-xs text-murekkep-2">© 2026 Sinaptiklab</p>
-          <p className="font-mono text-xs text-murekkep-2" lang="tr">
-            tr
+          <p className="font-mono text-[0.65rem] tracking-wider text-murekkep-2">
+            kalibrasyon: {env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "yerel"} · {BUILD_TARIHI} · tr
           </p>
         </div>
       </div>
