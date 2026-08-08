@@ -29,8 +29,9 @@ test.describe("okuma deneyimi (gerçek makale)", () => {
 
     const harita = page.getByRole("navigation", { name: "Bölüm haritası" });
     await expect(harita).toBeVisible();
+    // ölçüm bir rAF sonrasında dolar — spike'ların oluşmasını bekle
     const spikeler = harita.getByRole("link");
-    expect(await spikeler.count()).toBeGreaterThanOrEqual(3);
+    await expect.poll(() => spikeler.count()).toBeGreaterThanOrEqual(3);
 
     // klavye ile odaklan ve etkinleştir → reduced-motion'da ANLIK atlama
     const hedef = spikeler.nth(2);
@@ -47,11 +48,14 @@ test.describe("okuma deneyimi (gerçek makale)", () => {
   test("okuma ilerlemesi iz dolgusuna yansıyor", async ({ page }) => {
     await page.goto(MAKALE);
     const dolgu = page.locator('nav[aria-label="Bölüm haritası"] svg path').nth(1);
+    // dolgu path'i ilk ölçümden bir kare sonra oluşur — var olmasını bekle
+    await expect(dolgu).toBeAttached();
     const bastaOffset = Number(await dolgu.getAttribute("stroke-dashoffset"));
+    expect(Number.isFinite(bastaOffset)).toBe(true);
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
-    await page.waitForTimeout(300);
-    const sonraOffset = Number(await dolgu.getAttribute("stroke-dashoffset"));
-    expect(sonraOffset).toBeLessThan(bastaOffset);
+    await expect
+      .poll(async () => Number(await dolgu.getAttribute("stroke-dashoffset")))
+      .toBeLessThan(bastaOffset);
   });
 
   test("mobilde iz gizli, üst ilerleme bandı var, yatay taşma yok", async ({ page }) => {
