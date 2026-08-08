@@ -21,6 +21,8 @@ export default defineConfig({
         "lib/env.ts",
         "lib/db/queries/**",
         "lib/editorial/actions.ts",
+        "lib/seo/indexnow.ts", // ağ yapıştırıcısı (en-iyi-çaba fetch)
+        "lib/og.tsx", // satori/ImageResponse görseli — CI curl'i doğrular
       ],
       thresholds: {
         statements: 70,
