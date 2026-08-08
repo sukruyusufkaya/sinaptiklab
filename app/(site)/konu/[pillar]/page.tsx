@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
 import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
 import { pillarDetay } from "@/lib/db/queries/topics";
+import { env } from "@/lib/env";
 
 interface Props {
   params: Promise<{ pillar: string }>;
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${detay.title} — konu haritası`,
     description: detay.intro.slice(0, 155),
+    alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/konu/${detay.slug}` },
   };
 }
 

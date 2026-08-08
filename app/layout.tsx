@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { CSSProperties, ReactNode } from "react";
 import { env } from "@/lib/env";
 import { fontDegiskenleri } from "@/lib/fonts";
+import { jsonLdScript, organizasyonJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -36,7 +37,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       {/* Site kabuğu (skip-link + Header + main + Footer) app/(site)/layout.tsx'te;
           admin kendi minimal kabuğunu app/(admin)/layout.tsx'te kurar. */}
-      <body className="flex min-h-dvh flex-col antialiased">{children}</body>
+      <body className="flex min-h-dvh flex-col antialiased">
+        {children}
+        {/* Global JSON-LD (BRIEF §7.2) — body sonunda; crawler'lar konumdan bağımsız okur */}
+        {jsonLdScript(organizasyonJsonLd())}
+        {jsonLdScript(webSiteJsonLd())}
+      </body>
     </html>
   );
 }

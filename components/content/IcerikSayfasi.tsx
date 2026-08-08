@@ -93,9 +93,33 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
         {/* 4 — yazar satırı */}
         <div className="mt-6 flex max-w-[var(--govde-olcu)] flex-wrap items-baseline gap-x-4 gap-y-1 border-y border-doku py-3 text-sm">
           <span className="font-medium">
-            {icerik.yazarlar.length > 0 ? icerik.yazarlar.map((y) => y.name).join(", ") : "—"}
+            {icerik.yazarlar.length > 0
+              ? icerik.yazarlar.map((y, sira) => (
+                  <span key={y.id}>
+                    {sira > 0 && ", "}
+                    <Link
+                      href={`/yazar/${y.slug}`}
+                      className="text-murekkep no-underline hover:text-sinyal"
+                    >
+                      {y.name}
+                    </Link>
+                  </span>
+                ))
+              : "—"}
           </span>
-          <span className="text-murekkep-2">Teknik editör: {icerik.teknikEditor?.name ?? "—"}</span>
+          <span className="text-murekkep-2">
+            Teknik editör:{" "}
+            {icerik.teknikEditor !== null ? (
+              <Link
+                href={`/yazar/${icerik.teknikEditor.slug}`}
+                className="text-murekkep-2 no-underline hover:text-sinyal"
+              >
+                {icerik.teknikEditor.name}
+              </Link>
+            ) : (
+              "—"
+            )}
+          </span>
           <span className="font-mono text-xs text-murekkep-2">
             {icerik.publishedAt !== null && <>yayın: {tarih(icerik.publishedAt)} · </>}
             güncelleme: {tarih(icerik.updatedAt)}

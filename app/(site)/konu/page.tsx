@@ -2,11 +2,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pillarlar } from "@/lib/db/queries/topics";
+import { env } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "Konular — Türkçe yapay zeka konu haritası",
   description:
     "Sinaptiklab'ın 12 ana başlıkta örgütlenmiş içerik haritası: LLM'lerden RAG'e, MLOps'tan regülasyona — her konu kaynaklı ve sürümlü içerikle.",
+  alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/konu` },
 };
 
 export default async function KonularSayfasi() {

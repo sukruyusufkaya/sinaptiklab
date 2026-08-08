@@ -15,6 +15,21 @@ export interface YazarKartiDTO {
   avatar: string;
 }
 
+/** Yazar sayfası (E-E-A-T) + Person JSON-LD girdisi — AuthorDoc'un düz hâli. */
+export interface YazarDetayDTO {
+  id: string;
+  slug: string;
+  name: string;
+  title: string;
+  bio: string;
+  longBio: string;
+  avatar: string;
+  credentials: string[];
+  sameAs: string[];
+  expertise: string[];
+  employer: string;
+}
+
 export interface IcerikOzetDTO {
   id: string;
   type: ContentDoc["type"];
@@ -58,6 +73,22 @@ export interface IcerikDetayDTO extends IcerikOzetDTO {
   version: number;
   yazarlar: YazarKartiDTO[];
   teknikEditor: YazarKartiDTO | null;
+}
+
+export function yazarDetayDTO(doc: AuthorDoc): YazarDetayDTO {
+  return {
+    id: doc._id.toHexString(),
+    slug: doc.slug,
+    name: doc.name,
+    title: doc.title,
+    bio: doc.bio,
+    longBio: doc.longBio,
+    avatar: doc.avatar,
+    credentials: doc.credentials,
+    sameAs: doc.sameAs,
+    expertise: doc.expertise,
+    employer: doc.employer,
+  };
 }
 
 export function yazarKartiDTO(doc: AuthorDoc): YazarKartiDTO {

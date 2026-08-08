@@ -23,3 +23,13 @@ export function yonlendirmeBul(from: string): Promise<Redirect | null> {
     tags: [YONLENDIRME_TAG],
   })();
 }
+
+/** Rota kancaları için güvenli sürüm: DB yoksa/hata varsa null (404'e düşer). */
+export async function guvenliYonlendirmeBul(from: string): Promise<string | null> {
+  try {
+    const kayit = await yonlendirmeBul(from);
+    return kayit?.to ?? null;
+  } catch {
+    return null;
+  }
+}

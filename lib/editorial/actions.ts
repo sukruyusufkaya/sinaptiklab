@@ -14,6 +14,8 @@ import { ICERIK_LISTE_TAG, icerikTag } from "@/lib/db/queries/contents";
 import { contentSema, durumSema, kaynakSema, type Content } from "@/lib/db/schemas";
 import { MdxDerlemeHatasi, mdxDerle, okumaSuresi, type TocMaddesi } from "@/lib/mdx/derle";
 import { getDb } from "@/lib/mongodb";
+import { icerikYolu } from "@/lib/rotalar";
+import { indexNowBildir } from "@/lib/seo/indexnow";
 import { slugla } from "@/lib/slug";
 import { yayinKontrolleri, type KontrolSonucu } from "./dogrulayicilar";
 import { gecisGecerliMi, gecisHatasi, type Durum } from "./durum-makinesi";
@@ -303,6 +305,8 @@ export async function icerikYayinla(id: string): Promise<YayinSonucu> {
   );
 
   icerikOnbellekleriniDusur(belge.slug);
+  // IndexNow: en-iyi-çaba, await edilmez — yayın hızını etkilemez (BRIEF §7.1)
+  void indexNowBildir([icerikYolu(belge.type, belge.slug)]);
   return { ok: true, slug: belge.slug };
 }
 

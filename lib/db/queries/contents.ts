@@ -103,6 +103,24 @@ export function sonYayinlar(adet = 6): Promise<IcerikOzetDTO[]> {
   return yayindakiIcerikListesi({ adet });
 }
 
+async function yazarinYayinlariHam(yazarId: string): Promise<IcerikOzetDTO[]> {
+  if (!ObjectId.isValid(yazarId)) return [];
+  const db = await getDb();
+  const docs = await db
+    .collection<Content>("contents")
+    .find({ status: "published", authors: new ObjectId(yazarId) }, { projection: OZET_ALANLARI })
+    .sort({ publishedAt: -1 })
+    .toArray();
+  return docs.map((d) => icerikOzetDTO(d as ContentDoc));
+}
+
+/** Yazarın (authors dizisinde id'si geçen) yayındaki içerikleri — yazar sayfası. */
+export function yazarinYayinlari(yazarId: string): Promise<IcerikOzetDTO[]> {
+  return unstable_cache(() => yazarinYayinlariHam(yazarId), ["yazarin-yayinlari", yazarId], {
+    tags: [ICERIK_LISTE_TAG],
+  })();
+}
+
 async function ilgiliIceriklerHam(pillar: string, haricSlug: string): Promise<IcerikOzetDTO[]> {
   const db = await getDb();
   const docs = await db
