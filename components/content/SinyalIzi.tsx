@@ -190,6 +190,7 @@ export function SinyalIzi({ bolumler }: { bolumler: Bolum[] }) {
             <li key={o.id} className="absolute left-0" style={{ top: o.y - 10 }}>
               <a
                 href={`#${o.id}`}
+                aria-label={o.text}
                 aria-current={aktifId === o.id ? "true" : undefined}
                 className="group flex h-5 w-16 items-center no-underline"
               >
@@ -201,7 +202,11 @@ export function SinyalIzi({ bolumler }: { bolumler: Bolum[] }) {
                       : "border-doku bg-kagit group-hover:border-sinyal"
                   }`}
                 />
-                <span className="pointer-events-none absolute left-16 z-10 hidden w-56 border border-doku bg-kagit px-2 py-1 text-xs text-murekkep shadow-none group-hover:block group-focus-visible:block">
+                {/* görsel tooltip; erişilebilir ad yukarıdaki aria-label'da */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute left-16 z-10 hidden w-56 border border-doku bg-kagit px-2 py-1 text-xs text-murekkep shadow-none group-hover:block group-focus-visible:block"
+                >
                   {o.text}
                 </span>
               </a>
