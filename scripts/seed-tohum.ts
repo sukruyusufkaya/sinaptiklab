@@ -138,7 +138,9 @@ async function ana() {
 
       // yayınlanmışsa durumunu/yayın tarihini EZME — yalnız içerik alanları tazelenir
       // (dikkat: sürücü undefined'ı null'a çevirir; alanları nesneden tamamen çıkar)
-      const { status: _durum, publishedAt: _yayinTarihi, ...guncellenecek } = icerik;
+      const guncellenecek: Record<string, unknown> = { ...icerik };
+      delete guncellenecek["status"];
+      delete guncellenecek["publishedAt"];
       await db.collection("contents").updateOne(
         { slug: meta.slug },
         {

@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import type { CSSProperties, ReactNode } from "react";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import { env } from "@/lib/env";
 import { fontDegiskenleri } from "@/lib/fonts";
 import "./globals.css";
@@ -36,19 +34,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: TEMA_SCRIPT }} />
       </head>
-      <body className="flex min-h-dvh flex-col antialiased">
-        <a
-          href="#icerik"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:bg-kagit focus:px-3 focus:py-2 focus:font-mono focus:text-sm"
-        >
-          İçeriğe atla
-        </a>
-        <Header />
-        <main id="icerik" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-      </body>
+      {/* Site kabuğu (skip-link + Header + main + Footer) app/(site)/layout.tsx'te;
+          admin kendi minimal kabuğunu app/(admin)/layout.tsx'te kurar. */}
+      <body className="flex min-h-dvh flex-col antialiased">{children}</body>
     </html>
   );
 }
