@@ -5,7 +5,9 @@
 // RSC; IcerikDetayDTO alır, gövdeyi mdxDerle ile derler.
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { IlgiliIcerikler } from "@/components/content/IlgiliIcerikler";
 import { SinyalIzi } from "@/components/content/SinyalIzi";
+import { BultenCTA } from "@/components/layout/BultenCTA";
 import { Kaynak } from "@/components/mdx/Kaynak";
 import { KisaCevap } from "@/components/mdx/KisaCevap";
 import type { IcerikDetayDTO } from "@/lib/db/queries/dto";
@@ -239,6 +241,18 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
             </div>
           </section>
         )}
+      </div>
+
+      {/* 12 + 14 — ilgili içerik ve bülten CTA'sı: ızgaranın ikinci satırı,
+          gövde+kenar kolonlarını kaplar (yorumlar Faz 7'de araya girecek) */}
+      <div className="min-w-0 xl:col-span-2 xl:col-start-2 xl:row-start-2">
+        <div className="cetvel mt-14" aria-hidden />
+        <div className="mt-10">
+          <IlgiliIcerikler pillar={icerik.pillar} haricSlug={icerik.slug} />
+        </div>
+        <div className="mt-12 max-w-[42rem]">
+          <BultenCTA />
+        </div>
       </div>
     </article>
   );

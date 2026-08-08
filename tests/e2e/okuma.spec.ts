@@ -8,6 +8,14 @@ import { expect, test } from "@playwright/test";
 const MAKALE = "/rehber/rag-nedir";
 
 test.describe("okuma deneyimi (gerçek makale)", () => {
+  // Bu testler tohum makaleye (DB) ihtiyaç duyar; MONGODB_URI'siz ortamda
+  // (örn. secret bağlanmamış CI) sayfa 404 döner → suite atlanır.
+  let makaleVar: boolean | undefined;
+  test.beforeEach(async ({ request }) => {
+    makaleVar ??= (await request.get(MAKALE)).status() === 200;
+    test.skip(!makaleVar, "tohum makale yayında değil — DB erişimi olmayan ortam");
+  });
+
   test("erişilebilirlik: makalede axe ihlali yok (açık + koyu)", async ({ page }) => {
     await page.goto(MAKALE);
     const acik = await new AxeBuilder({ page })
@@ -91,5 +99,25 @@ test.describe("okuma deneyimi (gerçek makale)", () => {
     await dipnot.press("Enter");
     await page.waitForTimeout(300);
     expect(page.url()).toMatch(/#kaynak-\d+$/);
+  });
+});
+
+test.describe("konu haritası (DB gerekli)", () => {
+  let konuVar: boolean | undefined;
+  test.beforeEach(async ({ request }) => {
+    konuVar ??= (await request.get("/konu")).status() === 200;
+    test.skip(!konuVar, "topics tohumlanmamış — DB erişimi olmayan ortam");
+  });
+
+  test("12 pillar listelenir, hub açılır, axe temiz", async ({ page }) => {
+    await page.goto("/konu");
+    const kartlar = page.locator('a[href^="/konu/"]');
+    await expect.poll(() => kartlar.count()).toBe(12);
+    await kartlar.first().click();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const sonuc = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+      .analyze();
+    expect(sonuc.violations).toEqual([]);
   });
 });

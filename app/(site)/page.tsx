@@ -1,15 +1,20 @@
+import Link from "next/link";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
+import { BultenCTA } from "@/components/layout/BultenCTA";
 import { sonYayinlar } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
+import { pillarlar, type PillarOzetDTO } from "@/lib/db/queries/topics";
 
 export default async function AnaSayfa() {
-  // DB yoksa/erişilemiyorsa bölüm sessizce atlanır — build DB'siz de geçmeli
+  // DB yoksa/erişilemiyorsa bölümler sessizce atlanır — build DB'siz de geçmeli
   // (bilinçli sessizlik: console.error bile yok, build günlüğü kirlenmesin).
   let yayinlar: IcerikOzetDTO[] = [];
+  let konular: PillarOzetDTO[] = [];
   try {
-    yayinlar = await sonYayinlar(6);
+    [yayinlar, konular] = await Promise.all([sonYayinlar(6), pillarlar()]);
   } catch {
     yayinlar = [];
+    konular = [];
   }
 
   return (
@@ -49,6 +54,38 @@ export default async function AnaSayfa() {
         </>
       )}
 
+      {konular.length > 0 && (
+        <>
+          <section aria-labelledby="konu-haritasi" className="py-14">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="konu-haritasi" className="font-display text-2xl font-bold">
+                Konu haritası
+              </h2>
+              <Link href="/konu" className="font-mono text-xs no-underline hover:underline">
+                tümü →
+              </Link>
+            </div>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {konular.map((pillar) => (
+                <li key={pillar.slug} className="min-w-0">
+                  <Link
+                    href={`/konu/${pillar.slug}`}
+                    className="flex h-full items-baseline justify-between gap-3 border border-doku px-4 py-3 no-underline transition-colors hover:border-sinyal"
+                  >
+                    <span className="text-sm font-medium text-murekkep">{pillar.title}</span>
+                    <span className="shrink-0 font-mono text-xs text-murekkep-2">
+                      {pillar.icerikSayisi}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="cetvel" aria-hidden />
+        </>
+      )}
+
       <section aria-labelledby="ne-geliyor" className="py-14">
         <h2 id="ne-geliyor" className="font-display text-2xl font-bold">
           Tezgâhta ne var?
@@ -79,6 +116,10 @@ export default async function AnaSayfa() {
             </p>
           </li>
         </ul>
+      </section>
+
+      <section className="pb-16">
+        <BultenCTA />
       </section>
     </div>
   );

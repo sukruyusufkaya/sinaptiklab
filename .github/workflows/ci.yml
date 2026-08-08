@@ -37,6 +37,8 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://sinaptiklab.com
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB: sinaptiklab
 
       - name: Index kurulumu (MONGODB_URI secret'ı varsa)
         run: npm run db:indexes
@@ -49,6 +51,9 @@ jobs:
 
       - name: E2E + erişilebilirlik (axe)
         run: npm run test:e2e
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB: sinaptiklab
 
       - name: Lighthouse CI (bütçeler BRIEF §9.1)
         run: npx --yes @lhci/cli@0.15.x autorun

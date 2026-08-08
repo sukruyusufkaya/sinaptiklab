@@ -102,3 +102,26 @@ export function yayindakiIcerikListesi(params: IcerikListesiParams = {}): Promis
 export function sonYayinlar(adet = 6): Promise<IcerikOzetDTO[]> {
   return yayindakiIcerikListesi({ adet });
 }
+
+async function ilgiliIceriklerHam(pillar: string, haricSlug: string): Promise<IcerikOzetDTO[]> {
+  const db = await getDb();
+  const docs = await db
+    .collection<Content>("contents")
+    .find({ status: "published", pillar, slug: { $ne: haricSlug } }, { projection: OZET_ALANLARI })
+    .sort({ publishedAt: -1 })
+    .limit(3)
+    .toArray();
+  return docs.map((d) => icerikOzetDTO(d as ContentDoc));
+}
+
+/**
+ * İlgili içerik (BRIEF §6.1/12) — Faz 6'ya kadar aynı pillar'ın son
+ * yayınları; vektör benzerliği karışımı embedding backfill'iyle gelecek.
+ */
+export function ilgiliIcerikler(pillar: string, haricSlug: string): Promise<IcerikOzetDTO[]> {
+  return unstable_cache(
+    () => ilgiliIceriklerHam(pillar, haricSlug),
+    ["ilgili-icerikler", pillar, haricSlug],
+    { tags: [ICERIK_LISTE_TAG] },
+  )();
+}
