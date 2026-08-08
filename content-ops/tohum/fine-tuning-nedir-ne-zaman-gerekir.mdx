@@ -1,0 +1,62 @@
+## Fine-tuning tam olarak ne yapar?
+
+Fine-tuning (ince ayar), önceden eğitilmiş bir [büyük dil modelinin](/rehber/llm-nedir) ağırlıklarını, kendi hazırladığınız göreve özgü örneklerle ek bir eğitim turundan geçirerek kalıcı olarak güncelleme işlemidir. Model, ön eğitimde (pretraining) devasa bir metin havuzundan genel dil yeteneği kazanır; fine-tuning bu genel yeteneği sizin probleminize göre biçimlendirir. En yaygın biçimi olan denetimli ince ayarda (supervised fine-tuning, SFT) modele girdi-çıktı çiftleri gösterirsiniz: "bu destek talebi geldiğinde şu kategoriye ata", "bu ham metni şu JSON şemasında döndür" gibi. Model, bu örneklerdeki örüntüyü ağırlıklarına işler ve benzer girdilerde artık prompt'ta uzun uzun tarif etmenize gerek kalmadan o davranışı sergiler.
+
+Üretimde en sık karıştırılan ayrımı baştan koyalım: fine-tuning modele davranış öğretir, bilgi değil. Ağırlıklara işlediğiniz şey üslup, format, sınıflandırma sınırları ve talimat takibi gibi örüntülerdir. Şirket dokümanlarınızdaki güncel gerçekleri modele fine-tuning ile ezberletmeye çalışmak hem pahalı hem güvenilmezdir; araştırma bulgusu da bunu doğruluyor: <Kaynak id="5">bilgi enjeksiyonunu sistematik karşılaştıran çalışma, RAG'ın denetimsiz fine-tuning'i hem eğitimde görülen hem de tamamen yeni bilgilerde tutarlı biçimde geçtiğini ve modellerin denetimsiz ince ayarla yeni olgusal bilgi öğrenmekte zorlandığını raporladı</Kaynak>. Bilgi tazeliği probleminiz varsa çözüm [RAG](/rehber/rag-nedir) tarafında; davranış probleminiz varsa doğru yerdesiniz.
+
+## Tam ince ayardan LoRA ve QLoRA'ya: maliyet nasıl düştü?
+
+Bugün fine-tuning derken çoğu ekip artık tam ince ayarı (full fine-tuning) kastetmiyor; parametre-verimli yöntemler (PEFT, parameter-efficient fine-tuning) fiili standart haline geldi. Tam ince ayar modelin tüm ağırlıklarını günceller: en esnek ama en pahalı yol. LoRA (Low-Rank Adaptation) ise asıl ağırlık matrislerini dondurup yanlarına küçük, düşük ranklı adaptör matrisleri ekler ve yalnızca onları eğitir. Kazanç dramatiktir: <Kaynak id="2">LoRA makalesi, GPT-3 175B üzerinde eğitilebilir parametre sayısını 10.000 kat, GPU bellek gereksinimini 3 kat azaltırken model kalitesinde tam ince ayarla eşdeğer veya daha iyi sonuç bildirdi</Kaynak>.
+
+QLoRA bu hattı bir adım ileri taşıdı: temel modeli 4-bit'e nicemleyip (quantization) üzerine LoRA adaptörleri ekliyor. <Kaynak id="3">QLoRA makalesi, 65 milyar parametreli bir modelin tek bir 48 GB GPU'da fine-tune edilebildiğini; bu yöntemle eğitilen Guanaco'nun, tek GPU'da 24 saatlik eğitimle Vicuna benchmark'ında ChatGPT seviyesinin %99,3'üne ulaştığını raporladı</Kaynak>. Pratikte bu şu demek: [açık ağırlıklı bir modeli](/makale/acik-agirlikli-modeller-secim-rehberi) kiralık tek bir GPU'da, kendi verinizle, makul bir bütçeyle uyarlayabilirsiniz. Ekosistem tarafında [Hugging Face PEFT](https://huggingface.co/docs/peft/index) kütüphanesi, LoRA dahil parametre-verimli yöntemlerin referans uygulamasıdır; adaptörleri Transformers ekosistemiyle entegre biçimde eğitip yüklemenizi sağlar. Adaptör dosyalarının küçük olması, aynı taban model üzerinde görev başına ayrı adaptör tutma gibi üretim dostu desenleri de mümkün kılar.
+
+## Fine-tuning ne zaman gerekir?
+
+Fine-tuning'e, davranışsal bir sorunu prompt ile çözemediğinizi ölçümle gösterdiğinizde geçilir. Üretimde bu kararı haklı çıkaran belirtiler nettir:
+
+- **Format ve şema disiplini:** Model, sistem prompt'undaki tüm talimatlara rağmen çıktı şemasını tutturamıyor, alan adlarını değiştiriyor veya serbest metne kayıyorsa.
+- **Üslup ve marka sesi:** Kurumunuzun ses tonunu prompt'la tarif etmek her seferinde eksik kalıyorsa. Üslup, kural listesinden değil örneklerden öğrenilir.
+- **Dar görevde tutarlılık:** Sınıflandırma, yönlendirme (routing), varlık çıkarımı gibi görevlerde few-shot örneklerin taşıyamadığı sınır durumları birikiyorsa.
+- **Maliyet ve gecikme:** Büyük bir modelin prompt'la yaptığı işi, fine-tune edilmiş küçük bir modele devrederek birim maliyeti ve gecikmeyi düşürmek istiyorsanız.
+
+Bu belirtilerin ortak ön şartı aynı: elinizde bir değerlendirme seti olmalı. [OpenAI'nin resmi fine-tuning rehberi](https://developers.openai.com/api/docs/guides/supervised-fine-tuning) bu disiplini açıkça şart koşar: <Kaynak id="1">değerlendirme kurulmadan fine-tuning'e yatırım yapılmamalı; teknik minimum 10 örnek olsa da 50 iyi hazırlanmış örnekle başlamak, net iyileşmeyi ise 50-100 örnek bandında aramak önerilir</Kaynak>. Önce [prompt mühendisliği](/rehber/prompt-muhendisligi-rehberi) ve few-shot denemelerinizi yapın; ölçüm hâlâ hedefin altındaysa fine-tuning meşru bir sonraki adımdır. Ölçmeden geçerseniz, iyileşip iyileşmediğinizi asla bilemezsiniz.
+
+## Fine-tuning ne zaman gereksizdir?
+
+Sorununuz bilgi eksikliğiyse, temiz veriniz yoksa veya daha ucuz yöntemleri henüz denemediyseniz fine-tuning gereksizdir; hatta zararlı olabilir. Sahada en pahalıya patlayan hata, bilgi problemini davranış aracıyla çözmeye çalışmaktır.
+
+<Uyari tip="tuzak">
+"Şirket dokümanlarımızı modele fine-tune edelim, kurum içi chatbot olsun" talebi en sık gördüğümüz tuzaktır. Dokümanlardaki bilgi değiştiğinde modeli yeniden eğitmeniz gerekir; üstelik model öğrendiğini kaynak göstererek değil ezberden söyler, yanlış hatırladığında bunu fark edemezsiniz. Doküman soru-cevabı için doğru mimari RAG'dır.
+</Uyari>
+
+Bilgi enjeksiyonu konusundaki bulgu net: <Kaynak id="5">karşılaştırmalı deneylerde RAG, bilgi gerektiren görevlerde denetimsiz fine-tuning'den tutarlı biçimde iyi sonuç verdi; çalışma, modellerin denetimsiz ince ayar yoluyla yeni olgusal bilgiyi öğrenmekte zorlandığı sonucuna vardı</Kaynak>. Fiyat listeleri, mevzuat, ürün katalogları gibi yaşayan veriler ağırlıklara değil, sorgu anında bağlama girmelidir. Bu ayrımın tam karar çerçevesini [RAG mı fine-tuning mi?](/makale/rag-fine-tuning-karsilastirmasi) yazısında ayrıntılı işledik.
+
+Fine-tuning ayrıca şu durumlarda erken bir yatırımdır: değerlendirme setiniz yoksa neyi iyileştirdiğinizi bilemezsiniz; temiz örnek üretecek kaynağınız yoksa gürültülü veriyle eğitmek davranışı düzeltmek yerine bozar; taban modeliniz sık sürüm değiştiriyorsa her değişimde ince ayarı yeniden üretip yeniden doğrulamanız gerekir. Bu üç koşuldan biri bile sağlanmıyorsa önce onu çözün.
+
+## Üretim süreci: veri, eğitim, değerlendirme, dağıtım
+
+Sağlıklı bir fine-tuning döngüsü dört aşamadan oluşur ve en kritik aşamalar eğitimin kendisi değil, öncesi ve sonrasıdır.
+
+1. **Değerlendirme setini kurun.** Gerçek üretim trafiğini temsil eden girdilerden, sınır durumlarını da içeren bir test seti çıkarın ve başarı ölçütünü sayıya bağlayın. Hangi metriğin ne zaman anlamlı olduğunu [LLM değerlendirme metrikleri](/makale/llm-degerlendirme-metrikleri) yazısında işledik.
+2. **Veriyi hazırlayın.** Kalite miktardan önce gelir. En iyi kaynak gerçek trafiktir: üretimdeki başarılı çıktıları toplayın, zayıflarını elle düzeltin, etiket tutarlılığını iki ayrı gözle denetleyin. Eğitim verinizle değerlendirme setinizin kesişmediğinden emin olun; aksi hâlde ölçtüğünüz şey genelleme değil ezber olur.
+3. **Eğitin.** İki ana yol var: sağlayıcı API'si üzerinden yönetilen fine-tuning ya da açık ağırlıklı modelde kendi donanımınızda LoRA/QLoRA. İkinci yolda adaptörleri taban modelden ayrı sürümleyin; geri dönüş (rollback) adaptör dosyasını değiştirmek kadar ucuzlar.
+4. **Karşılaştırın, sonra dağıtın.** Aynı değerlendirme setinde "taban model + en iyi prompt" ile "fine-tuned model" sonuçlarını yan yana koyun; hedef görevdeki kazanca ek olarak genel yeteneklerde gerileme (regresyon) olup olmadığını da ölçün. Dağıtımı kademeli yapın, üretim trafiğini izlemeye devam edin.
+
+Bu döngünün çıktısı yalnızca bir model değil, tekrarlanabilir bir boru hattıdır: taban model güncellendiğinde aynı veriyle aynı süreci yeniden koşabilmelisiniz.
+
+## Karar çerçevesi: tek tabloda özet
+
+Kararı tek cümleye indirirsek: davranış sorunları fine-tuning'in, bilgi sorunları RAG'ın alanıdır; ikisi de değilse prompt'la devam edin.
+
+<Karsilastirma>
+| Belirti | Önce deneyin | Fine-tuning'e geçilir mi? |
+|---|---|---|
+| Çıktı formatı/şeması tutmuyor | Şema talimatı + few-shot | Evet, ölçüm hâlâ kötüyse |
+| Üslup ve marka sesi oturmuyor | Stil rehberli prompt | Evet, örnekleriniz varsa |
+| Güncel/kurumsal bilgi eksik | RAG | Hayır |
+| Halüsinasyon | RAG + doğrulama katmanı | Hayır, tek başına çözmez |
+| Birim maliyet/gecikme yüksek | Daha küçük model + prompt | Evet, küçük modele öğretin |
+| Dar görevde sınır durumları | Few-shot genişletme | Evet, veri birikince |
+</Karsilastirma>
+
+Son söz: fine-tuning sihir değil, mühendislik yatırımıdır. Ne öğrettiğinizi örneklerle tanımlayabildiğiniz, sonucu kendi değerlendirme setinizde sayıyla ölçebildiğiniz ve bilgiyi değil davranışı hedeflediğiniz sürece bu yatırım, LoRA ve QLoRA sonrası maliyet tablosuyla, hiç olmadığı kadar erişilebilir durumda. Bu üç koşulu sağlamadan başlıyorsanız, harcadığınız GPU saatinden çok kaybettiğiniz odak canınızı yakar.

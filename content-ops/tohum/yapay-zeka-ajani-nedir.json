@@ -1,0 +1,64 @@
+{
+  "type": "article",
+  "slug": "yapay-zeka-ajani-nedir",
+  "title": "Yapay Zeka Ajanı Nedir? Chatbot'tan Farkı ve Mimarisi",
+  "dek": "Yapay zeka ajanının tanımı, chatbot'tan farkı, yapı taşları ve iş akışı-ajan karar çerçevesi: üretim deneyimiyle, kaynaklı ve güncel bir rehber.",
+  "answerFirst": "Yapay zeka ajanı, bir büyük dil modelinin (LLM) araç çağırma, gözlem ve yeniden planlama döngüsü içinde hedefe kendi seçtiği adımlarla ilerlediği yazılım sistemidir. Chatbot tek soru-tek cevap üretir; ajan ise API çağırır, sonucu değerlendirir, gerekirse rotayı değiştirir. Anthropic'in ayrımıyla iş akışlarında adımları önceden yazılmış kod belirler, ajanlarda modelin kendisi belirler. Üretimdeki sistemlerin çoğu bu ikisinin karışımıdır.",
+  "level": "giris",
+  "pillar": "ajanik-sistemler",
+  "clusters": ["ajan-temelleri"],
+  "tags": ["yapay zeka ajanı", "ai agent", "ajanik sistemler", "araç çağırma", "function calling", "react deseni"],
+  "faq": [
+    {
+      "q": "Yapay zeka ajanı ile chatbot arasındaki temel fark nedir?",
+      "a": "Chatbot tek geçişte cevap üretir ve durur; ajan ise araç çağırma, sonucu gözleme ve planı güncelleme döngüsü işletir. Fark modelin zekâsında değil, sistemin mimarisindedir. Aynı model, döngü ve araçlarla sarıldığında ajana dönüşür."
+    },
+    {
+      "q": "Her problemde ajan kullanmalı mıyım?",
+      "a": "Hayır. Adımlarını önceden tanımlayabildiğiniz işlerde iş akışı daha ucuz, hızlı ve öngörülebilirdir. Ajanı yalnızca çözüm yolunun önceden bilinemediği, keşif gerektiren görevlere saklayın; gövdedeki karar çerçevesi bu ayrımı özetliyor."
+    },
+    {
+      "q": "Ajan geliştirmek için framework şart mı?",
+      "a": "Şart değil; araç çağırma (function calling) destekleyen herhangi bir LLM API'siyle döngüyü kendiniz kurabilirsiniz. Önce çıplak API ile mekaniği öğrenmek, çerçeve soyutlamalarını bilinçli seçmenizi sağlar. Çerçeveler devir, bellek ve orkestrasyon gerektiğinde değer katar."
+    },
+    {
+      "q": "ReAct deseni hâlâ geçerli mi?",
+      "a": "Evet; bugünkü araç çağırma döngülerinin akademik temeli ReAct'tir ve modern function calling API'leri bu desenin üretimleşmiş hâlidir. Makalenin sayısal sonuçları gövdede kaynaklı olarak veriliyor."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Building Effective AI Agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-08",
+      "kind": "vendor"
+    },
+    {
+      "label": "ReAct: Synergizing Reasoning and Acting in Language Models",
+      "url": "https://arxiv.org/abs/2210.03629",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Agents — OpenAI Agents SDK",
+      "url": "https://openai.github.io/openai-agents-python/agents/",
+      "publisher": "OpenAI",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Agents — Agent Development Kit",
+      "url": "https://adk.dev/agents/",
+      "publisher": "Google",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "Yapay zeka ajanı nedir, chatbot'tan nasıl ayrılır? Ajan mimarisi, ReAct döngüsü, iş akışı-ajan karar çerçevesi ve üretim dersleri — kaynaklı rehber."
+  },
+  "onerilenDurum": "published",
+  "notlar": "Tüm kaynak URL'leri 2026-08-08'de WebFetch ile fiilen açılıp doğrulandı. ReAct sayısal sonuçları (ALFWorld %34, WebShop %10) makale özetinden alındı."
+}

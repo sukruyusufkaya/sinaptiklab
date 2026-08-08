@@ -1,0 +1,57 @@
+## RAG tam olarak nedir?
+
+RAG (Retrieval-Augmented Generation), bir [büyük dil modelinin](/rehber/llm-nedir) cevabı üretmeden önce harici bir bilgi kaynağında arama yapıp bulduğu belgeleri bağlamına eklemesidir — model ezberinden değil, önüne konan güncel belgelerden konuşur. AWS'nin resmi tanımıyla RAG, "modelin cevap üretmeden önce eğitim verisi dışındaki yetkili bir bilgi tabanına başvurmasını" sağlayan optimizasyondur; tanımın tamamı [AWS'nin RAG sayfasında](https://aws.amazon.com/what-is/retrieval-augmented-generation/).
+
+Kavramın akademik kökeni nettir: <Kaynak id="1">terimi 2020'de Lewis ve arkadaşlarının NeurIPS'te yayımlanan makalesi ortaya attı; çalışma, modelin parametrelerine gömülü "parametrik bellek" ile Wikipedia üzerinde yoğun vektör dizini olarak tutulan "parametrik olmayan belleği" birleştirdi ve bu birleşimin salt parametrik modellere göre daha spesifik ve olgusal metin ürettiğini gösterdi</Kaynak>. Orijinal makale [arXiv'de](https://arxiv.org/abs/2005.11401) açık erişimde.
+
+Neden bu kadar tuttu? Çünkü LLM'in iki yapısal zaafını aynı anda yamalıyor: bilgisinin eğitim kesim tarihinde donmuş olması ve kuruma özel veriyi hiç görmemiş olması. Modeli yeniden eğitmek yerine, cevap anında doğru bilgiyi önüne koyarsınız. Sahada kurduğumuz kurumsal asistanların neredeyse tamamı bu desenle çalışıyor; "şirket dokümanlarıyla konuşan chatbot" taleplerinin teknik karşılığı, istisnasız, bir RAG boru hattıdır.
+
+## RAG nasıl çalışır? Boru hattını adım adım kuralım
+
+RAG boru hattı üç aşamadan oluşur: dizinleme, getirme ve üretim. Dizinleme çevrimdışı yapılır: belgeleriniz (PDF, wiki, destek kayıtları) önce parçalara (chunk) bölünür, her parça bir gömme vektörüne (embedding) — metnin anlamını temsil eden sayı dizisine — dönüştürülür ve bu vektörler aranabilir bir dizine yazılır. Gömme vektörünün nasıl çalıştığını [embedding yazısında](/makale/gomme-vektoru-embedding-nedir), dizin katmanı seçeneklerini ise [vektör veritabanı seçim rehberinde](/makale/vektor-veritabani-nedir-secim-rehberi) ayrıntılı anlatıyoruz.
+
+Getirme aşaması sorgu anında çalışır: kullanıcının sorusu aynı gömme modeliyle vektöre çevrilir, dizinde bu vektöre en yakın parçalar bulunur — tipik olarak en benzer birkaç parça. Üretim aşamasında ise bu parçalar, kullanıcının sorusuyla birlikte LLM'in istemine yerleştirilir: "Aşağıdaki belgelere dayanarak cevapla" kalıbı, özünde budur. Model artık ezberinden değil, önüne konan metinden cevap üretir ve hangi parçaya dayandığını gösterebilir.
+
+Mühendislik açısından kritik nokta şu: bu üç aşamanın her biri ayrı ayrı bozulabilir ve hatalar sessizce birikir. Kötü parçalama yanlış granülerlikte bilgi getirir; zayıf gömme modeli anlamca ilgili parçayı ıskalar; kalabalık istem modelin dikkatini dağıtır. RAG "kurup unutulan" değil, katman katman ölçülüp iyileştirilen bir sistemdir — bu yüzden aşağıdaki değerlendirme bölümü bu rehberin en önemli kısmıdır.
+
+## RAG neden gerekli? Fine-tuning yetmez miydi?
+
+Kısa cevap: bilgi eklemek için RAG doğru araçtır, çünkü ucuzdur, günceldir ve kaynak gösterir; fine-tuning ise davranış değiştirmek içindir. Modelin bilmediği bilgiyi ince ayarla öğretmeye çalışmak hem pahalıdır hem de güvenilmez — model yeni bilgiyi ezberler ama ne zaman hangi bilgiyi kullanacağını kestiremezsiniz, üstelik veri her değiştiğinde eğitimi tekrarlamanız gerekir. <Kaynak id="3">AWS de RAG'in temel gerekçesini aynı yerden kuruyor: modeli yeniden eğitmeye kıyasla maliyet etkinliği, sık güncellenen kaynaklara doğrudan bağlanabilme ve kullanıcının bağımsız doğrulayabileceği kaynak atıflarıyla güven</Kaynak>.
+
+RAG'in bir diğer sahada kritik avantajı erişim kontrolüdür. Bilgi modelin parametrelerinde değil dizinde durduğu için, "bu kullanıcı bu belgeyi görebilir mi?" sorusunu getirme katmanında, klasik yetkilendirme mantığıyla cevaplarsınız. İnce ayarlanmış bir modelde bu ayrım imkânsızdır: model öğrendiğini herkese söyler.
+
+Halüsinasyonla ilişkisi de burada netleşir. Model, bilmediği konuda boşluğu akıcı uydurmayla doldurur; [halüsinasyon yazısında](/makale/yapay-zeka-halusinasyonu-nedir) mekanizmayı ayrıntılı işledik. RAG bu boşluğu gerçek belgeyle doldurarak uydurma alanını daraltır — ama tamamen kapatmaz. İki yaklaşımın karar çerçevesini [RAG mı fine-tuning mi](/makale/rag-fine-tuning-karsilastirmasi) yazısında tablolaştırdık; pratikte ikisi rakip değil, sık sık aynı sistemde tamamlayıcıdır.
+
+## Basit RAG yetmediğinde: gelişmiş desenler
+
+Naif RAG — böl, gömle, getir, üret — çoğu projede iyi bir başlangıçtır ama üretim yükü altında sınırları hızla görünür. <Kaynak id="2">2023'te yayımlanan kapsamlı RAG taraması bu evrimi üç paradigmaya ayırıyor: naif RAG, sorgu iyileştirme ve yeniden sıralama gibi eklerle güçlendirilmiş gelişmiş RAG ve bileşenlerin ihtiyaca göre takılıp söküldüğü modüler RAG</Kaynak>. Pratikte en çok geri dönüş aldığımız üç ek şunlar: hibrit arama (vektör benzerliğini BM25 anahtar kelime aramasıyla birleştirmek), getirilen parçaları ikinci bir modelle yeniden sıralayan reranker ve parçalara belge bağlamını geri kazandıran bağlamsal dizinleme.
+
+Bu eklerin etkisi ölçülmüş durumda. <Kaynak id="4">Anthropic'in "Contextual Retrieval" çalışmasında, her parçanın başına belge bağlamını özetleyen kısa bir açıklama eklemek getirme hatasını %35 düşürdü; bağlamsal BM25 ile birleştirince düşüş %49'a, üstüne reranking eklenince %67'ye çıktı — en iyi 20 parça içinde doğru parçayı ıskalama oranı %5,7'den %1,9'a indi</Kaynak>. Deneyin tamamı [Anthropic'in duyurusunda](https://www.anthropic.com/news/contextual-retrieval).
+
+<Uyari tip="tuzak">
+Gelişmiş desenlere sıçramadan önce naif hattınızı ölçün. Sahada en sık gördüğümüz hata, retrieval kalitesi hiç ölçülmeden GraphRAG gibi ağır mimarilere geçilmesi: ekip haftalarca karmaşıklık yönetir, sorun aslında yanlış chunk boyutunda ya da zayıf gömme modelindedir. Önce ölç, sonra karmaşıklaştır.
+</Uyari>
+
+## RAG mı, uzun bağlam mı? Her veri için boru hattı gerekmez
+
+Bilgi tabanınız küçükse RAG kurmayın — tamamını bağlam penceresine koyun. <Kaynak id="4">Anthropic'in önerdiği eşik net: bilgi tabanı 200 bin token'ın (yaklaşık 500 sayfa) altındaysa tüm içeriği doğrudan isteme eklemek yeterlidir; prompt önbellekleme ile bu yaklaşım gecikmeyi 2 kattan fazla azaltıp maliyeti %90'a kadar düşürebilir</Kaynak>. Boru hattı, gömme modeli, dizin senkronizasyonu — bunların hepsi bakım yüküdür ve küçük veri için gereksizdir.
+
+<Karsilastirma>
+| Kriter | Uzun bağlam (tümünü isteme koy) | RAG boru hattı |
+|---|---|---|
+| Veri boyutu | Bağlam penceresine sığan derlemler | Pencereye sığmayan, büyüyen derlemler |
+| Güncelleme | İstemi değiştir, bitti | Dizin senkronizasyonu gerekir |
+| Erişim kontrolü | Yok — istemdeki her şey görünür | Getirme katmanında belge bazlı filtre |
+| Maliyet profili | Önbellekleme ile düşük, veriyle lineer büyür | Kurulum maliyeti yüksek, sorgu maliyeti sabit |
+| İşletme yükü | Neredeyse sıfır | Boru hattı izleme ve bakım ister |
+</Karsilastirma>
+
+Karar pratikte şöyle şekilleniyor: onboarding dokümanı, ürün SSS'i gibi sınırlı derlemlerde uzun bağlam kazanır. Binlerce belge, sürekli güncellenen içerik, kullanıcı bazlı yetkilendirme veya sorgu başına maliyet hassasiyeti varsa RAG kaçınılmazdır. Orta yol da meşrudur: küçük başlayıp veri büyüdüğünde RAG'e geçmek, ilk günden boru hattı kurmaktan daha sağlıklı bir mühendislik sırasıdır.
+
+## Üretimde RAG: ölçmeden geliştirmeyin
+
+RAG sisteminde iyileştirmenin ön koşulu, retrieval katmanını üretim katmanından ayrı ölçmektir. "Cevaplar kötü" şikâyeti tek başına eyleme dönüşmez; sorun parçanın hiç getirilememesinde mi, yanlış sıralanmasında mı, yoksa modelin doğru parçayı yanlış yorumlamasında mı — bunu ayırt edemeyen ekip, körlemesine parametre değiştirir. Getirme katmanını precision@k ve recall gibi klasik bilgi erişim metrikleriyle, üretim katmanını ise cevabın getirilen belgelere sadakati (faithfulness) ve soruyla ilgililiği üzerinden değerlendirin; metrik seçiminin genel çerçevesi [LLM değerlendirme metrikleri](/makale/llm-degerlendirme-metrikleri) yazısında.
+
+Değerlendirme seti için gerçek kullanıcı sorularından başlayın: birkaç düzine soru ve her biri için "doğru cevabın geçtiği belge parçası" etiketi, çoğu ekibin sandığından çok daha hızlı kurulur ve her mimari değişikliğin etkisini sayıya bağlar. Yukarıda aktardığımız Anthropic deneyinin gücü de tam buradan geliyordu: her iyileştirme adımı aynı ölçüm düzeneğinde, getirme hatası üzerinden raporlanmıştı.
+
+Son bir saha notu: RAG projelerinde en büyük kalite sıçramaları genellikle model değişikliğinden değil veri hattından gelir. Temiz metin çıkarımı, doğru chunk boyutu, belge meta verisinin korunması — bu "sıkıcı" işler, en gösterişli reranker'dan daha çok puan kazandırır. Boru hattınızı uçtan uca ölçüyorsanız, nereye yatırım yapacağınızı veri söyler; ölçmüyorsanız, moda ne söylüyorsa onu yaparsınız.

@@ -1,0 +1,67 @@
+{
+  "type": "article",
+  "slug": "prompt-injection-nedir-savunmalar",
+  "title": "Prompt Injection Nedir? Saldırılar ve Savunma Katmanları",
+  "dek": "Prompt injection nedir, doğrudan ve dolaylı türleri nasıl çalışır ve saldırıyı üretimde durduran savunma katmanları nelerdir? OWASP, CaMeL ve tasarım desenleriyle.",
+  "answerFirst": "Prompt injection, saldırganın kötü niyetli metni modele girdi olarak sokup asıl talimatları ezmesidir; doğrudan (kullanıcı sohbette yazar) veya dolaylı (model bir web sayfası, e-posta ya da dokümandan okur) olabilir. Tek bir sihirli çözüm yoktur; savunma katmanlı kurulur: en az yetki, girdi/çıktı filtreleme, güvenilmez içeriği ayırma, yüksek riskli eylemlerde insan onayı ve mimari izolasyon.",
+  "level": "orta",
+  "pillar": "guvenlik-kirmizi-takim",
+  "clusters": ["prompt-injection"],
+  "tags": ["prompt injection", "LLM güvenliği", "OWASP LLM Top 10", "dolaylı prompt injection", "ajan güvenliği", "CaMeL", "lethal trifecta"],
+  "faq": [
+    {
+      "q": "Prompt injection ile jailbreak aynı şey mi?",
+      "a": "Hayır, örtüşseler de farklıdırlar. Jailbreak modelin güvenlik/politika filtrelerini atlatmaya çalışır; prompt injection ise modele verilen talimatları, özellikle güvenilmez bir kaynaktan gelen metinle ele geçirmeyi hedefler. Bir RAG belgesine gömülen 'önceki talimatları unut' komutu klasik bir dolaylı injection örneğidir."
+    },
+    {
+      "q": "Girdi filtresi (input sanitization) prompt injection'ı çözer mi?",
+      "a": "Tek başına çözmez. Filtreler bilinen kalıpları yakalar ama doğal dilin sonsuz varyasyonu ve gizli/kodlanmış talimatlar filtreyi aşabilir. OWASP, filtrelemeyi en az yetki, çıktı doğrulama, içerik ayırma ve insan onayıyla birlikte katmanlı kullanmayı önerir; savunma tek katmana yaslanmaz."
+    },
+    {
+      "q": "Ajanıma araç (tool) bağladım, riskim ne kadar arttı?",
+      "a": "Belirgin biçimde arttı. Enjekte edilen talimat artık sadece yanlış metin üretmez; e-posta gönderebilir, dosya silebilir veya veri sızdırabilir. Özel veriye erişim, güvenilmez içerik ve dışarı iletişim bir arada bulunduğunda 'lethal trifecta' oluşur ve veri hırsızlığı için gereken tüm koşullar sağlanmış olur."
+    }
+  ],
+  "sources": [
+    {
+      "label": "LLM01:2025 Prompt Injection",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "publisher": "OWASP GenAI Security Project",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Design Patterns for Securing LLM Agents against Prompt Injections",
+      "url": "https://arxiv.org/abs/2506.08837",
+      "publisher": "Beurer-Kellner ve diğerleri, arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Defeating Prompt Injections by Design (CaMeL)",
+      "url": "https://arxiv.org/abs/2503.18813",
+      "publisher": "Debenedetti ve diğerleri, Google Research / arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection",
+      "url": "https://arxiv.org/abs/2302.12173",
+      "publisher": "Greshake ve diğerleri, arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "The lethal trifecta for AI agents",
+      "url": "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/",
+      "publisher": "Simon Willison",
+      "accessedAt": "2026-08-08",
+      "kind": "news"
+    }
+  ],
+  "seo": {
+    "description": "Prompt injection nedir, doğrudan/dolaylı türleri ve savunma katmanları: OWASP, CaMeL ve tasarım desenleriyle üretim odaklı rehber."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

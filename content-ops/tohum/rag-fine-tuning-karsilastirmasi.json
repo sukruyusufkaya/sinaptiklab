@@ -1,0 +1,67 @@
+{
+  "type": "article",
+  "slug": "rag-fine-tuning-karsilastirmasi",
+  "title": "RAG mı Fine-Tuning mi? Üretimden Gelen Karar Çerçevesi",
+  "dek": "RAG ile fine-tuning aynı sorunun rakip cevapları değil: bilgi sorununa RAG, davranış sorununa fine-tuning. Araştırma bulgularıyla net bir karar çerçevesi.",
+  "answerFirst": "Bilgi sorununa RAG, davranış sorununa fine-tuning. Modelin güncel veya kurumsal veriye dayanıp kaynak göstererek cevap vermesini istiyorsanız RAG ile başlayın; üslup, format ve dar görevde tutarlılık istiyorsanız fine-tuning devreye girer. Araştırmalar bilgi aktarımında RAG'ın tutarlı biçimde önde olduğunu, iki yöntem birlikte kullanıldığında ise kazançların toplandığını gösteriyor. Çoğu üretim sistemi için doğru sıra: önce RAG'ı kurmak, davranış açıklarını ölçmek, sonra gerekirse fine-tuning eklemektir.",
+  "level": "orta",
+  "pillar": "rag-bilgi-erisimi",
+  "clusters": ["rag-temelleri"],
+  "tags": ["RAG", "fine-tuning", "bilgi erişimi", "karar rehberi", "LLM", "üretim mimarisi"],
+  "faq": [
+    {
+      "q": "RAG mı fine-tuning mi daha ucuzdur?",
+      "a": "Maliyet profilleri farklıdır. RAG'da maliyet retrieval altyapısına (embedding, vektör veritabanı, indeks bakımı) ve uzayan bağlam nedeniyle sorgu başına token'a gider; fine-tuning'de veri hazırlama ve eğitim döngüsüne. Bilgi sık değişiyorsa RAG neredeyse her zaman daha ekonomiktir, çünkü indeks güncellemek yeniden eğitmekten ucuzdur."
+    },
+    {
+      "q": "RAG ve fine-tuning'i aynı anda kullanabilir miyim?",
+      "a": "Evet ve çoğu olgun üretim sistemi tam olarak bunu yapar. Gövdede 3 numaralı kaynak olarak verdiğimiz vaka çalışması, iki yöntemin doğruluk kazançlarının birikimli olduğunu gösteriyor. Yaygın desen: RAG güncel bilgiyi getirir, fine-tune edilmiş model o bilgiyi kurumsal format ve kaynak gösterme disipliniyle kullanır."
+    },
+    {
+      "q": "Şirket dokümanlarımı modele fine-tuning ile öğretebilir miyim?",
+      "a": "Önerilmez. Gövdede 2 numaralı kaynak olarak verdiğimiz karşılaştırmalı çalışma, modellerin denetimsiz ince ayarla yeni olgusal bilgiyi öğrenmekte zorlandığını ve RAG'ın bilgi aktarımında tutarlı biçimde daha iyi sonuç verdiğini gösteriyor. Dokümanlar değiştikçe yeniden eğitim maliyeti de eklenince, doküman soru-cevabı için doğru mimari RAG'dır."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis vd., NeurIPS 2020)",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Fine-Tuning or Retrieval? Comparing Knowledge Injection in LLMs (Ovadia vd., 2024)",
+      "url": "https://arxiv.org/abs/2312.05934",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "RAG vs Fine-tuning: Pipelines, Tradeoffs, and a Case Study on Agriculture (Balaguer vd., 2024)",
+      "url": "https://arxiv.org/abs/2401.08406",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "What is RAG (Retrieval-Augmented Generation)?",
+      "url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/",
+      "publisher": "AWS",
+      "accessedAt": "2026-08-08",
+      "kind": "vendor"
+    },
+    {
+      "label": "Supervised fine-tuning — OpenAI API Guide",
+      "url": "https://developers.openai.com/api/docs/guides/supervised-fine-tuning",
+      "publisher": "OpenAI",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "RAG mı fine-tuning mi? Araştırma bulguları ve üretim deneyimiyle hangi durumda hangisini seçeceğinizi anlatan kaynaklı karar rehberi."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

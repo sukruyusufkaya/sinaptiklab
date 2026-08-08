@@ -1,0 +1,74 @@
+{
+  "type": "article",
+  "slug": "vektor-veritabani-nedir-secim-rehberi",
+  "title": "Vektör Veritabanı Nedir? Hangisini Ne Zaman Seçmelisiniz?",
+  "dek": "Vektör veritabanı, gömme vektörleriyle benzerlik araması yapan sistemdir. HNSW'den pgvector'a, Qdrant'tan Pinecone'a: hangi senaryoda hangisini seçeceğinizin kaynaklı rehberi.",
+  "answerFirst": "Vektör veritabanı, metin ve görsellerden çıkarılan gömme vektörlerini (embedding) saklayıp yaklaşık en yakın komşu (ANN) indeksleriyle milisaniyeler içinde benzerlik araması yapan sistemdir. Semantik aramanın ve RAG'ın bellek katmanıdır. Seçimi ölçek, mevcut altyapı ve operasyon kapasitesi belirler: verisi Postgres'te duran çoğu ekip için pgvector doğru başlangıçtır; yüksek ölçek, hibrit arama veya sıfır operasyon gerekiyorsa Qdrant, Weaviate, Milvus ya da Pinecone gibi adanmış çözümler devreye girer.",
+  "level": "orta",
+  "pillar": "rag-bilgi-erisimi",
+  "clusters": ["vektor-veritabanlari"],
+  "tags": ["vektör veritabanı", "pgvector", "qdrant", "weaviate", "pinecone", "hnsw", "rag"],
+  "faq": [
+    {
+      "q": "RAG için mutlaka ayrı bir vektör veritabanı gerekir mi?",
+      "a": "Hayır. Küçük ve orta koleksiyonlarda pgvector gibi mevcut veritabanına eklenen bir uzantı, hatta bellekte tutulan basit bir indeks yeterli olabilir. Ayrı motor; ölçek, filtreli/hibrit arama ihtiyacı veya operasyon modeli gerektirdiğinde devreye girmelidir."
+    },
+    {
+      "q": "pgvector büyük ölçekte yetersiz mi kalır?",
+      "a": "Sınır, ANN indeksinin belleğe sığması ve indeks kurulum/bakım süreleriyle ilgilidir; herkese uyan tek bir eşik sayısı yoktur. Kendi verinizle recall ve gecikme ölçümü yapıp somut bir duvara çarptığınızda adanmış motora geçmek en sağlıklı yoldur."
+    },
+    {
+      "q": "En hızlı vektör veritabanı hangisi?",
+      "a": "Recall sabitlenmeden verilen hız rakamı anlamsızdır; her motor, parametreleriyle hız-doğruluk eğrisinin farklı noktalarına çekilebilir. Bağımsız ANN-Benchmarks ve metodolojisi açık vendor benchmark'ları aday listesi oluşturmak için kullanılmalı; nihai karar kendi verinizle yapılan testten çıkmalıdır."
+    }
+  ],
+  "sources": [
+    {
+      "label": "pgvector — Open-source vector similarity search for Postgres (README)",
+      "url": "https://github.com/pgvector/pgvector",
+      "publisher": "pgvector",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Qdrant — Vector Database Benchmarks (açık metodoloji)",
+      "url": "https://qdrant.tech/benchmarks/",
+      "publisher": "Qdrant",
+      "accessedAt": "2026-08-08",
+      "kind": "vendor"
+    },
+    {
+      "label": "Malkov & Yashunin — Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs",
+      "url": "https://arxiv.org/abs/1603.09320",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "ANN-Benchmarks — yaklaşık en yakın komşu algoritmaları karşılaştırma ortamı",
+      "url": "https://ann-benchmarks.com/",
+      "publisher": "ANN-Benchmarks",
+      "accessedAt": "2026-08-08",
+      "kind": "data"
+    },
+    {
+      "label": "Pinecone — Serverless architecture (resmi dokümantasyon)",
+      "url": "https://docs.pinecone.io/reference/architecture/serverless-architecture",
+      "publisher": "Pinecone",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Weaviate — Hybrid search (resmi dokümantasyon)",
+      "url": "https://docs.weaviate.io/weaviate/search/hybrid",
+      "publisher": "Weaviate",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "Vektör veritabanı nedir, nasıl çalışır? pgvector, Qdrant, Weaviate ve Pinecone'u karşılaştıran senaryo bazlı, kaynaklı seçim rehberi."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

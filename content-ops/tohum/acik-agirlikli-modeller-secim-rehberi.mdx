@@ -1,0 +1,55 @@
+## "Açık ağırlıklı" tam olarak ne demek?
+
+Açık ağırlıklı (open-weight) model, eğitilmiş ağırlık dosyaları herkesin indirip kendi donanımında çalıştırabileceği şekilde yayımlanan modeldir; eğitim verisi, veri işleme hattı ve eğitim kodu ise çoğunlukla kapalı kalır. Bu ayrım kelime oyunu değil. Open Source Initiative'in yayımladığı [Açık Kaynak YZ Tanımı](https://opensource.org/ai/open-source-ai-definition), bir sistemin "açık kaynak" sayılabilmesi için <Kaynak id="1">ağırlıkların yanında, eğitim verisine dair "yetkin bir kişinin büyük ölçüde eşdeğer bir sistem kurmasına yetecek ayrıntıda bilgi" ve eğitim ile çalıştırma kodunun tamamının da açık olmasını</Kaynak> şart koşar. Piyasadaki popüler ailelerin neredeyse hiçbiri bu çıtayı geçmez; bu yüzden bu rehber boyunca dürüst terimi kullanıyoruz: açık ağırlıklı.
+
+Pratikte bunun anlamı şu: modeli indirebilir, üzerinde [ince ayar (fine-tuning)](/makale/fine-tuning-nedir-ne-zaman-gerekir) yapabilir, istediğiniz altyapıda servis edebilirsiniz; ama modelin neyle eğitildiğini tam olarak bilemez, davranışını ancak kendi test setinizle denetleyebilirsiniz. Bu belirsizlik, ileride göreceğimiz "kendi değerlendirme setinizde ölçün" ilkesinin de temel gerekçesidir. LLM kavramının kendisine yeniyseniz önce [LLM nedir](/rehber/llm-nedir) rehberiyle başlamanızı öneririm; bu yazı, model ailelerini tanıyan ama aralarında seçim yapmak zorunda kalan mühendise göre kurgulandı.
+
+## 2026 manzarası: beş aile, iki lisans kampı
+
+Bugün üretimde ciddiye alınacak açık ağırlıklı ailelerin çekirdeği belli: Meta'nın Llama'sı, Alibaba'nın Qwen'i, OpenAI'nin gpt-oss'u, DeepSeek'in muhakeme hattı ve Mistral'in Apache serisi. [Llama 4](https://ai.meta.com/blog/llama-4-multimodal-intelligence/) ailesi <Kaynak id="2">5 Nisan 2025'te iki üyeyle çıktı: 16 uzmanlı, 17 milyar aktif / 109 milyar toplam parametreli Scout ve 128 uzmanlı, 17 milyar aktif / 400 milyar toplam parametreli Maverick</Kaynak>. [Qwen3](https://qwenlm.github.io/blog/qwen3/) ise <Kaynak id="4">29 Nisan 2025'te 0,6B'den 32B'ye altı yoğun (dense) model ve iki uzman karışımı varyantla (235B-A22B ve 30B-A3B) Apache 2.0 lisansı altında yayımlandı; 119 dil ve lehçe desteği duyuruldu</Kaynak>.
+
+OpenAI'nin [gpt-oss](https://huggingface.co/openai/gpt-oss-120b) çifti <Kaynak id="5">117 milyar toplam / 5,1 milyar aktif parametreli gpt-oss-120b ile 21 milyar toplam / 3,6 milyar aktif parametreli gpt-oss-20b'den oluşur ve Apache 2.0 ile dağıtılır</Kaynak>. DeepSeek-R1, saf pekiştirmeli öğrenmeyle muhakeme yeteneği kazandırılan ve <Kaynak id="6">hakem denetiminden geçerek Nature'da yayımlanan (cilt 645, s. 633-638, 2025)</Kaynak> ilk büyük açık ağırlıklı model olarak ayrı bir yerde durur. Mistral tarafında güncel kadroyu [resmi model dokümantasyonu](https://docs.mistral.ai/getting-started/models/models_overview/) listeler; <Kaynak id="7">Mistral Small 4, Mistral Large 3 ve Ministral 3 serisi Apache 2.0 ile açıktır</Kaynak>. Bu tablo hızla eskir; ama aşağıdaki seçim çerçevesi eskimez.
+
+## Lisans: ilk elemeyi burada yapın
+
+Model seçiminde ilk filtre benchmark skoru değil lisanstır; çünkü yayına aldıktan sonra değiştirmesi en pahalı bileşen budur. Apache 2.0 kampı (Qwen3, gpt-oss, Mistral'in açık serisi) ticari kullanım, türev model ve yeniden dağıtım için ek koşul getirmez. Llama ise kendi topluluk lisansıyla gelir: <Kaynak id="3">ürünlerinizin aylık aktif kullanıcı sayısı 700 milyonu aşıyorsa Meta'dan ayrıca lisans talep etmeniz gerekir; ayrıca "Built with Llama" ibaresini görünür biçimde sergilemek ve Llama'dan türetilen modellerin adını "Llama" ile başlatmak zorunludur</Kaynak>. Eşik çoğu şirket için teorik olsa da kurumsal tedarik süreçlerinde özel lisans metni ek hukuk mesaisi demektir; Apache 2.0 kelimenin tam anlamıyla kapı açar.
+
+<Karsilastirma>
+| Lisans | Örnek modeller | Ticari kullanım | Dikkat edilecekler |
+|---|---|---|---|
+| Apache 2.0 | Qwen3, gpt-oss, Mistral Small 4 | Koşulsuz | — |
+| Llama Topluluk Lisansı | Llama 4 Scout / Maverick | Eşik altında serbest | Atıf ve adlandırma şartları, kullanıcı eşiği |
+| Karma katalog | Mistral'in tüm kadrosu | Modele göre değişir | Aynı sağlayıcıda birden çok lisans olabilir |
+</Karsilastirma>
+
+Genelleme tuzağına düşmeyin: <Kaynak id="7">Mistral kataloğunda Apache 2.0 modellerin yanında değiştirilmiş MIT lisanslı Mistral Medium 3.5 ve ticari kullanıma kapalı (CC BY-NC) Voxtral TTS bir arada durur</Kaynak>. "Bu sağlayıcı açıktır" cümlesi hukuki bir bilgi değildir; model kartındaki lisansı tek tek okuyun. Veriniz yurt dışına çıkamıyorsa açık ağırlıklı modeli kendi altyapınızda çalıştırmak [KVKK uyumu](/makale/kvkk-yapay-zeka-uyum-rehberi) açısından da en temiz çözümdür.
+
+## Donanım: toplam parametreye değil aktif parametreye bakın
+
+Donanım planında doğru soru "model kaç milyar?" değil, "çıkarım anında kaç parametre aktif ve nicemlenmiş (quantized) dosya belleğe sığıyor mu?" sorusudur. Uzman karışımı (Mixture-of-Experts, MoE) mimarilerde toplam ile aktif parametre arasındaki makas iyice açıldı. gpt-oss-120b bunun ders kitabı örneği: <Kaynak id="5">117 milyar toplam parametreye rağmen jeton başına 5,1 milyar parametre aktiftir; MoE ağırlıklarına uygulanan MXFP4 nicemleme sayesinde tek bir 80 GB'lık GPU'ya (NVIDIA H100 veya AMD MI300X) sığar, küçük kardeşi gpt-oss-20b ise 16 GB bellekte çalışır</Kaynak>. Meta da aynı sınıfta iddialı: <Kaynak id="2">Scout, Int4 nicemlemeyle tek H100'e sığacak şekilde tasarlandı</Kaynak>.
+
+Bu sayıların pratik çevirisi şu: 16 GB bellekli bir iş istasyonu bugün 20B sınıfı bir MoE modeli, 80 GB'lık tek bir kart 120B sınıfını kaldırıyor. Mütevazı donanım için ayrıca küçük MoE'ler var: Qwen3-30B-A3B'de <Kaynak id="4">30 milyar toplam parametrenin yalnızca 3 milyarı aktiftir</Kaynak>; bu, dizüstü sınıfı makinelerde şaşırtıcı bir kalite/maliyet oranı demektir. Satın alma kararı vermeden önce adayları kendi makinenizde görmek istiyorsanız [Ollama ile yerel LLM çalıştırma](/uygulama/ollama-ile-yerel-llm-calistirma) rehberindeki kurulumla bir öğleden sonra içinde üç dört modeli deneyebilirsiniz.
+
+## Görev uyumu: liderlik tablosu değil kendi test setiniz
+
+Nihai kararı genel benchmark sıralaması değil, kendi görev dağılımınızdan örneklenmiş bir değerlendirme seti vermeli; çünkü genel skorlar sizin hukuk metinlerinizi, çağrı merkezi dökümlerinizi veya alan jargonunuzdaki Türkçeyi temsil etmez. Yine de aile seçiminde işe yarayan sinyaller var. Muhakeme ağırlıklı işlerde (matematik, kod, çok adımlı planlama) DeepSeek-R1 hattı önemlidir, çünkü <Kaynak id="6">insan eliyle hazırlanmış akıl yürütme örneklerine dayanmadan, pekiştirmeli öğrenmeyle öz-denetim ve doğrulama davranışları geliştirdiği hakemli yayında gösterildi</Kaynak>. Çok dilli işlerde Qwen3'ün <Kaynak id="4">119 dil desteği</Kaynak> iyi bir başlangıç sinyalidir; ama "destekliyor" ile "sizin alanınızda Türkçesi iyi" aynı şey değildir — bunu ancak [kendi değerlendirme metrikleriniz](/makale/llm-degerlendirme-metrikleri) söyler.
+
+<Uyari tip="tuzak">
+Uzun bağlam iddialarını etikette yazan sayıyla satın almayın. <Kaynak id="2">Llama 4 Scout, 10 milyon jetonluk bağlam penceresiyle duyuruldu</Kaynak>; ancak bir modelin bu uzunluktaki bilgiyi fiilen kullanıp kullanamadığı ayrı bir ölçüm konusudur. Kendi belgelerinizle uzun bağlam testi yapmadan mimari karar vermeyin.
+</Uyari>
+
+Modeli göreve uydurmanın yolu her zaman ince ayar da değildir; çoğu kurumsal senaryoda önce erişim katmanı kurmak daha ucuz ve geri alınabilirdir. Bu kararın çerçevesi için [RAG mı, fine-tuning mi?](/makale/rag-fine-tuning-karsilastirmasi) yazısına bakın.
+
+## Sahada işleyen karar sırası
+
+Üretime giden seçim tek turda bitmez; sahada işleyen sıra şudur: önce lisansla eleyin, sonra donanım bütçesiyle daraltın, en son kaliteyle sıralayın.
+
+1. **Lisans filtresi.** Hukuk ekibinizin onaylayacağı lisansları baştan belirleyin. Şart Apache 2.0 ise kısa liste kendiliğinden oluşur.
+2. **Donanım zarfı.** Elinizdeki belleğe nicemlenmiş haliyle sığan modelleri listeleyin; MoE modellerde aktif parametre sayısına bakın.
+3. **Aileler arası kısa liste.** Farklı ailelerden aday seçin; aynı ailenin iki boyutunu kıyaslamak aileler arası farkı göstermez.
+4. **Kendi eval setinizde ölçün.** Gerçek görevlerinizden örneklenmiş küçük bir set bile, genel benchmark'ın asla söyleyemeyeceğini bir günde söyler.
+5. **Dağıtımı planlayın.** Prototip için yerel araçlar yeterlidir; ölçekli servis ayrı bir mühendislik iştir ve model seçimini geriye dönük etkileyebilir.
+
+<Uyari tip="dikkat">
+Bu rehberdeki sürüm adları ve sayılar yazım tarihinde birincil kaynaklardan doğrulandı; açık model ekosisteminde altı ay önceki bilgi eski bilgidir. Karar vermeden önce bağlantısını verdiğimiz model kartlarının ve lisans metinlerinin güncel halini mutlaka açıp okuyun.
+</Uyari>

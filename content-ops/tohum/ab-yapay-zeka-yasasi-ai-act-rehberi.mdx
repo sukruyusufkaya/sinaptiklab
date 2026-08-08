@@ -1,0 +1,53 @@
+## AI Act nedir, kimi kapsar?
+
+AI Act, yapay zeka sistemlerini yasaklanan uygulamalardan minimal riske uzanan bir skalada sınıflandırıp her sınıfa ayrı yükümlülük bağlayan, dünyanın ilk kapsamlı yatay YZ düzenlemesidir. Resmi kimliği: <Kaynak id="1">13 Haziran 2024 tarihli ve 2024/1689 sayılı tüzük; 12 Temmuz 2024'te AB Resmî Gazetesi'nde yayımlandı</Kaynak> ve <Kaynak id="2">1 Ağustos 2024'te yürürlüğe girdi</Kaynak>. Tam metne [EUR-Lex üzerinden](https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng) ulaşılır.
+
+Adındaki "yapay zeka" ne kadar genişse kapsamı da o kadar geniştir; tüzük tek bir teknolojiyi değil, kullanım amacına göre sınıflandırılmış sistemleri düzenler. Türkiye'den bakan bir ekip için kritik nokta ise kapsamın sınır ötesi olmasıdır. Tüzük yalnızca AB'de kurulu şirketlere değil; sistemini AB pazarına süren sağlayıcılara ve sistemin çıktısı AB'de kullanılan durumlara da uygulanır. Somutlaştıralım: İstanbul'da geliştirdiğiniz CV eleme aracını Almanya'daki bir müşteriye SaaS olarak satıyorsanız, sunucularınız Türkiye'de olsa bile AI Act muhatabınızdır. GDPR ile tanıdığımız Brüksel etkisi burada da işliyor; ihracat yapan yazılım ekiplerinin tüzüğü "AB iç meselesi" diye rafa kaldırma lüksü yok.
+
+Yükümlülükler rol bazlıdır: modeli/sistemi geliştirip piyasaya süren "sağlayıcı" (provider) en ağır yükü taşır; sistemi kendi operasyonunda kullanan "uygulayıcı" (deployer) daha hafif ama gerçek yükümlülüklere sahiptir. Hazır bir [LLM](/rehber/llm-nedir) üzerine ürün kuran ekipler çoğunlukla deployer'dır; ancak modeli önemli ölçüde değiştirir veya kendi markanızla yüksek riskli alanda sunarsanız sağlayıcı rolüne geçebilirsiniz — rol tespiti bu yüzden uyum çalışmasının ilk adımıdır.
+
+## Dört risk sınıfı pratikte ne anlama geliyor?
+
+Sınıf, sistemin kullanım amacına göre belirlenir; aynı model farklı bağlamlarda farklı sınıfa düşer. <Kaynak id="3">Kabul edilemez risk katmanında dokuz yasak uygulama</Kaynak> vardır: zarar veren manipülasyon, kırılganlıkların istismarı, sosyal skorlama, iş yerinde ve eğitimde duygu tanıma, internetten ayrım gözetmeksizin yüz görseli kazıyarak veritabanı kurma ve rızasız müstehcen görüntü üretimi bunların başında gelir. <Kaynak id="3">Yüksek risk sınıfına ise kritik altyapı, işe alımda CV eleme, kredi skorlama, biyometrik kimliklendirme ve eğitime erişim kararları</Kaynak> gibi kullanım alanları girer.
+
+<Karsilastirma>
+
+| Risk sınıfı | Örnek | Yükümlülük |
+|---|---|---|
+| Kabul edilemez | Sosyal skorlama, iş yerinde duygu tanıma | Tam yasak |
+| Yüksek risk | CV eleme, kredi skorlama, biyometrik kimliklendirme | Risk yönetimi, veri yönetişimi, insan gözetimi, uygunluk değerlendirmesi, CE işareti |
+| Şeffaflık riski | Chatbot, sentetik içerik, deepfake | Bildirim ve makine tarafından okunabilir işaretleme |
+| Minimal risk | Spam filtresi, oyun YZ'si | Ek yükümlülük yok |
+
+</Karsilastirma>
+
+<Kaynak id="3">Komisyon'un değerlendirmesine göre AB'de kullanılan sistemlerin büyük çoğunluğu minimal risk sınıfındadır</Kaynak>; yani çoğu ekibin gerçek işi, portföyündeki hangi kullanım senaryosunun üstteki iki satıra değdiğini dürüstçe tespit etmektir. Deneyimimiz şu: ekipler ürünlerini "sadece öneri veriyor" diye düşük riskte konumlandırmaya eğilimli; oysa çıktı bir insanın işe alımını, kredisini veya eğitimini etkiliyorsa öneri etiketi sizi yüksek risk sınıfından çıkarmaz.
+
+## Takvim: neler yürürlükte, neler ertelendi?
+
+Bugün itibarıyla yasaklar, GPAI kuralları ve şeffaflık yükümlülükleri uygulamada; yüksek risk yükümlülükleri ise ertelendi. Takvim iki kez şekillendi: orijinal tüzük kademeli bir geçiş öngörmüştü, ardından <Kaynak id="5">6 Mayıs 2026'da kurumlar arası uzlaşmaya varılan ve 13 Mayıs'ta üye devletlerce teyit edilen Digital Omnibus paketi yüksek risk tarihlerini öteledi</Kaynak>. Komisyonun [resmi uygulama takvimi](https://ai-act-service-desk.ec.europa.eu/en/ai-act/timeline/timeline-implementation-eu-ai-act) şu durumu gösteriyor:
+
+- <Kaynak id="2">**2 Şubat 2025:** Genel hükümler ve yasak uygulamalar</Kaynak>
+- <Kaynak id="2">**2 Ağustos 2025:** GPAI kuralları ve yönetişim yapıları</Kaynak>
+- <Kaynak id="2">**2 Ağustos 2026:** Madde 50 şeffaflık yükümlülükleri ve yaptırım döneminin başlangıcı</Kaynak>
+- <Kaynak id="2">**2 Aralık 2026:** Deepfake/CSAM odaklı yeni yasaklar; piyasadaki sentetik içerik sistemleri için geçiş süresinin sonu</Kaynak>
+- <Kaynak id="2">**2 Aralık 2027:** Ek III'teki bağımsız yüksek riskli sistemler</Kaynak> (erteleme öncesi tarih 2 Ağustos 2026 idi)
+- <Kaynak id="2">**2 Ağustos 2028:** Regüle ürünlere gömülü yüksek riskli sistemler</Kaynak>
+
+Ertelemeyi "rahatlama" olarak okumak sahada gördüğümüz en riskli yorum. Yüksek risk gereksinimleri — kalite yönetim sistemi, veri yönetişimi, loglama, insan gözetimi, uygunluk değerlendirmesi — tipik bir kurumsal üründe aylarla değil çeyreklerle ölçülen kurulum işidir; Aralık 2027 bu iş için bol bir tarih değildir.
+
+## GPAI modeli sağlayıcıları ne yapmalı?
+
+Genel amaçlı model kuralları ertelenmedi: <Kaynak id="2">GPAI yükümlülükleri 2 Ağustos 2025'ten beri uygulanıyor ve 2 Ağustos 2026 itibarıyla Komisyonun yaptırım yetkisi de devrede</Kaynak>. Sağlayıcılar teknik dokümantasyon hazırlamak, AB telif hukukuna uyum politikası yürütmek ve eğitim verisinin yeterince ayrıntılı bir özetini yayımlamakla yükümlü; sistemik risk eşiğini aşan modeller için ek değerlendirme, olay raporlama ve siber güvenlik önlemleri gerekiyor. Uygulamada büyük sağlayıcılar bu yükümlülükleri Komisyon nezdindeki gönüllü uygulama kurallarına (code of practice) yaslanarak karşılıyor; bir modelin bu çerçeveye taahhüt verip vermediği, kurumsal alımlarda artık teknik seçim kriterlerinin arasında.
+
+Bunun Türkiye'deki mühendisliğe iki pratik yansıması var. Birincisi model seçiminde tedarik zinciri sorusu: kullandığınız modelin sağlayıcısı GPAI yükümlülüklerini karşılıyor mu, dokümantasyonunu yayımlıyor mu? [Açık ağırlıklı model seçerken](/makale/acik-agirlikli-modeller-secim-rehberi) lisans metni kadar bu uyum dokümantasyonuna da bakmak gerekiyor; tüzük, belirli şartları sağlayan açık kaynak modellere kısmi muafiyetler tanır. İkincisi, kendi modelini eğitip AB'ye sunmayı planlayan ekipler için eşik analizi: ince ayar (fine-tuning) yapan herkes GPAI sağlayıcısı olmaz, ancak modeli önemli ölçüde değiştirip piyasaya sürerseniz yükümlülük zinciri size uzanabilir. Bu ayrımın belgelenmesi — neyi değiştirdiniz, hangi veriyle, hangi değerlendirmeyle — hem uyum hem mühendislik hijyeni açısından [değerlendirme metrikleriyle](/makale/llm-degerlendirme-metrikleri) kayıt altına alınmalıdır.
+
+## Cezalar ve Türkiye'den bakış
+
+Ceza tavanları GDPR'ın üzerindedir ve dünya cirosuna endekslidir: <Kaynak id="4">yasak uygulamalar için 35 milyon avroya veya küresel yıllık cironun %7'sine kadar; diğer yükümlülük ihlalleri için 15 milyon avro veya %3'e kadar; otoritelere yanlış/yanıltıcı bilgi vermek için 7,5 milyon avro veya %1'e kadar</Kaynak> idari para cezası öngörülür. <Kaynak id="4">KOBİ'ler için iki eşikten düşük olanı uygulanır</Kaynak> — ama %7'lik tavanın varlığı, uyumu hukuk departmanının değil yönetim kurulunun gündemine taşımıştır.
+
+AB'ye ürün gönderen bir Türk ekibi için gerçekçi yol haritası dört adımdır: (1) portföydeki her YZ özelliği için rol (sağlayıcı/uygulayıcı) ve risk sınıfı tespiti; (2) bugün yürürlükte olan Madde 50 için chatbot bildirimi ve sentetik içerik işaretlemesinin ürüne eklenmesi; (3) yüksek risk adayı özellikler için Aralık 2027 hedefli veri yönetişimi ve insan gözetimi tasarımı; (4) uyum kanıtlarının — değerlendirme raporları, veri kaynağı kayıtları, karar logları — mühendislik hattında otomatik üretilmesi. Türkiye pazarında çalışıyorsanız bu tablonun yanına yerel mevzuatı da koymanız gerekir; veri tarafındaki yükümlülükler için [KVKK ve yapay zeka uyum rehberimiz](/makale/kvkk-yapay-zeka-uyum-rehberi) bu yazının ikizidir.
+
+<Uyari tip="dikkat">
+AI Act uyumu tek seferlik sertifika değil, yaşayan bir süreçtir: Digital Omnibus örneğinin gösterdiği gibi takvim ve kapsam hâlâ hareket halinde. Uyum planınızı belirli tarihlere değil, Komisyonun resmi takvim sayfasını izleyen bir gözden geçirme ritmine bağlayın.
+</Uyari>

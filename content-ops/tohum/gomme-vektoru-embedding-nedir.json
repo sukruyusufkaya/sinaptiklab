@@ -1,0 +1,71 @@
+{
+  "type": "article",
+  "slug": "gomme-vektoru-embedding-nedir",
+  "title": "Gömme Vektörü (Embedding) Nedir? Nasıl Çalışır?",
+  "dek": "Gömme vektörü (embedding), metni anlamı taşıyan sayılara çevirir. Nasıl üretildiğini, model ve boyut seçimini, RAG hattındaki rolünü üretim gözüyle anlatıyoruz.",
+  "answerFirst": "Gömme vektörü (embedding), bir metnin — kelime, cümle ya da doküman — anlamını yüzlerce boyutlu bir sayı dizisi olarak temsil eder. Anlamca yakın metinler vektör uzayında birbirine yakın düşer; bu sayede benzerlik, arama ve kümeleme işlemleri matematiksel olarak yapılabilir. Modern embedding modelleri Transformer tabanlıdır ve semantik arama, RAG, öneri ve sınıflandırma sistemlerinin temelini oluşturur. Model seçimi, vektör boyutu ve maliyet dengesi üretimde en kritik kararlardır.",
+  "level": "giris",
+  "pillar": "rag-bilgi-erisimi",
+  "clusters": ["embedding-vektor-temsiller"],
+  "tags": ["embedding", "gömme vektörü", "semantik arama", "vektör arama", "RAG", "MTEB"],
+  "faq": [
+    {
+      "q": "Embedding ile token arasındaki fark nedir?",
+      "a": "Token, metnin modele girmeden önce bölündüğü küçük parçadır; embedding ise metnin modelden geçtikten sonra kazandığı anlamsal sayı temsili. Token bir ön işleme birimidir, embedding bir çıktıdır. İkisi sık karıştırılır ama boru hattında tamamen farklı aşamalarda yaşarlar."
+    },
+    {
+      "q": "Türkçe için hangi embedding modelini seçmeliyim?",
+      "a": "Tek bir doğru cevap yok. MTEB'in çok dilli sonuçları iyi bir başlangıç noktasıdır; ancak benchmark verisi hiçbir modelin tüm görevlerde baskın olmadığını gösteriyor. Son kararı, kendi gerçek sorgu-doküman çiftlerinizden kurduğunuz küçük bir retrieval testine dayandırın."
+    },
+    {
+      "q": "Vektör boyutu büyükse model daha mı iyidir?",
+      "a": "Hayır. Boyut, kalite ile maliyet arasında bir dengedir; her ek boyut depolama, bellek ve sorgu süresine yansır. Büyük modellerin vektörleri resmi olarak kısaltılabilir ve çoğu senaryoda kısaltılmış büyük model iyi bir orta noktaya oturur. Kararı kendi test setinizde ölçerek verin."
+    },
+    {
+      "q": "Embedding'leri nerede saklamalıyım?",
+      "a": "Küçük hacimlerde tek dosyalık çözümler bile yeterlidir; ölçek büyüyünce yaklaşık en yakın komşu indeksli bir vektör veritabanı gerekir. Seçim ölçütlerini ve araç karşılaştırmasını vektör veritabanı rehberimizde topladık."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Vector embeddings — OpenAI API dokümantasyonu",
+      "url": "https://developers.openai.com/api/docs/guides/embeddings",
+      "publisher": "OpenAI",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Mikolov ve ark., Efficient Estimation of Word Representations in Vector Space (word2vec)",
+      "url": "https://arxiv.org/abs/1301.3781",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Reimers & Gurevych, Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+      "url": "https://arxiv.org/abs/1908.10084",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Muennighoff ve ark., MTEB: Massive Text Embedding Benchmark",
+      "url": "https://arxiv.org/abs/2210.07316",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Get text embeddings — Google Cloud Vertex AI dokümantasyonu",
+      "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings",
+      "publisher": "Google Cloud",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "Gömme vektörü (embedding) nedir, nasıl üretilir? Model ve boyut seçimi, kosinüs benzerliği ve RAG'daki rolü — kaynaklı, üretim odaklı rehber."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

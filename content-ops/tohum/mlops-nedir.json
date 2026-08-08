@@ -1,0 +1,64 @@
+{
+  "type": "article",
+  "slug": "mlops-nedir",
+  "title": "MLOps Nedir? Üretimde Makine Öğrenmesi Disiplini",
+  "dek": "MLOps, makine öğrenmesi modellerini üretimde güvenilir çalıştırma disiplinidir. Olgunluk seviyeleri, temel bileşenler ve araç ekosistemi — saha deneyimiyle, kaynaklı anlatım.",
+  "answerFirst": "MLOps (Machine Learning Operations), makine öğrenmesi modellerini üretim ortamına taşıma, orada güvenilir biçimde çalıştırma ve sürekli iyileştirme disiplinidir. DevOps pratiklerini makine öğrenmesinin kendine özgü sorunlarıyla — veri bağımlılıkları, model bozulması, yeniden eğitim — birleştirir. Kapsamı tek seferlik model eğitimi değil; veri doğrulamadan dağıtıma, izlemeden otomatik yeniden eğitime uzanan yaşam döngüsünün tamamıdır. Amaç, notebook'ta çalışan modeli üretimde de aynı güvenle çalışan bir sisteme dönüştürmektir.",
+  "level": "giris",
+  "pillar": "mlops-altyapi",
+  "clusters": ["mlops-temelleri"],
+  "tags": ["mlops", "makine öğrenmesi", "devops", "model dağıtımı", "sürekli eğitim", "model izleme", "mlflow"],
+  "faq": [
+    {
+      "q": "MLOps ile DevOps arasındaki fark nedir?",
+      "a": "DevOps yalnızca kodu yönetir; MLOps'ta kodun yanına veri ve model eklenir. Veri de versiyonlanır ve test edilir; model üretimde hata fırlatmadan bozulabildiği için sürekli izleme ve yeniden eğitim süreçleri gerekir. Testler deterministik değildir — veri doğrulama ve model kalite eşikleri test sürecinin parçası olur."
+    },
+    {
+      "q": "Küçük bir ekip için MLOps fazla değil mi?",
+      "a": "Hayır — olgunluk seviyesi kavramı tam da bunun için var. Küçük ekip için MLOps, deney takibi ve kod-veri-model versiyonlamasından ibaret olabilir; bu ikisi neredeyse sıfır maliyetle kurulur ve tekrarlanabilirlik krizini kökten çözer. Otomasyon yatırımı, yeniden eğitim sıklığı arttıkça devreye girer."
+    },
+    {
+      "q": "MLOps öğrenmeye hangi araçla başlamalı?",
+      "a": "Araçtan önce süreçle başlayın: versiyonlama ve deney takibi. Araç olarak açık kaynak MLflow, deney takibi ile model kayıt defterini tek pakette sunduğu için yaygın bir ilk adımdır; konteynerleştirme için Docker temel beceridir. Gövdedeki bileşenler bölümü hangi aracın hangi problemi çözdüğünü anlatır."
+    },
+    {
+      "q": "MLOps ile LLMOps aynı şey mi?",
+      "a": "Kesişirler ama merkezleri farklıdır: MLOps kendi modelini eğitip servis eden ekiplerin disiplinidir; LLMOps, hazır temel modeller üzerine kurulan uygulamaların prompt, değerlendirme ve maliyet operasyonuna odaklanır. Paylaştıkları çekirdek aynıdır: versiyonla, ölç, izle, otomatikleştir."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Hidden Technical Debt in Machine Learning Systems (Sculley vd., NeurIPS 2015)",
+      "url": "https://papers.nips.cc/paper_files/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+      "publisher": "NeurIPS Proceedings",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "MLOps: Continuous delivery and automation pipelines in machine learning",
+      "url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+      "publisher": "Google Cloud",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Machine Learning Operations (MLOps): Overview, Definition, and Architecture (Kreuzberger vd., 2022)",
+      "url": "https://arxiv.org/abs/2205.02302",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "MLflow Documentation — ML Platform Overview",
+      "url": "https://mlflow.org/docs/latest/ml/",
+      "publisher": "MLflow",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "MLOps nedir, DevOps'tan nasıl ayrışır? Olgunluk seviyeleri, temel bileşenler ve araçlar — üretim deneyimiyle yazılmış kaynaklı rehber."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

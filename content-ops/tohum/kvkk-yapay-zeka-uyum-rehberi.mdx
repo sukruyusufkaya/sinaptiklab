@@ -1,0 +1,48 @@
+## KVKK yapay zekaya hangi belgelerle bakıyor?
+
+Türkiye'de "yapay zeka maddesi" içeren bir kanun henüz yok; uyum, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun genel ilkelerinin YZ senaryolarına uygulanmasıyla kurulur. Kişisel Verileri Koruma Kurumu bu boşluğu üç belgeyle dolduruyor. İlki, geliştirici, üretici, servis sağlayıcı ve karar alıcılar için genel ilkeleri sıralayan [Yapay Zekâ Alanında Kişisel Verilerin Korunmasına Dair Tavsiyeler](https://www.kvkk.gov.tr/SharedFolderServer/CMSFiles/25a1162f-0e61-4a43-98d0-3e7d057ac31a.pdf) belgesi. İkincisi, <Kaynak id="1">24 Kasım 2025'te yayımlanan "Üretken Yapay Zekâ ve Kişisel Verilerin Korunması Rehberi (15 Soruda)"</Kaynak> — üretken sistemlerin yaşam döngüsünü, riskleri ve veri sorumlusuna düşen tedbirleri soru-cevap formatında işler. Üçüncüsü ise <Kaynak id="2">5 Mart 2026'da yayımlanan "İş Yerlerinde Üretken Yapay Zekâ Araçlarının Kullanımı"</Kaynak> belgesi; çalışanların ChatGPT benzeri herkese açık araçları iş süreçlerinde kullanmasının doğurduğu riskleri ele alır.
+
+Bu rehberler mevzuat değil; doğrudan ceza doğurmazlar. Ama pratikte Kurulun bir veri ihlali incelemesinde "gerekli teknik ve idari tedbirleri aldınız mı?" sorusuna hangi ölçütle bakacağını gösterirler. Sahada bunun anlamı şu: rehberde adı geçen bir tedbiri (etki değerlendirmesi, veri minimizasyonu, erişim kontrolü) almadıysanız ve bir olay yaşarsanız, savunmanız baştan zayıftır. [LLM](/rehber/llm-nedir) tabanlı bir ürün kuran ekibin bu üç belgeyi gereksinim dokümanı gibi okumasını öneririz — hukuk metni gibi değil.
+
+## LLM API'sine kişisel veri göndermek yurt dışına aktarım mıdır?
+
+Kural olarak evet: sunucusu yurt dışında olan bir modele kişisel veri içeren prompt gönderdiğinizde, KVKK'nın 9. maddesi anlamında yurt dışına veri aktarımı yaparsınız. Bu maddenin rejimi yakın zamanda baştan yazıldı: <Kaynak id="4">12 Mart 2024'te Resmî Gazete'de yayımlanan 7499 sayılı Kanun, KVKK'nın 9. maddesini değiştirdi ve yeni rejim 1 Haziran 2024'te yürürlüğe girdi</Kaynak>. Yeni yapı üç kademelidir: önce hedef ülke/sektör için yeterlilik kararı aranır; yoksa uygun güvencelerden biri (standart sözleşme, bağlayıcı şirket kuralları, taahhütname) kullanılır; o da yoksa yalnızca arızi, süreklilik taşımayan aktarımlar için istisna halleri devreye girer.
+
+Mühendislik ekipleri için fiili yol standart sözleşmedir. Kritik operasyonel detay: <Kaynak id="4">standart sözleşme, imzaların tamamlanmasından itibaren beş iş günü içinde Kuruma bildirilmek zorundadır</Kaynak> ve bildirimi atlamanın kendisi idari para cezası sebebidir. Vendor'ın kendi DPA'sını imzalamak yetmez; Kurulun onayladığı standart sözleşme metni kullanılır.
+
+Eski rejimin neden terk edildiğini gösteren saha verisi de çarpıcı: <Kaynak id="4">Kanunun yürürlüğe girdiği 2016'dan 1 Haziran 2024'e kadar Kurula 86 taahhütname başvurusu yapılmış, yalnızca 10'u kabul edilmiştir</Kaynak>. Yani sekiz yıl boyunca hukuka uygun aktarımın ana kapısı fiilen kapalıydı ve piyasa büyük ölçüde açık rızayla idare etti. Yeni rejim bu darboğazı açmak için tasarlandı; ayrıntılar Kurumun [Yurt Dışına Aktarım Rehberi'nde](https://www.kvkk.gov.tr/Icerik/8142/Kisisel-Verilerin-Yurt-Disina-Aktarilmasi-Rehberi) işlenir.
+
+## Üretken YZ rehberleri mühendisten ne bekliyor?
+
+Beklenti listesi, üretim ortamı kuran herkese tanıdık gelecek maddelerden oluşuyor. On beş soruluk rehber üç katmanda ilerliyor: üretken sistemlerin içerik üretim süreci ve yaşam döngüsü, bu süreçlerdeki veri işleme faaliyetlerinin 6698 sayılı Kanun karşısındaki durumu ve bireysel kullanıcılar ile ebeveynlerin alması gereken önlemler. Kurumun genel çizgisi, sistemlerin <Kaynak id="1">"insan merkezli, güvenli, sorumlu ve toplumsal faydayı gözeten"</Kaynak> bir yaklaşımla geliştirilmesi. Teknik ekibi ilgilendiren kısım ise somut tedbir listesi: rehber, veri sorumlularına <Kaynak id="1">veri koruma etki değerlendirmesi yapılmasını, mahremiyet artırıcı teknolojilerin kullanılmasını, tasarımdan itibaren ve varsayılan olarak mahremiyet yaklaşımlarının benimsenmesini ve üretken yapay zekâya özgü zafiyetlere karşı teknik kontroller uygulanmasını</Kaynak> öneriyor. "Üretken YZ'ye özgü zafiyet" ifadesinin sahadaki karşılığı bellidir: [prompt injection](/makale/prompt-injection-nedir-savunmalar), sistem talimatı sızdırma ve eğitim/bağlam verisinin çıktıya taşınması. Yani KVKK uyumu ile LLM güvenliği aynı kontrol setinde buluşur.
+
+İş yeri belgesi ise farklı bir gerçekliğe işaret ediyor: <Kaynak id="2">üretken YZ araçlarının kullanımı çoğu kurumda resmi bir strateji olmaksızın, çalışanların bireysel tercihlerine göre şekilleniyor ve bu durum kurumsal düzeyde izlemeyi zorlaştırıyor</Kaynak>. Gölge YZ (shadow AI) diye bildiğimiz bu tablo, veri sorumlusunun hiç haberi olmadan kişisel verinin üçüncü taraf sunuculara akması demek. Belgenin örtük talebi net: yazılı bir YZ kullanım politikası, onaylı araç listesi, çalışan eğitimi ve kurumsal hesaplarla (eğitimde kullanım kapalı, retention kontrollü) çalışma. Bu dört başlığı kurmadan "çalışanlarımız zaten dikkatli" varsayımıyla ilerleyen kurumlar, ihlal bildirimini de çalışanın bireysel hatası üzerinden yaşıyor.
+
+## Uyumlu YZ mimarisi pratikte nasıl kurulur?
+
+Doğru sıra hukuki analizle değil, veri envanteriyle başlar: sisteme hangi veri giriyor, nerede işleniyor, nerede loglanıyor? Bunu bilmeden ne aktarım analizi ne etki değerlendirmesi yapılabilir. Üretim deneyimimizden süzülen karar sırası şu:
+
+1. **Envanter ve sınıflandırma:** Prompt, bağlam (RAG), eğitim verisi ve log akışlarındaki kişisel veriyi ayrı ayrı işaretleyin. [RAG](/rehber/rag-nedir) kullanıyorsanız indekslediğiniz dokümanlar da işleme kapsamındadır.
+2. **Hukuki dayanak:** Her akış için 5. ve 6. madde dayanağını belirleyin; özel nitelikli veri varsa mimariyi ona göre ayırın.
+3. **Aktarım kararı:** Yurt dışı API kullanılacaksa standart sözleşme sürecini işletin; kullanılmayacaksa [açık ağırlıklı bir modeli](/makale/acik-agirlikli-modeller-secim-rehberi) kendi altyapınızda barındırmak aktarım sorununu kökten çözer. Küçük ölçek için [Ollama ile yerel LLM çalıştırmak](/uygulama/ollama-ile-yerel-llm-calistirma) makul bir başlangıçtır.
+4. **Teknik tedbirler:** API çağrısı öncesi PII maskeleme/takma adlaştırma katmanı, RAG'da kullanıcı bazlı erişim kontrolü, log ve izleme verisinde saklama süresi (retention) politikası.
+
+<Uyari tip="kvkk">
+Gözlemlenebilirlik (tracing) araçları prompt ve yanıtları olduğu gibi saklar. LLM loglarınız da kişisel veri barındırır: aynı saklama süresi, erişim kontrolü ve aktarım analizine tabidirler. Uyumu prompt katmanında kurup log katmanında kaybetmek sahada en sık gördüğümüz mimari açıktır.
+</Uyari>
+
+## Sahada sık düşülen tuzaklar
+
+En pahalı hatalar sofistike olanlar değil, basit olanlardır. Denetim ve proje deneyimlerinde tekrar tekrar karşılaşılanlar:
+
+- **Ücretsiz/bireysel hesapla üretim işi yapmak.** Tüketici sürümlerinde girdiler varsayılan olarak model iyileştirmede kullanılabilir; kurumsal sözleşme ve veri işleme eki olmadan müşteri verisi girmek savunulamaz.
+- **Çıktıyı kişisel veri saymamak.** Model bir kişi hakkında metin üretiyorsa o çıktı da kişisel veridir; yanlışsa Kanunun doğruluk ilkesiyle çelişir. [Halüsinasyon](/makale/yapay-zeka-halusinasyonu-nedir) bu yüzden yalnızca kalite değil, uyum sorunudur.
+- **Standart sözleşmeyi imzalayıp bildirmemek.** Beş iş günü kuralı sözleşmenin kendisi kadar önemlidir; süreç sahibi belirlenmemişse bildirim genellikle unutulur.
+- **"Anonimleştirdik" varsayımı.** Maskelenmiş ama geri bağlanabilir veri kişisel veri olmaya devam eder; serbest metin alanlarında dolaylı tanımlayıcılar kalır.
+- **Rol karmaşası.** LLM sağlayıcısını her senaryoda "veri işleyen" varsaymak yanıltıcıdır: sağlayıcı girdileri kendi model geliştirmesinde kullanıyorsa artık sizin talimatınızla sınırlı çalışmıyordur. Sözleşmedeki veri kullanım maddeleri, rol tespitinin ve sorumluluk paylaşımının fiili belirleyicisidir.
+
+<Uyari tip="tuzak">
+KVKK uyumunu tek seferlik hukuki onay olarak ele almayın. Model, vendor veya bölge değişikliği aktarım analizini; yeni veri kaynağı eklemek etki değerlendirmesini yeniden tetikler. Uyumu dağıtım hattınıza (deployment checklist) bağlamak, yılda bir hatırlanan doküman olmaktan çıkarır.
+</Uyari>
+
+Regülasyon tarafında ufuk KVKK ile sınırlı değil: AB pazarına dokunan ürünlerde ayrıca [AB Yapay Zeka Yasası'nın (AI Act)](/makale/ab-yapay-zeka-yasasi-ai-act-rehberi) risk sınıflarını ve takvimini de yönetmeniz gerekir.

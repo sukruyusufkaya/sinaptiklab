@@ -1,0 +1,64 @@
+{
+  "type": "guide",
+  "slug": "rag-nedir",
+  "title": "RAG Nedir? Retrieval-Augmented Generation Rehberi",
+  "dek": "RAG (Retrieval-Augmented Generation) nedir, nasıl çalışır, ne zaman gerekir? Kurumsal veriyle konuşan LLM sistemleri için ölçüm verisine dayalı başlangıç rehberi.",
+  "answerFirst": "RAG (Retrieval-Augmented Generation, getirmeyle zenginleştirilmiş üretim), bir LLM'in cevap üretmeden önce harici bir bilgi kaynağından ilgili belgeleri getirip bağlamına eklemesidir. Model böylece eğitim verisinde olmayan kurumsal ve güncel bilgiyle, kaynak göstererek cevap verir. Boru hattı üç adımdan oluşur: belgeleri parçalayıp gömme vektörleriyle dizinlemek, soruya en yakın parçaları getirmek ve LLM'e bu parçalarla cevap ürettirmek. Halüsinasyonu azaltmanın üretimde en yaygın kanıtlanmış yoludur.",
+  "level": "giris",
+  "pillar": "rag-bilgi-erisimi",
+  "clusters": ["rag-temelleri"],
+  "tags": ["rag", "retrieval-augmented generation", "vektör arama", "embedding", "kurumsal yapay zeka", "bilgi erişimi"],
+  "faq": [
+    {
+      "q": "RAG halüsinasyonu tamamen çözer mi?",
+      "a": "Hayır. RAG halüsinasyonu belirgin azaltır ama sıfırlamaz: retrieval yanlış parçayı getirirse model yine yanlış cevap üretir, doğru parçayı getirse bile model onu yanlış yorumlayabilir. Gövdede aktardığımız Anthropic ölçümleri, iyi kurulmuş bir hatta bile getirme hatasının sıfıra inmediğini gösteriyor. Kritik akışlarda kaynak gösterme ve doğrulama katmanı şarttır."
+    },
+    {
+      "q": "RAG için mutlaka vektör veritabanı gerekir mi?",
+      "a": "Hayır. Küçük ve orta ölçekte pgvector gibi mevcut veritabanınıza eklenen bir uzantı, hatta yalnızca BM25 tabanlı klasik arama bile yeterli olabilir. Vektör veritabanını veri hacmi, gecikme ve filtreleme ihtiyaçları büyüyünce değerlendirin. Seçim kriterlerini vektör veritabanı rehberimizde ayrıntılı işledik."
+    },
+    {
+      "q": "Bilgi tabanım küçükse yine de RAG kurmalı mıyım?",
+      "a": "Muhtemelen hayır. Anthropic'in önerisi net: bilgi tabanınız 200 bin token'ın (yaklaşık 500 sayfa) altındaysa tamamını bağlam penceresine koymak, RAG boru hattı kurmaktan daha basit ve çoğu zaman daha isabetlidir. Prompt önbellekleme bu yaklaşımın maliyetini de ciddi biçimde düşürür. RAG'i veri büyüyünce ekleyin."
+    },
+    {
+      "q": "RAG kalitesini nasıl ölçerim?",
+      "a": "İki katmanda ölçün: retrieval katmanında doğru parçanın getirilip getirilmediği (precision@k, recall gibi metriklerle), üretim katmanında cevabın getirilen parçalara sadakati ve soruyla ilgililiği. Gerçek kullanıcı sorularından bir değerlendirme seti kurmadan yapılan her chunking veya model değişikliği körlemedir."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis vd., 2020)",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Retrieval-Augmented Generation for Large Language Models: A Survey (Gao vd., 2023)",
+      "url": "https://arxiv.org/abs/2312.10997",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "What is RAG (Retrieval-Augmented Generation)?",
+      "url": "https://aws.amazon.com/what-is/retrieval-augmented-generation/",
+      "publisher": "Amazon Web Services",
+      "accessedAt": "2026-08-08",
+      "kind": "vendor"
+    },
+    {
+      "label": "Introducing Contextual Retrieval",
+      "url": "https://www.anthropic.com/news/contextual-retrieval",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-08",
+      "kind": "vendor"
+    }
+  ],
+  "seo": {
+    "description": "RAG nedir, nasıl çalışır? Embedding, vektör arama ve reranking ile kurumsal veriyle konuşan LLM sistemi kurmanın kaynaklı rehberi."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

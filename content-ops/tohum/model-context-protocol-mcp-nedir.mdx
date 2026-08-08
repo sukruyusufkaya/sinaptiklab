@@ -1,0 +1,49 @@
+## MCP nedir, hangi sorunu çözer?
+
+Model Context Protocol (MCP), [büyük dil modeli (LLM)](/rehber/llm-nedir) uygulamalarının harici veri kaynaklarına ve araçlara bağlanma biçimini standartlaştıran açık bir protokoldür. [Anthropic](https://www.anthropic.com/news/model-context-protocol) protokolü <Kaynak id="1">25 Kasım 2024'te açık kaynak olarak duyurdu</Kaynak> ve çözdüğü sorunu net tarif etti: her yeni veri kaynağı kendi özel entegrasyonunu gerektiriyor, bu da gerçekten bağlantılı sistemler kurmayı ölçeklenemez kılıyordu. M uygulama ile N sistemi konuşturmak istiyorsanız M×N ayrı konektör yazıp bakımını üstlenmek zorundaydınız. MCP bu çarpımı toplama çevirir: her uygulama bir kez MCP istemcisi, her sistem bir kez MCP sunucusu olur; ikisi ortak dilde anlaşır.
+
+Resmî dokümantasyonun benzetmesi durumu iyi özetler: MCP, yapay zeka uygulamaları için "USB-C portu" gibidir — fişin hangi markaya takıldığı önemsizleşir. Esin kaynağı da bilinçli seçilmiştir: <Kaynak id="2">spesifikasyon, programlama dili desteğini editör ekosisteminde standartlaştıran Language Server Protocol'den (LSP) ilham aldığını açıkça belirtir</Kaynak>. LSP, editör-dil çiftlerindeki kombinasyon patlamasını nasıl bitirdiyse, MCP de araç kullanan [yapay zeka ajanları](/makale/yapay-zeka-ajani-nedir) ile kurumsal sistemler arasındaki entegrasyon patlamasını bitirmeye aday — ve bugünkü benimseme verisine bakılırsa bu iddianın arkası doldu.
+
+## Mimari: host, istemci ve sunucu
+
+MCP üç rol üzerine kuruludur ve bu ayrım kâğıt üstünde bürokratik görünse de üretimde tam olarak ihtiyaç duyduğunuz sınırları çizer. <Kaynak id="2">Spesifikasyon, JSON-RPC 2.0 mesajlaşması üzerinden üç rol tanımlar: bağlantıyı başlatan LLM uygulaması host, host içindeki her bağlantıya karşılık gelen bağlayıcı istemci (client), bağlam ve yetenek sağlayan servisler ise sunucudur (server)</Kaynak>. Somutlaştıralım: Claude Desktop ya da bir IDE host'tur; içinde açtığı her MCP bağlantısı bir istemcidir; GitHub deposunu, Postgres veritabanını veya şirket wiki'sini protokole açan süreç ise sunucudur.
+
+Taşıma katmanında iki ana senaryo var: yerelde sunucu, host'un başlattığı bir alt süreç olarak stdio üzerinden konuşur; uzak senaryoda streamable HTTP kullanılır. Bu ikili, MCP'nin en değerli pratik özelliğini doğurur: aynı sunucu kodu geliştirici makinesinde alt süreç olarak da, şirket ağında merkezî bir servis olarak da çalışabilir. Üretimde tipik evrim de böyle işliyor: ekip stdio ile masaüstünde prototip kurar, sonra sunucuyu HTTP'ye taşıyıp kimlik doğrulama ekleyerek kuruma açar. Rol ayrımının mimari değeri, güvenlik sınırını netleştirmesidir: kullanıcı onayı host'ta yaşar, yetenek sunucuda yaşar; istemci ikisinin arasında dar ve denetlenebilir bir boru olarak kalır.
+
+## Yapı taşları: araç, kaynak ve istem
+
+Bir MCP sunucusu istemciye üç temel yapı taşı sunar ve ayrım en net "kontrol kimde?" sorusuyla anlaşılır. <Kaynak id="2">Spesifikasyona göre araçlar (tools) modelin çağırması için fonksiyonlar, kaynaklar (resources) kullanıcı ya da model için bağlam ve veri, istemler (prompts) ise kullanıcılar için şablonlaşmış mesaj ve iş akışlarıdır</Kaynak>.
+
+<Karsilastirma>
+
+| Yapı taşı | Kontrol kimde? | Tipik örnek |
+|---|---|---|
+| Araç (tool) | Model karar verir, kullanıcı onaylar | `create_issue`, `query_database` |
+| Kaynak (resource) | Uygulama/kullanıcı seçer | Dosya içeriği, tablo şeması, log kaydı |
+| İstem (prompt) | Kullanıcı tetikler | "Sprint raporu hazırla" şablonu |
+
+</Karsilastirma>
+
+Pratikte ekosistemin ağırlık merkezi araçlarda; sahadaki sunucuların çoğu yalnızca araç sunuyor. Ama kaynakları görmezden gelmek hatadır: modele bağlam taşırken "model araç çağırıp veriyi çeksin" ile "uygulama kaynağı bağlama koysun" seçenekleri farklı gecikme, maliyet ve determinizm profilleri üretir. [RAG](/rehber/rag-nedir) hattı kuran ekiplerin bu ayrımı bilinçli tasarlaması gerekir; retrieval sonuçlarını kaynak olarak sunmak, her sorguda modele araç turu yaptırmaktan çoğu zaman daha öngörülebilirdir. İstemci tarafında da dikkate değer bir yetenek var: elicitation, yani sunucunun kullanıcıdan ek bilgi isteyebilmesi. Bu, "eksik parametreyle çağrıldım, tahmin edeyim" yerine "kullanıcıya sorayım" diyebilen sunucular yazmayı mümkün kılar — üretimde sessiz varsayımların ürettiği hataları düşününce küçümsenmeyecek bir kazanım.
+
+## Temmuz 2026 spesifikasyonu: durumsuz çekirdek
+
+Temmuz 2026 sürümü, MCP çekirdeğini durumsuz bir istek-yanıt protokolüne dönüştürdü — protokolün yayımlanışından bu yana yapılmış en büyük mimari değişiklik budur. <Kaynak id="3">28 Temmuz 2026'da yayımlanan spesifikasyonda initialize el sıkışması ve Mcp-Session-Id başlığı kaldırıldı; her istek artık protokol sürümünü, istemci kimliğini ve yetenekleri kendi başına taşıyor</Kaynak>. Mühendislik karşılığı şu: MCP sunucusunu sıradan HTTP altyapısıyla — load balancer arkasında, paylaşımlı oturum deposu olmadan, herhangi bir replikanın herhangi bir isteği karşılayabildiği şekilde — ölçekleyebilirsiniz. Bu, protokolün "masaüstünde yerel araç" kökeninden "dağıtık kurumsal servis" olgunluğuna geçişidir.
+
+Aynı sürüm bir dizi tamamlayıcı değişiklik getirdi: sunucunun çağrı ortasında kullanıcıdan ek girdi isteyebildiği çok gidiş-gelişli istek mekanizması (MRTR), gateway'lerin JSON gövdesini ayrıştırmadan yönlendirme yapabilmesi için Mcp-Method ve Mcp-Name başlıkları, liste yanıtlarında önbellek denetimi. Tasks (uzun süren işlerin asenkron yürütülmesi), MCP Apps ve kurumsal yetkilendirme ise resmî uzantı (extension) çerçevesine taşındı. <Kaynak id="3">Roots, Sampling ve Logging özellikleri ile eski HTTP+SSE taşıması, en az on iki aylık geçiş penceresiyle kullanımdan kaldırılıyor</Kaynak>. Elinizde eski sürümle yazılmış sunucular varsa bu pencereyi takvime şimdi işleyin; "çalışıyor, dokunma" yaklaşımı burada, pencere kapandığında kırık entegrasyon demektir.
+
+## Ekosistem: kim destekliyor, ne kadar büyük?
+
+MCP, tek şirketin protokolü olmaktan çıkıp fiilî sektör standardına dönüştü; rakamlar iddiayı taşıyacak düzeyde. <Kaynak id="1">Duyuru gününde Block ve Apollo protokolü sistemlerine entegre etmişti; Zed, Replit, Codeium ve Sourcegraph ise platformlarına eklemek için çalışıyordu</Kaynak>. Asıl eşik, rakip sağlayıcının benimsemesiydi: <Kaynak id="4">OpenAI'ın Agents SDK'sı MCP'yi resmî olarak destekliyor ve hosted araçlardan streamable HTTP'ye, stdio alt süreçlerine kadar beş ayrı entegrasyon yolu sunuyor</Kaynak>. Standardı başlatan şirketin rakibinin, kendi [dokümantasyonunda](https://openai.github.io/openai-agents-python/mcp/) aynı USB-C benzetmesini kullanması, protokolün sahibinden bağımsızlaştığının en net işareti.
+
+Ölçek tarafı: <Kaynak id="3">TypeScript ve Python SDK'larının her biri toplamda 1 milyar indirmeyi aştı; Tier 1 SDK'lar (TypeScript, Python, Go, C#) aylık yaklaşık 500 milyon kez indiriliyor</Kaynak>. Bu hacim, MCP sunucusu yazmanın artık niş bir deney değil, standart bir arka uç işi olduğu anlamına geliyor. Kurumsal senaryolarda desen hep aynı: ERP, CRM ya da iç API'lerinizi bir kez MCP sunucusuna sarıyorsunuz; Claude, ChatGPT ve kendi iç ajanlarınız aynı kapıdan giriyor. Her istemci için ayrı entegrasyon projesi bütçelemek — protokol öncesinin normali — artık bir zorunluluk değil, olsa olsa bilinçli bir istisna.
+
+## Üretimde MCP: güvenlik ve pratik notlar
+
+MCP'nin gücü — keyfî veri erişimi ve kod çalıştırma yolları — aynı zamanda saldırı yüzeyidir; bunu [spesifikasyonun](https://modelcontextprotocol.io/specification/2026-07-28) kendisi söylüyor. <Kaynak id="2">Spesifikasyonun güvenlik ilkeleri kullanıcı onayını ve kontrolünü merkeze koyar; araçların keyfî kod çalıştırma anlamına geldiğini, araç açıklamalarının ise güvenilir bir sunucudan gelmedikçe güvenilmez sayılması gerektiğini açıkça belirtir</Kaynak>. Bu son cümleyi iki kez okuyun: modele gösterdiğiniz her araç açıklaması, üçüncü tarafın yazdığı ve modelin davranışını yönlendirebilen bir metindir.
+
+<Uyari tip="guvenlik">
+MCP sunucularını paket bağımlılığı gibi yönetin: allowlist, sürüm sabitleme, en az yetki. Doğrulanmamış bir sunucuyu bağlamak, üretim CI'ınıza rastgele bir üçüncü taraf eklentisi eklemekle aynı risk sınıfındadır. Araç açıklamalarına gömülü talimatlarla model manipülasyonu — [prompt injection](/makale/prompt-injection-nedir-savunmalar) — bilinen ve aktif bir saldırı vektörüdür.
+</Uyari>
+
+Pratik tarafta üç tavsiyemiz var. Bir: sunucu başına araç sayısını dar tutun; modele çok sayıda araç göstermek hem seçim isabetini düşürür hem bağlam penceresini yer. İki: araç filtrelemeyi istemci tarafında yapın; güncel SDK'ların çoğu buna izin veriyor. Üç: uzak sunucularda yetkilendirmeyi protokolün resmî akışıyla kurun; anahtarı ortam değişkenine gömüp geçmek prototipte kabul edilebilir, üretimde değildir. MCP, ajan mimarinizin sinir sistemi olmaya aday; onu uygulama kodu rahatlığıyla değil, altyapı bileşeni ciddiyetiyle işletin.

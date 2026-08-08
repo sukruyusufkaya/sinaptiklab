@@ -1,0 +1,51 @@
+## Yapay zeka ajanı nedir?
+
+Yapay zeka ajanı, bir [büyük dil modelinin (LLM)](/rehber/llm-nedir) çevresindeki araçlara bağlanıp hedefe giden adımları kendisinin seçtiği yazılım sistemidir. Tanımın kritik kısmı "kendisinin seçmesi". [Anthropic'in mühendislik rehberi](https://www.anthropic.com/engineering/building-effective-agents) bu ayrımı alanın fiilî standardı hâline getirdi: <Kaynak id="1">iş akışları (workflow), LLM'lerin ve araçların önceden tanımlı kod yollarıyla orkestre edildiği sistemlerdir; ajanlar ise sürecini ve araç kullanımını LLM'in dinamik olarak yönettiği sistemlerdir</Kaynak>. Yani birkaç prompt'u if-else ile zincirlediğinizde elinizde ajan değil, iş akışı vardır — ve bu çoğu zaman iyi bir şeydir.
+
+Sağlayıcı tanımları da aynı çekirdekte buluşuyor. <Kaynak id="3">OpenAI Agents SDK dokümantasyonu ajanı; talimatlar, araçlar ve devir (handoff), korkuluk (guardrail) gibi isteğe bağlı çalışma zamanı davranışlarıyla yapılandırılmış bir LLM olarak tanımlar</Kaynak>. <Kaynak id="4">Google'ın Agent Development Kit dokümantasyonu ise ajanı, belirli hedeflere ulaşmak için otonom hareket edecek şekilde tasarlanmış, kendi kendine yeten bir yürütme birimi olarak tarif eder</Kaynak>. Pazarlama katmanını soyduğunuzda geriye üç bileşen kalır: karar veren bir model, modelin çağırabildiği araçlar ve modele görevini anlatan talimatlar. Bellek, planlama, çoklu ajan orkestrasyonu gibi her şey, bu çekirdeğin üzerine ihtiyaçla eklenen mühendisliktir.
+
+## Chatbot'tan farkı: cevap değil, döngü
+
+Ajanı chatbot'tan ayıran şey daha akıllı olması değil, bir döngü işletmesidir. Chatbot tek geçişte metin üretir ve durur; ajan ise düşün-eyle-gözle döngüsü çalıştırır. Modele bir hedef verirsiniz; model bir araç çağırır, aracın döndürdüğü sonucu okur, planını günceller ve hedefe ulaşana ya da vazgeçene kadar devam eder.
+
+Bu döngünün akademik temeli, [ReAct makalesinde](https://arxiv.org/abs/2210.03629) formülleştirilen desendir. <Kaynak id="2">Ekim 2022'de yayımlanan makale, akıl yürütme izleriyle eylemleri iç içe geçirmenin iki yönlü fayda sağladığını gösterdi: akıl yürütme, eylem planını kurmayı ve istisnaları yönetmeyi kolaylaştırıyor; eylemler ise modelin dış kaynaklardan bilgi almasını sağlıyor</Kaynak>. Sonuçlar da iddialıydı: <Kaynak id="2">ReAct, ALFWorld görevlerinde mutlak %34, WebShop'ta %10 başarı artışı bildirdi</Kaynak>. Bugün her büyük LLM API'sinde bulunan araç çağırma (function calling) yeteneği, bu desenin üretim karşılığıdır: model hangi aracı hangi parametrelerle çağırmak istediğini yapılandırılmış biçimde bildirir, kodunuz aracı çalıştırır, sonucu modele geri verirsiniz.
+
+Kritik bir nüans: döngü, modelin [halüsinasyon](/makale/yapay-zeka-halusinasyonu-nedir) eğilimini azaltır ama ortadan kaldırmaz. Araç sonucu modele gerçek zemin sağlar; fakat model o sonucu yanlış yorumlayabilir, hatta hiç çağrılmamış bir aracın çıktısı varmış gibi davranabilir. Araç çağrısı loglarını konuşma dökümüyle yan yana izlemeyen ekip, bu ikisini ayırt edemez.
+
+## Bir ajanın yapı taşları
+
+Üretimde çalışan her ajan aşağı yukarı aynı beş parçadan oluşur; farklar ambalajdadır. Birincisi model: döngünün her turunda kararı veren LLM. İkincisi araçlar: API çağrıları, veritabanı sorguları, dosya işlemleri — modelin dünyaya dokunduğu yüzey. Araç tanımının kalitesi (isim, açıklama, parametre şeması) ajan performansını prompt kadar etkiler; kötü yazılmış bir araç açıklaması, modelin aracı yanlış zamanda ya da yanlış parametreyle çağırmasının bir numaralı sebebidir. Araç entegrasyonunu her istemci için yeniden yazmamak içinse sektör [Model Context Protocol (MCP)](/makale/model-context-protocol-mcp-nedir) etrafında standartlaşıyor.
+
+Üçüncüsü talimatlar: ajanın görev tanımı, sınırları ve karar ilkeleri. Burada [prompt mühendisliği](/rehber/prompt-muhendisligi-rehberi) disiplini doğrudan devreye girer; tek atımlık bir sohbette tolere edilebilen belirsiz talimat, döngüde her turda yeniden yorumlandığı için katlanarak büyüyen belirsiz davranış üretir. Dördüncüsü bellek ve durum: bağlam penceresi sınırlı olduğu için uzun görevlerde neyin taşınacağına, neyin özetlenip atılacağına sizin karar vermeniz gerekir. Beşincisi korkuluklar: <Kaynak id="3">OpenAI'ın SDK dokümantasyonunun ajanın ayrı bir yapılandırma bileşeni olarak saydığı</Kaynak> girdi-çıktı doğrulamaları, yetki sınırları ve insan onay kapıları. Geri alınamaz eylemleri — para hareketi, veri silme, dışarıya e-posta — ajanın inisiyatifine bırakmamak, üretim ajanlarının yazılı olmayan birinci kuralıdır.
+
+## Ajan mı iş akışı mı? Karar çerçevesi
+
+Karar kuralı basittir: adımları önceden sayabiliyorsanız iş akışı kurun, sayamıyorsanız ajan düşünün. <Kaynak id="1">Anthropic'in rehberi, ajana geçmeden önce denenecek beş iş akışı desenini sıralar: prompt zincirleme, yönlendirme, paralelleştirme, orkestratör-işçiler ve değerlendirici-iyileştirici</Kaynak> — ve mümkün olan en basit çözümü bulup karmaşıklığı yalnızca gerektiğinde artırmayı önerir. Sahada gördüğümüz de bu: "ajan" diye kurulan sistemlerin önemli bölümü, iyi kurgulanmış bir yönlendirme artı zincirleme iş akışıyla daha ucuza ve daha öngörülebilir çalışır hâle geliyor. Ajanın gerçekten gerektiği görevlerin ortak özelliği ise çözüm yolunun girdiye göre değişmesi ve önceden şemalanamamasıdır: açık uçlu araştırma, hata ayıklama, çok sistemli operasyon işleri.
+
+<Karsilastirma>
+
+| Boyut | İş akışı | Ajan |
+|---|---|---|
+| Adımlar | Kodda önceden tanımlı | Model çalışma anında seçer |
+| Öngörülebilirlik | Yüksek; aynı girdi benzer yolu izler | Düşük; yol girdiye göre değişir |
+| Maliyet | Sınırlı, tahmin edilebilir token | Döngü uzadıkça açık uçlu |
+| Hata ayıklama | Adım adım izlenebilir | İz (trace) altyapısı şart |
+| Uygun görev | Sınıflandırma, özetleme, belge hattı | Açık uçlu araştırma, kod onarımı, çok adımlı destek |
+
+</Karsilastirma>
+
+<Uyari tip="tuzak">
+"Ajan" bugün sunumların en sevilen kelimesi, mühendisliğin ise en pahalı mimarisi. Deterministik çözülebilen bir işi ajana devretmek hata yüzeyini ve maliyeti birlikte büyütür. Sıra her zaman aynı: önce tek prompt, sonra iş akışı, en son ajan.
+</Uyari>
+
+## Üretimde nerede çalışıyor, nerede kırılıyor?
+
+Ajanlar bugün en net değeri, başarının nesnel biçimde doğrulanabildiği alanlarda üretiyor. Anthropic'in rehberindeki iki örnek bunun ders kitabı hâli: kodlama ajanları ürettikleri çözümü otomatik testlerle doğrulayıp sonuca göre yineleyebiliyor; müşteri destek ajanları araçlarla veri çekip iade gibi eylemleri programatik yürütürken başarıyı net ölçebiliyor. Ortak payda şu: döngünün her turunda ajana "doğru yolda mısın?" sorusunu cevaplayan bir geri bildirim sinyali var. Bu sinyal yoksa ajan, kendi çıktısını beğenen bir modelden ibaret kalır.
+
+Kırılma noktaları da aynı sıklıkla tekrarlanıyor. Birincisi hata birikimi: adım başına küçük görünen hata payı çok adımlı görevlerde bileşik olarak büyür; ara adımlarını doğrulamayan ajan, görev uzadıkça güvenilmezleşir. İkincisi maliyet: döngü açık uçlu olduğundan token faturası da açık uçludur; tur sınırı ve bütçe kesicisi olmayan ajanı üretime almayın. Üçüncüsü güvenlik: araç kullanan bir model, okuduğu her metnin talimat taşıyabileceği bir dünyada yaşar — [prompt injection](/makale/prompt-injection-nedir-savunmalar), ajan mimarilerinde web'deki XSS kadar temel bir tehdittir. Dördüncüsü ölçüm: tek doğru cevabı olmayan çok adımlı davranışı değerlendirmek için [LLM değerlendirme](/makale/llm-degerlendirme-metrikleri) altyapısını ajanla birlikte, sonradan değil baştan kurmanız gerekir.
+
+## Nereden başlamalı?
+
+Çerçeveden (framework) değil, çıplak API'den başlayın. Anthropic'in rehberindeki tavsiye saha deneyimiyle birebir örtüşüyor: basit prompt'la başlayın, kapsamlı değerlendirmeyle iyileştirin, çok adımlı ajanik sistemi ancak basit çözümler yetersiz kaldığında ekleyin. Araç çağırma destekleyen herhangi bir API ile birkaç araçlı bir döngüyü küçük bir kod tabanında kurabilirsiniz; bu, ajanın nasıl kırıldığını araya çerçeve soyutlaması girmeden görmenizi sağlar.
+
+Somut bir ilk proje tarifi: dar bir görev seçin — örneğin "log dosyasındaki hatayı bul, kök nedeni özetle". Birkaç araç tanımlayın (dosya oku, kayıt ara), tur sınırı koyun, her araç çağrısını loglayın ve gerçek vakalardan oluşan küçük bir değerlendirme setiyle test edin. Bilgiye erişim gerekiyorsa ajana araç olarak bir [RAG](/rehber/rag-nedir) hattı verin; bilgi tabanını ajanın içine gömmeye çalışmayın. Bu iskelet çalıştıktan sonra LangGraph, CrewAI gibi çerçevelere geçtiğinizde neyi neden soyutladıklarını okuyabilirsiniz; devir, çoklu ajan ve kalıcı bellek gibi katmanları ihtiyaç kanıtlandıkça eklersiniz. Ajan mühendisliği, modele otonomi vermekle o otonomiyi sınırlamak arasında denge kurma işidir — ve bu denge ancak elinizde ölçüm varken kurulabilir.

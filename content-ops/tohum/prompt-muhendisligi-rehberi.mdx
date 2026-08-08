@@ -1,0 +1,55 @@
+## Prompt mühendisliği nedir, neden bu kadar etkili?
+
+Prompt mühendisliği, bir [büyük dil modelinden](/rehber/llm-nedir) istenen çıktıyı güvenilir biçimde almak için girdiyi — talimatı, bağlamı, örnekleri ve çıktı formatını — sistematik olarak tasarlama işidir. Buradaki "mühendislik" kelimesi süs değildir: iyi pratik, denemelerin ölçüldüğü, sürümlendiği ve regresyona karşı test edildiği bir döngüdür; ilham gelince prompt'a kelime eklemek değildir.
+
+Bunun mümkün olmasının bilimsel temeli, modellerin ağırlık güncellemesi olmadan görev öğrenebilmesidir. Bunu ilk kez büyük ölçekte [GPT-3 makalesi](https://arxiv.org/abs/2005.14165) gösterdi: <Kaynak id="5">175 milyar parametreli model, gradyan güncellemesi ya da fine-tuning olmadan, yalnızca girdiye yazılan birkaç örnekle görevleri yerine getirebiliyordu</Kaynak>. Bugün "few-shot prompting" dediğimiz pratiğin resmi doğum belgesi budur. Model değişmeden davranışın değişebilmesi, prompt'u yazılımdaki en ucuz iyileştirme kaldıracı yapar: dakikalar içinde denersiniz, maliyeti bir API çağrısıdır, geri almak bir git revert kadar kolaydır.
+
+Üretim tarafında bunun pratik anlamı şudur: bir kalite sorunuyla karşılaştığınızda sıralama neredeyse her zaman önce prompt, sonra retrieval ([RAG](/rehber/rag-nedir)), en son [fine-tuning](/makale/fine-tuning-nedir-ne-zaman-gerekir) olmalıdır. Ekiplerin en pahalı hatası, prompt katmanında çözülecek bir sorunu haftalar süren eğitim projelerine taşımaktır.
+
+## Başlamadan önce: başarı ölçütü ve değerlendirme seti
+
+Prompt iyileştirmeye prompt yazarak başlanmaz; ölçüm kurarak başlanır. [Anthropic'in prompt mühendisliği dokümantasyonu](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) bu konuda nettir: <Kaynak id="1">tekniklere geçmeden önce net başarı ölçütlerinizin ve bu ölçütlere karşı ampirik test imkânınızın olması ön şart olarak konur</Kaynak> — ve bu sıralama bizim tecrübemizle de sabittir. Değerlendirme seti olmadan yapılan her prompt değişikliği "bana daha iyi göründü" düzeyinde bir tahmindir; üç örnekte iyileşen prompt, göremediğiniz otuz örnekte kötüleşebilir.
+
+Pratik kurulum şudur: gerçek kullanıcı girdilerinden derlenmiş, beklenen çıktıları tanımlanmış bir örnek kümesi; her prompt sürümünü bu kümede koşturan basit bir script; ve sonuçları karşılaştırılabilir kılan bir skor. Skorlama deterministik olabilir (JSON şeması geçerli mi, doğru etiket mi seçilmiş) ya da model tabanlı olabilir — hangi metriğin ne zaman işe yaradığını [LLM değerlendirme metrikleri yazımızda](/makale/llm-degerlendirme-metrikleri) ayrıntılı işledik.
+
+Bu yatırım küçüktür ama ekip davranışını kalıcı olarak değiştirir: prompt tartışmaları zevk meselesi olmaktan çıkar, sayıya bağlanır. "Bence şöyle daha iyi" cümlesinin yerini "v12, değerlendirme setinde v11'i geçti" alır — ve ancak o andan itibaren yaptığınız iş gerçek anlamda mühendisliktir.
+
+## Temel teknikler: net talimat, örnek, yapı
+
+Üç temel teknik, sahadaki sorunların büyük kısmını tek başına çözer: açık talimat, iyi örnekler ve yapılandırılmış istem. <Kaynak id="2">Anthropic'in güncel prompt rehberi bunu açıkça söyler: model açık ve doğrudan talimata iyi yanıt verir; istenen davranışı belirsiz istemden çıkarsamasını beklemek yerine açıkça yazmak gerekir</Kaynak>. "Kısa bir özet yaz" değil; "en fazla üç maddede, her madde tek cümle, rakamları değiştirmeden özetle".
+
+Örnekler (few-shot), format ve tonu sözle tarif etmekten çok daha güvenilir taşır. <Kaynak id="2">Aynı rehber örneklerin ilgili, çeşitli ve yapılandırılmış olmasını, en iyi sonuç için 3-5 örnek kullanılmasını önerir</Kaynak>. Sahada en sık gördüğümüz hata, örneklerin hepsinin kolay vaka olmasıdır — modeli asıl zorlayacak sınır durumlarından da en az bir örnek koyun.
+
+Yapı tarafında, istemin bölümlerini etiketlerle ayırmak — talimat ayrı, bağlam ayrı, kullanıcı girdisi ayrı — modelin talimat ile veriyi karıştırmasını azaltır; XML benzeri etiketler bu yüzden önerilir. Türkçe çalışırken ek bir not: talimatları Türkçe yazmak çıktı dilini sabitlemenin en güvenilir yoludur; dil belirtilmeyen istemlerde model, bağlama giren İngilizce içeriğin peşine takılıp dil değiştirebilir.
+
+## Chain-of-thought: modele düşünme alanı vermek
+
+Karmaşık akıl yürütme isteyen görevlerde, modelden cevaptan önce ara adımlarını yazmasını istemek ölçülmüş ve tekrarlanabilir bir kazanç sağlar; tekniğin adı chain-of-thought (düşünce zinciri) prompting'dir. [Tekniği sistematikleştiren çalışma](https://arxiv.org/abs/2201.11903) etkiyi büyük ölçekte gösterdi: <Kaynak id="3">2022 tarihli makaleye göre, 540 milyar parametreli bir modele yalnızca sekiz düşünce zinciri örneği vermek, matematik sözel problemleri benchmark'ı GSM8K'da o dönemin en iyi doğruluğuna ulaşmaya yetti</Kaynak>.
+
+Daha da çarpıcı olan, örneksiz versiyonudur. <Kaynak id="4">İsteme yalnızca "Let's think step by step" eklemenin MultiArith doğruluğunu %17,7'den %78,7'ye, GSM8K doğruluğunu %10,4'ten %40,7'ye çıkardığı gösterilmiştir</Kaynak> — tek cümlelik bir değişiklikle. Bu iki sonuç, prompt'un önemsiz bir ayrıntı olmadığının literatürdeki en net kanıtıdır.
+
+Güncel pratikte bir nüans var: yerleşik akıl yürütme (reasoning) kipine sahip modeller bu ara adımları zaten kendi içlerinde yürütür; onlarda elle yazılmış "adım adım düşün" kalıpları daha az fark yaratır, hatta bazen yalnızca gereksiz uzunluk üretir. Kural yine aynıdır: tekniği kendi değerlendirme setinizde ölçün, etkisi kaybolmuşsa istemden çıkarın. Hiçbir kalıp dogma değildir; ölçüm her kalıptan önce gelir.
+
+## İleri desenler: rol, format kontrolü, zincirleme
+
+İleri seviye, tek prompt'u şişirmek değil, işi doğru parçalara bölmektir. Üretimde üç desen öne çıkar.
+
+Rol ve sistem istemi: modele kim olduğunu ve hangi sınırlar içinde çalıştığını sistem isteminde vermek, davranışı konuşma boyunca sabitler. Rol atamak süslü bir "uzman gibi davran" cümlesi değil, görev bağlamını netleştirme aracıdır: hangi alan, hangi hedef kitle, hangi üslup, neyin asla yapılmayacağı.
+
+Format kontrolü: çıktıyı serbest metin yerine şemaya bağlamak — JSON, sabit başlıklar, etiketli bloklar — hem ayrıştırmayı hem değerlendirmeyi otomatikleştirir. Sağlayıcınızın yapılandırılmış çıktı (structured output) özelliği varsa formatı prompt'la zorlamak yerine onu kullanın; şema ihlali sorunu sınıf olarak ortadan kalkar.
+
+Prompt zincirleme: tek dev istem yerine görevi aşamalara bölüp her aşamanın çıktısını sonrakine girdi yapmak, hem hata ayıklamayı hem kaliteyi iyileştirir. Uzun ve çok işli istemler, hangi talimatın hangi durumda ezildiğini göremediğiniz kara kutulara dönüşür; zincirde ise her halkayı ayrı ölçersiniz.
+
+Bu desenlerin hepsinde [token](/makale/token-nedir-turkcede-tokenlasma) bütçesini akılda tutun: her örnek ve her açıklama bağlam penceresinden ve faturadan yer. İyi istem en uzun olan değil, gereksiz hiçbir cümle taşımayandır.
+
+## Üretimde prompt: sürümleme, güvenlik, bakım
+
+Prompt üretime çıktığı anda kod statüsü kazanır: sürümlenmeli, gözden geçirilmeli ve her değişikliği test edilmelidir. İstemleri uygulama kodundan bağımsız dosyalarda tutun, her değişikliği değerlendirme setiyle koşun ve model sürümü yükseltmelerini de bir değişiklik sayın — aynı prompt, farklı model sürümünde farklı davranabilir.
+
+Güvenlik ayrı bir başlıktır: kullanıcı girdisini isteme gömdüğünüz anda, o girdinin sizin talimatlarınızı ezmeye çalışması (prompt injection) gerçek bir saldırı yüzeyidir. Talimat ile veriyi yapısal olarak ayırmak riski azaltır ama ortadan kaldırmaz; savunma katmanlarını [prompt injection yazımızda](/makale/prompt-injection-nedir-savunmalar) ayrıntılı işledik.
+
+Son olarak, prompt'un düzeltemeyeceği şeyleri bilin. Modelin bilmediği gerçeği hiçbir istem kalıbı üretmez; güncel ya da kurum içi bilgi gerekiyorsa çözüm prompt değil [RAG](/rehber/rag-nedir)'dır. Model emin olmadığında bile akıcı ve ikna edici cevap üretebilir — bu davranışın kökenini ve azaltma yollarını [halüsinasyon yazımızda](/makale/yapay-zeka-halusinasyonu-nedir) anlattık.
+
+<Uyari tip="tuzak">
+İnternetteki "sihirli prompt" listelerine mesafeli yaklaşın: sonuçlar modele, göreve ve dile bağlıdır, genellenemez. Başkasının prompt'u sizin için en fazla bir hipotezdir; kendi değerlendirme setinizde ölçmeden hiçbirini üretime almayın.
+</Uyari>

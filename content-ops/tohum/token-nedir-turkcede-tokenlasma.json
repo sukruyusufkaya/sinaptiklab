@@ -1,0 +1,71 @@
+{
+  "type": "article",
+  "slug": "token-nedir-turkcede-tokenlasma",
+  "title": "Token Nedir? Türkçe Neden Daha Çok Token Harcar?",
+  "dek": "Token ve BPE tokenizasyonunu söküyoruz: tiktoken ölçümümüzde aynı cümle Türkçede İngilizceden yüzde 76 fazla token harcadı. Nedenleri ve üretimdeki bedeli.",
+  "answerFirst": "Token, dil modelinin metni işlerken kullandığı en küçük birimdir; çoğunlukla kelime değil, kelime parçasıdır. Tokenizer metni sözlüğündeki parçalara böler; bağlam penceresi, ücretlendirme ve hız limitleri hep token üzerinden hesaplanır. Türkçe, eklemeli yapısı ve tokenizer sözlüklerindeki düşük payı nedeniyle aynı içerik için İngilizceden belirgin biçimde fazla token harcar: tiktoken ile yaptığımız ölçümde aynı anlamdaki cümle, GPT-4 neslinin tokenizer'ında yüzde 76 daha fazla token tuttu.",
+  "level": "giris",
+  "pillar": "llm-uretken-yz",
+  "clusters": ["tokenizasyon-baglam-penceresi"],
+  "tags": ["token", "tokenizasyon", "bpe", "tiktoken", "bağlam penceresi", "türkçe nlp"],
+  "faq": [
+    {
+      "q": "Bir token kaç karakterdir?",
+      "a": "Sabit bir karşılığı yok; tokenizer'a ve dile göre değişir. İngilizce metinlerde karakter/token oranı Türkçeden belirgin yüksektir; gövdedeki ölçümümüzde aynı anlamdaki Türkçe cümle, karakter başına İngilizcenin yaklaşık iki katı token üretti. Kapasite planlamasını ezber oranlarla değil, kendi derleminizi ölçerek yapın."
+    },
+    {
+      "q": "Türkçe için daha verimli tokenizer mümkün mü?",
+      "a": "Evet. Gövdede atıf verdiğimiz Türkçe tokenizasyon çalışması, morfolojik farkındalıklı tokenizer'ların standart BPE ile yarışabildiğini gösteriyor. Pratikte en büyük iyileşme ise sözlüğü büyük ve çok dilli veriyle dengelenmiş yeni nesil tokenizer'lardan geliyor; ölçümümüzde o200k'nın cl100k'ya karşı üstünlüğü bunu doğruluyor."
+    },
+    {
+      "q": "Token maliyetini nasıl düşürürüm?",
+      "a": "Önce ölçün: istekleri gerçek token sayısıyla loglayın. Sonra sırasıyla sistem prompt'unu kısaltın, tekrarlanan bağlamı önbelleklemeden (prompt caching) yararlanacak şekilde düzenleyin ve görev için yeterli en küçük modeli seçin. Türkçe iş yüklerinde tokenizer verimliliğini model seçim kriterine eklemek, çoğu ekibin atladığı en büyük kalemdir."
+    },
+    {
+      "q": "Bağlam penceresi neden token'la ölçülür?",
+      "a": "Çünkü model girdiyi karakter veya kelime olarak değil, token dizisi olarak işler; dikkat mekanizmasının hesap maliyeti de bu dizinin uzunluğuyla büyür. Pencere, modelin tek seferde işleyebileceği token dizisinin üst sınırıdır ve girdiyle çıktının toplamını kapsar."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Language Model Tokenizers Introduce Unfairness Between Languages (Petrov vd., NeurIPS 2023)",
+      "url": "https://arxiv.org/abs/2305.15425",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Impact of Tokenization on Language Models: An Analysis for Turkish (Toraman vd., 2023)",
+      "url": "https://arxiv.org/abs/2204.08832",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Tokenizer summary — Transformers dokümantasyonu",
+      "url": "https://huggingface.co/docs/transformers/tokenizer_summary",
+      "publisher": "Hugging Face",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Understanding tokens — .NET AI kavramları",
+      "url": "https://learn.microsoft.com/en-us/dotnet/ai/conceptual/understanding-tokens",
+      "publisher": "Microsoft Learn",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "tiktoken — OpenAI'ın açık kaynak BPE tokenizer kütüphanesi",
+      "url": "https://github.com/openai/tiktoken",
+      "publisher": "OpenAI (GitHub)",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "Token nedir, tokenizer nasıl çalışır? tiktoken ölçümüyle Türkçenin neden daha fazla token harcadığı, bağlam penceresi ve maliyet etkisi."
+  },
+  "onerilenDurum": "published",
+  "notlar": "Ölçüm verisi: tiktoken 0.12.0, cl100k_base ve o200k_base; 18 kelimelik paralel TR/EN cümle çifti (2026-08-08). Betik tekrar üretilebilir."
+}

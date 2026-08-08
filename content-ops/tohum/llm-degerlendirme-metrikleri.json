@@ -1,0 +1,71 @@
+{
+  "type": "article",
+  "slug": "llm-degerlendirme-metrikleri",
+  "title": "LLM Değerlendirme Metrikleri: Yöntem Haritası",
+  "dek": "MMLU'dan LLM-as-judge'a: LLM çıktısını ölçmenin yöntem haritası, benchmark'ların sınırları ve kendi değerlendirme setinizi kurmanın saha kuralları — kaynaklı rehber.",
+  "answerFirst": "LLM değerlendirmesi tek metrikle yapılmaz; katmanlı bir ölçüm sistemi gerektirir. Genel yetenek için MMLU ve HELM gibi benchmark'lar, üretime özgü kalite için kendi değerlendirme setiniz (eval set), ölçeklenebilir puanlama için LLM-as-judge, nihai doğrulama için insan değerlendirmesi kullanılır. Pratikte doğru sıra şudur: önce ne ölçtüğünüzü tanımlayın, sonra küçük ama temsili bir değerlendirme seti kurun, otomatik metrikleri insan etiketleriyle kalibre edin.",
+  "level": "orta",
+  "pillar": "llmops-degerlendirme",
+  "clusters": ["llm-degerlendirme"],
+  "tags": ["llm değerlendirme", "eval seti", "benchmark", "mmlu", "helm", "llm-as-judge", "chatbot arena"],
+  "faq": [
+    {
+      "q": "En iyi LLM değerlendirme metriği hangisi?",
+      "a": "Tek bir 'en iyi' metrik yoktur; metrik görev tanımından türetilir. Format ve kural uyumu programatik kontrollerle, açık uçlu kalite rubrikli LLM hakemle, kritik kararlar insan değerlendirmesiyle ölçülür. Yanlış soru 'hangi metrik', doğru soru 'bu görevde iyi cevap ne demek'tir."
+    },
+    {
+      "q": "LLM-as-judge insan değerlendirmesinin yerini tutar mı?",
+      "a": "Büyük ölçüde, ama kalibrasyonsuz asla. Gövdede atıf verdiğimiz MT-Bench bulgusuna göre güçlü bir hakem model, insanların kendi aralarındaki uyum düzeyine ulaşabilir; ancak pozisyon ve uzunluk önyargıları sistematiktir. Pratik çözüm, hakem kararlarını periyodik insan etiketiyle kalibre etmek ve önyargı önlemlerini baştan kurgulamaktır."
+    },
+    {
+      "q": "Benchmark skoru yüksek modeli seçmek yeterli mi?",
+      "a": "Ön eleme için evet, nihai karar için hayır. Benchmark'lar genel yeteneği ölçer; kontaminasyon riski taşır ve sizin görevinizdeki davranışı garanti etmez. Nihai seçim, kendi trafiğinizden türetilmiş değerlendirme setinde yapılmalıdır."
+    },
+    {
+      "q": "BLEU ve ROUGE hâlâ kullanılır mı?",
+      "a": "Referans cevabın net tanımlı olduğu çeviri ve özetleme gibi görevlerde hâlâ iş görürler. Serbest üretimde ise kelime örtüşmesine baktıkları için referanstan farklı ama doğru cevapları cezalandırırlar; bu senaryolarda rubrikli LLM hakem veya insan değerlendirmesi gerekir."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Measuring Massive Multitask Language Understanding (Hendrycks vd., 2020)",
+      "url": "https://arxiv.org/abs/2009.03300",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Holistic Evaluation of Language Models — HELM (Liang vd., 2022)",
+      "url": "https://arxiv.org/abs/2211.09110",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (Zheng vd., 2023)",
+      "url": "https://arxiv.org/abs/2306.05685",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference (Chiang vd., 2024)",
+      "url": "https://arxiv.org/abs/2403.04132",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Hugging Face Evaluate — Kütüphane Dokümantasyonu",
+      "url": "https://huggingface.co/docs/evaluate/index",
+      "publisher": "Hugging Face",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "LLM değerlendirme yöntemleri: benchmark'lar, Chatbot Arena, LLM-as-judge ve kendi eval setinizi kurma. Kaynaklı, üretim odaklı rehber."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

@@ -1,0 +1,67 @@
+## LLM değerlendirmesi neden klasik ML ölçümüne benzemez?
+
+Çünkü açık uçlu üretimde tek bir doğru cevap yoktur. Sınıflandırma modelini doğruluk (accuracy) ve F1 skoruyla ölçersiniz; etiket bellidir, tahmin ya doğrudur ya yanlış. Bir [büyük dil modelinin](/rehber/llm-nedir) aynı soruya verdiği beş farklı cevabın beşi de doğru olabilir — ya da beşi de akıcı görünüp olgusal olarak yanlış olabilir. Bu yüzden LLM değerlendirmesi tek metrik arayışı değil, katmanlı bir ölçüm sistemi kurma işidir.
+
+Referans metinle örtüşmeye dayanan klasik metrikler — çeviri için BLEU, özetleme için ROUGE — kelime örtüşmesini ölçer, anlamı değil. Bu metrikler [Hugging Face'in evaluate kütüphanesi](https://huggingface.co/docs/evaluate/index) gibi araçlarla kolayca hesaplanabilir; <Kaynak id="5">evaluate, farklı alanlardaki düzinelerce değerlendirme yöntemine tek satır kodla erişim sunar</Kaynak>. Ama serbest üretimde, referansa birebir benzemeyen doğru cevabı cezalandırdıkları için yanıltıcıdırlar; bugün hâlâ işe yaradıkları yer, referans cevabın gerçekten tanımlı olduğu dar görevlerdir.
+
+Üretimde ölçülmesi gereken eksenler çok daha geniştir: olgusal doğruluk ve [halüsinasyon](/makale/yapay-zeka-halusinasyonu-nedir) davranışı, talimat takibi, format ve şema uyumu, ton ve marka dili, güvenlik (zararlı içerik, veri sızıntısı) ve mühendislik tarafında gecikme ile maliyet. Sağlıklı bir değerlendirme stratejisi bu eksenlerin her birine ayrı yöntem atar: kural tabanlı kontroller ucuz olanı, LLM hakemler anlam gerektireni, insan değerlendirmesi kritik olanı ölçer. Bu makale o katmanları, hangisinin nerede yeterli olduğunu söyleyerek tek tek geziyor.
+
+## Benchmark'lar ne söyler, ne söylemez: MMLU ve HELM
+
+Benchmark'lar modellerin genel yeteneğini karşılaştırmak içindir; sizin görevinizdeki başarıyı garanti etmezler. Alanın en çok atıf alan referanslarından [MMLU](https://arxiv.org/abs/2009.03300), <Kaynak id="1">ilkokul matematiğinden hukuka uzanan 57 konuda çoktan seçmeli sorularla</Kaynak> modelin bilgi genişliğini ve problem çözme yeteneğini ölçer. Çoktan seçmeli format, ölçümü ucuz ve tekrarlanabilir kılar; ama gerçek kullanımın açık uçlu doğasını temsil etmez.
+
+Stanford'un [HELM çerçevesi](https://arxiv.org/abs/2211.09110) tam da tek skorun yanıltıcılığına karşı geliştirildi: <Kaynak id="2">30 önde gelen modeli 42 senaryoda; doğruluğun yanına kalibrasyon, dayanıklılık, adalet, önyargı, toksisite ve verimliliği ekleyen 7 metrikte</Kaynak> değerlendirir. HELM'in kalıcı dersi şudur: doğruluğu yüksek bir model, dayanıklılıkta — girdinin küçük varyasyonlarına toleransta — ya da kalibrasyonda zayıf olabilir; üretimde sizi yakan genellikle ikincilerdir.
+
+<Uyari tip="tuzak">
+Benchmark kontaminasyonu: halka açık benchmark soruları modellerin eğitim verisine sızabilir; yüksek skor, yetenek yerine ezberi ölçüyor olabilir. Ayrıca güncel modeller eski benchmark'larda tavana yaklaştıkça aralarındaki fark istatistiksel gürültüye karışır. Skor tablosunu ön eleme olarak okuyun, nihai kararı kendi verinizle verin.
+</Uyari>
+
+Benchmark tablolarının model seçiminde nasıl okunacağını, göreve göre test protokolüyle birlikte [açık ağırlıklı modeller seçim rehberinde](/makale/acik-agirlikli-modeller-secim-rehberi) ele alıyoruz; oradaki yaklaşım kapalı modeller için de aynen geçerlidir.
+
+## İnsan tercihini ölçmek: Chatbot Arena yaklaşımı
+
+Chatbot Arena, "hangi model daha iyi" sorusunu laboratuvar yerine gerçek kullanıcıya sorar. Kullanıcı aynı soruyu iki anonim modele yöneltir, cevaplardan birini seçer; model sıralaması bu ikili karşılaştırmalardan istatistiksel yöntemlerle türetilir. [Platformun makalesine göre](https://arxiv.org/abs/2403.04132) <Kaynak id="4">Mart 2024'teki yayın itibarıyla 240 binden fazla oy toplanmıştı</Kaynak> ve Arena, sektörün en çok referans verilen liderlik tablolarından biri haline geldi.
+
+Yaklaşımın güçlü yanı, ölçümün gerçek kullanım dağılımından gelmesidir: sorular yapay test maddeleri değil, kullanıcıların gerçekten sorduğu şeylerdir. Sorular sürekli yenilendiği için statik benchmark'ların kontaminasyon sorunundan da görece muaftır.
+
+Zayıf yanı ise genelliktir: Arena, ortalama kullanıcının genel sohbet tercihini ölçer. Sizin sektörünüzdeki teknik doğruluk, kurumsal ton gereksinimi veya Türkçedeki performans hakkında çok az şey söyler. Üstelik tercih sinyali, cevabın doğruluğundan çok üslubuna da yönelebilir — kullanıcılar iyi paketlenmiş yanlışı, kuru anlatılmış doğruya tercih edebilir. Bu, tercih tabanlı ölçümün yapısal sınırıdır; kalabalık büyüdükçe kaybolmaz.
+
+Pratik kural: Arena sıralamasını ve benzeri tercih tablolarını aday model havuzunu daraltmak için kullanın; nihai kararı, kendi görevinizden türetilmiş değerlendirme setiyle verin. İki kaynak birbirinin alternatifi değildir; art arda çalışırlar.
+
+## LLM-as-judge: ölçeklenebilir hakem, bilinen önyargılar
+
+LLM-as-judge, model çıktısını başka — genellikle daha güçlü — bir LLM'e puanlatmaktır ve bugün üretim ekiplerinin ana ölçekleme aracıdır. Yöntemin meşruiyetini kuran [MT-Bench çalışması](https://arxiv.org/abs/2306.05685), <Kaynak id="3">GPT-4 sınıfı bir hakemin insan tercihleriyle yüzde 80'in üzerinde uyuştuğunu ve bunun insanların kendi aralarındaki uyum düzeyiyle aynı olduğunu</Kaynak> gösterdi. Yani iyi kurgulanmış bir LLM hakem, ortalama bir insan etiketleyici kadar tutarlı olabilir — üstelik binlerce çıktıyı dakikalar içinde puanlar.
+
+Ancak aynı çalışma hakem modellerin sistematik önyargılarını da belgeledi: <Kaynak id="3">pozisyon önyargısı (önce gösterilen cevabı kayırma), laf kalabalığı önyargısı (uzun cevabı daha kaliteli sanma) ve kendini kayırma önyargısı</Kaynak>. Bu önyargılar teorik değildir; ölçülebilir puan kaymaları yaratır ve önlem alınmazsa değerlendirme sonuçlarını sessizce çarpıtır.
+
+Sahada işe yarayan önlemler şunlar: cevap çiftini iki sırayla da puanlatıp tutarsızlık halinde beraberlik saymak; serbest "puan ver" yerine net kriterli rubrik kullanmak; mümkün olan görevlerde hakeme referans cevap vermek; ve hakem kararlarını periyodik olarak insan etiketleriyle kalibre etmek. Son nokta kritiktir: kalibre edilmeyen hakem, sistematik hatasını sessizce büyütür. Judge prompt'unun kendisi de bir prompt'tur — [prompt mühendisliği](/rehber/prompt-muhendisligi-rehberi) disiplinine tabidir, versiyonlanmalı ve her değişiklikte yeniden kalibre edilmelidir.
+
+## Kendi değerlendirme setinizi kurmak
+
+Üretimde asıl işi gören araç, göreve özgü değerlendirme setidir (eval set): sizin trafiğinizi temsil eden girdiler ve her biri için "iyi cevap"ın yazılı tanımı. Benchmark'lar modeli ölçer; eval seti ise sistemi — prompt, model, bağlam ve iş mantığının toplamını — ölçer. Aradaki fark, üretim kararlarında belirleyicidir.
+
+Kurulum sırası sahada şöyle işliyor. Önce gerçek kullanıcı trafiğinden temsili örnekler toplayın; tipik vakalar kadar uç vakaları ve bilinen hata modlarını da dahil edin. Sonra her örnek için beklenen davranışı yazılı hale getirin — bu adım atlanırsa hakemin neyi puanlayacağını siz de bilemezsiniz. Ardından kontrolleri ucuzdan pahalıya katmanlayın ve seti sürüm kontrolüne alıp CI'ya bağlayın: prompt veya model değiştiğinde eval koşmadan üretime çıkılmaz. [Fine-tuning](/makale/fine-tuning-nedir-ne-zaman-gerekir) gibi maliyetli kararlar da ancak böyle bir setle doğrulanır; ölçemediğiniz iyileşme, yoktur.
+
+<Karsilastirma>
+
+| Yöntem | Ne ölçer | Maliyet | En zayıf yanı |
+|---|---|---|---|
+| Genel benchmark (MMLU, HELM) | Modelin genel yeteneği | Hazır sonuçlar ücretsiz | Görevinizi temsil etmez; kontaminasyon riski |
+| Tercih tabloları (Chatbot Arena) | Gerçek kullanıcıların genel tercihi | Hazır tablo ücretsiz | Alan ve dil özelinde sinyal zayıf |
+| Programatik kontroller | Format, şema, kural uyumu | Çok düşük | Anlamı ve doğruluğu ölçemez |
+| LLM-as-judge | Açık uçlu kalite, rubrik uyumu | Orta | Pozisyon ve uzunluk önyargıları; kalibrasyon şart |
+| İnsan değerlendirmesi | Nihai kalite, güvenlik, uç vakalar | Yüksek | Ölçeklenmez, yavaştır |
+
+</Karsilastirma>
+
+Tablo, hiçbir katmanın diğerinin yerine geçmediğini gösteriyor: her katman, bir üsttekinin maliyetini düşürmek için var.
+
+## Üretimde sürekli değerlendirme
+
+Değerlendirme, dağıtım öncesi tek seferlik bir kapı değil; üretimde sürekli çalışan bir süreçtir. Çevrimdışı eval seti "bu değişiklik regresyon yarattı mı" sorusunu cevaplar; ama üretim trafiği her zaman eval setinizden daha çeşitlidir. Bu yüzden ikinci katman çevrimiçi ölçümdür: canlı trafikten örnekleme yapıp çıktıları LLM hakeme ve periyodik insan denetimine sokmak, kullanıcı sinyallerini — beğeni, düzeltme, vazgeçme — kalite göstergesi olarak izlemek.
+
+Bu döngü, klasik [MLOps](/makale/mlops-nedir) pratiğindeki model izlemenin LLM dünyasındaki karşılığıdır: orada girdi dağılımının kaymasını izlersiniz, burada kalite kaymasını. Model sağlayıcının sessiz güncellemeleri, prompt değişiklikleri ve kullanıcı davranışının evrimi — üçü de skorunuzu sizin haberiniz olmadan oynatabilir. Ölçüm hattı yoksa bunların hiçbirini fark edemezsiniz.
+
+İki özel durumu ayrıca not edelim. RAG sistemlerinde uçtan uca skor tek başına yetmez; getirme (retrieval) katmanını ve üretim katmanını ayrı metriklerle ölçmek gerekir — mimarinin neden bu ayrımı zorunlu kıldığını [RAG rehberinde](/rehber/rag-nedir) anlatıyoruz. Ajanlı sistemlerde ise adım sayısı arttıkça hatalar birleşir; tek cevabın kalitesini değil, görev tamamlama oranını ölçmek gerekir.
+
+Özet: metrik seçiminden önce görev tanımı gelir. Neyi "iyi" saydığınızı yazılı hale getirmeden seçeceğiniz her metrik, yanlış şeyi büyük bir hassasiyetle ölçme riskini taşır.

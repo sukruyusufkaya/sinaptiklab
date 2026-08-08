@@ -1,0 +1,64 @@
+{
+  "type": "article",
+  "slug": "model-context-protocol-mcp-nedir",
+  "title": "Model Context Protocol (MCP) Nedir? Mimari ve Güncel Durum",
+  "dek": "MCP'nin çözdüğü N×M entegrasyon sorunu, host-istemci-sunucu mimarisi, araç/kaynak/istem yapı taşları ve durumsuz 2026 spesifikasyonu — üretim gözüyle.",
+  "answerFirst": "Model Context Protocol (MCP), yapay zeka uygulamalarının harici araç ve veri kaynaklarına bağlanmasını standartlaştıran açık bir protokoldür. Anthropic'in Kasım 2024'te açık kaynak olarak yayımladığı protokol, her model-her araç ikilisi için ayrı entegrasyon yazma (N×M) sorununu tek standarda indirger. JSON-RPC tabanlı host-istemci-sunucu mimarisi kullanır; bugün OpenAI dahil büyük sağlayıcılar destekliyor ve Temmuz 2026 sürümüyle protokol çekirdeği durumsuz hale geldi.",
+  "level": "orta",
+  "pillar": "ajanik-sistemler",
+  "clusters": ["mcp-rehberi"],
+  "tags": ["mcp", "model context protocol", "ajanik sistemler", "mcp sunucusu", "json-rpc", "araç entegrasyonu"],
+  "faq": [
+    {
+      "q": "MCP, function calling'in yerini mi alıyor?",
+      "a": "Hayır; iki katman birbirini tamamlar. Araç çağırma (function calling), modelin hangi aracı çağıracağını bildirme biçimidir; MCP ise araçların keşfini, taşınmasını ve yetkilendirilmesini uygulamalar arasında standartlaştırır. MCP sunucusundaki araçlar modele yine araç çağırma mekanizmasıyla sunulur."
+    },
+    {
+      "q": "MCP'yi hangi sağlayıcılar destekliyor?",
+      "a": "Protokolü Anthropic başlattı; bugün OpenAI Agents SDK dahil rakip sağlayıcı ekosistemleri de resmî destek sunuyor. Geliştirici araçları tarafında Zed, Replit ve Sourcegraph ilk benimseyenler arasındaydı; ayrıntılar gövdede kaynaklı olarak veriliyor."
+    },
+    {
+      "q": "MCP sunucusu bağlamak güvenli mi?",
+      "a": "Doğrulanmış, güvendiğiniz sunucularla evet; rastgele sunucularla hayır. Araç açıklamaları model davranışını yönlendirebildiği için spesifikasyon bunları güvenilir sunucudan gelmedikçe güvenilmez metin sayar. Allowlist, en az yetki ve kullanıcı onayı üretim kullanımının ön koşuludur."
+    },
+    {
+      "q": "Eski MCP sunucularım 2026 spesifikasyonuyla çalışmaya devam eder mi?",
+      "a": "Bir süre evet: kullanımdan kaldırılan özellikler için en az on iki aylık geçiş penceresi tanımlandı; bu süre gövdede kaynaklı. Ancak durumsuz çekirdeğe ve güncel SDK sürümlerine geçişi şimdiden planlamanız gerekir."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Introducing the Model Context Protocol",
+      "url": "https://www.anthropic.com/news/model-context-protocol",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-08",
+      "kind": "vendor"
+    },
+    {
+      "label": "MCP Specification (2026-07-28)",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28",
+      "publisher": "Model Context Protocol",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "The 2026-07-28 Specification",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "publisher": "Model Context Protocol Blog",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Model Context Protocol — OpenAI Agents SDK",
+      "url": "https://openai.github.io/openai-agents-python/mcp/",
+      "publisher": "OpenAI",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "MCP nedir, hangi sorunu çözer? Host-istemci-sunucu mimarisi, araç-kaynak-istem yapı taşları, durumsuz 2026 spesifikasyonu ve güvenlik notları."
+  },
+  "onerilenDurum": "published",
+  "notlar": "Tüm kaynak URL'leri 2026-08-08'de WebFetch ile fiilen açılıp doğrulandı. SDK indirme rakamları ve 12 aylık geçiş penceresi resmî MCP blog yazısından; 2026-07-28 durumsuz çekirdek değişiklikleri hem blog hem spesifikasyon sayfasıyla çapraz doğrulandı."
+}

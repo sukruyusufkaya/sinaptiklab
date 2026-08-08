@@ -376,21 +376,24 @@ function slugKurali(aday: Content, baglam: DogrulamaBaglami): KontrolSonucu {
 
 const URL_DESENI = /https?:\/\/[^\s)"'<>\]]+/g;
 
-async function varsayilanLinkDenetleyici(url: string): Promise<boolean> {
+async function yontemleDene(url: string, method: "HEAD" | "GET"): Promise<boolean> {
   const denetim = new AbortController();
   const zamanlayici = setTimeout(() => denetim.abort(), 5_000);
   try {
-    const yanit = await fetch(url, {
-      method: "HEAD",
-      redirect: "follow",
-      signal: denetim.signal,
-    });
+    const yanit = await fetch(url, { method, redirect: "follow", signal: denetim.signal });
+    if (method === "GET") void yanit.body?.cancel(); // gövdeyi indirme, başlıklar yeter
     return yanit.status >= 200 && yanit.status < 400;
   } catch {
     return false;
   } finally {
     clearTimeout(zamanlayici);
   }
+}
+
+async function varsayilanLinkDenetleyici(url: string): Promise<boolean> {
+  // Bazı sunucular (ör. kvkk.gov.tr) HEAD'e farklı/yanlış cevap verir;
+  // HEAD geçemezse GET ile ikinci şans tanınır.
+  return (await yontemleDene(url, "HEAD")) || yontemleDene(url, "GET");
 }
 
 async function kirikLinkKurali(kodsuz: string, baglam: DogrulamaBaglami): Promise<KontrolSonucu> {

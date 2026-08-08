@@ -1,0 +1,64 @@
+## Gömme vektörü tam olarak nedir?
+
+Gömme vektörü (embedding), bir metin parçasının — kelimenin, cümlenin ya da tüm dokümanın — anlamını sabit uzunlukta bir sayı dizisi olarak temsil eder. Bu diziyi çok boyutlu bir uzayda bir nokta gibi düşünebilirsiniz: "fatura itirazı" ile "faturaya itiraz etmek istiyorum" farklı kelimeler kullansa da bu uzayda birbirine yakın iki noktaya düşer. İşin sırrı da burada — embedding, kelime eşleşmesini değil anlam yakınlığını sayısallaştırır.
+
+Bu, klasik anahtar kelime aramasının çözemediği bir problemi çözer. Arama kutusuna "bilgisayar açılmıyor" yazan kullanıcı, "cihaz güç düğmesine basınca tepki vermiyor" başlıklı destek kaydını anahtar kelime eşleşmesiyle asla bulamaz; embedding tabanlı semantik arama bulur. Aynı mekanizma öneri sistemlerinde, kümelemede, sınıflandırmada ve [RAG](/rehber/rag-nedir) mimarilerinin retrieval katmanında çalışır.
+
+Embedding'i [token](/makale/token-nedir-turkcede-tokenlasma) ile karıştırmamak gerekir: token, metnin modele girmeden önce bölündüğü parçadır; embedding ise o parçaların modelin içinden geçtikten sonra kazandığı anlamsal temsildir. Üretim tarafında sizin muhatap olduğunuz şey, embedding API'sinden dönen ve veritabanına yazdığınız o sayı dizisidir. Dizinin kendisi tek başına okunabilir bir şey söylemez; değeri, başka dizilerle karşılaştırıldığında ortaya çıkar.
+
+## Embedding modelleri nasıl evrildi: word2vec'ten Transformer'a
+
+Bugünkü embedding modellerinin temeli, kelime düzeyinde temsil öğrenen [word2vec](https://arxiv.org/abs/1301.3781) ailesiyle atıldı. <Kaynak id="2">2013'te yayımlanan word2vec çalışması, 1,6 milyar kelimelik bir veri setinden bir günden kısa sürede yüksek kaliteli kelime vektörleri öğrenilebildiğini gösterdi</Kaynak>. word2vec'in meşhur ettiği vektör aritmetiği — "kral − erkek + kadın ≈ kraliçe" — anlamın vektör uzayında yön olarak kodlandığının ilk somut kanıtıydı.
+
+Ama word2vec statikti: "yüz" kelimesi hem sayı, hem surat, hem de yüzme fiili anlamında aynı vektörü alıyordu. [Transformer mimarisi](/makale/transformer-mimarisi-nasil-calisir) bunu değiştirdi; bağlamsal modeller her kelimeye cümledeki kullanımına göre farklı bir temsil üretir. Cümle düzeyinde verimli karşılaştırmayı ise [Sentence-BERT](https://arxiv.org/abs/1908.10084) pratik hale getirdi: <Kaynak id="3">10.000 cümlelik bir kümede en benzer çifti bulmak BERT ile yaklaşık 50 milyon çıkarım ve 65 saat gerektirirken, SBERT aynı işi yaklaşık 5 saniyeye indirdi</Kaynak>. Cümleleri önceden tek vektöre indirip yalnızca vektörleri karşılaştırmak — bugün her üretim RAG hattının yaptığı şey — bu çalışmayla standartlaştı.
+
+<Karsilastirma>
+
+| Özellik | Statik embedding (word2vec) | Bağlamsal embedding (Transformer tabanlı) |
+|---|---|---|
+| Temsil düzeyi | Kelime | Kelime, cümle, doküman |
+| Çok anlamlılık | Tek vektör, bağlam yok | Bağlama göre değişen temsil |
+| Türkçe ekler | Her çekimli biçim ayrı vektör | Alt kelime tokenizasyonu ile paylaşımlı |
+| Tipik kullanım | Tarihsel / eğitsel | Semantik arama, RAG, sınıflandırma |
+
+</Karsilastirma>
+
+## Benzerlik nasıl ölçülür, vektör arama nasıl çalışır?
+
+İki embedding arasındaki anlam yakınlığı çoğunlukla kosinüs benzerliğiyle ölçülür: vektörler arasındaki açının kosinüsü 1'e yaklaştıkça metinler anlamca yakındır. Normalize edilmiş vektörlerde iç çarpım (dot product) aynı sonucu verir ve daha ucuzdur; çoğu embedding API'si vektörleri zaten normalize edilmiş döndürür — yine de bunu kullandığınız modelin dokümantasyonundan teyit edin, karışık normalizasyon üretimde sinsi bir hata kaynağıdır.
+
+Milyonlarca vektör içinde tam tarama (brute force) yapmak pahalı olduğundan, üretim sistemleri HNSW gibi yaklaşık en yakın komşu (ANN) indeksleri kullanır: küçük bir doğruluk ödünü karşılığında sorgu süresini milisaniyelere indirir. Bu indeksleri yöneten katman da vektör veritabanıdır; hangi durumda hangi aracın mantıklı olduğunu [vektör veritabanı seçim rehberimizde](/makale/vektor-veritabani-nedir-secim-rehberi) ayrıntılı işledik.
+
+Pratik bir uyarı: benzerlik skoru mutlak bir kalite ölçüsü değildir. Skor dağılımı modelden modele değişir; başka bir projeden kopyalanan sabit eşik değerleri taşınabilir değildir. Eşiği kendi verinizde, gerçek sorgu-doküman çiftleriyle kalibre etmeniz gerekir. Aynı nedenle iki farklı modelin skorlarını yan yana koyup karşılaştırmak da anlamsızdır — her model kendi uzayında konuşur.
+
+## Model seçerken MTEB'e nasıl bakmalı?
+
+Kısa cevap: genel sıralamaya değil, kendi görev türünüze bakın. Embedding modellerinin standart karşılaştırma zemini [MTEB](https://arxiv.org/abs/2210.07316), yani Massive Text Embedding Benchmark'tır; <Kaynak id="4">2022'de yayımlanan benchmark 8 görev türü, 58 veri seti ve 112 dili kapsar ve 33 modelin değerlendirmesinde hiçbir yöntemin tüm görevlerde baskın olmadığını ortaya koymuştur</Kaynak>. Yani "en iyi embedding modeli" diye tek bir cevap yoktur; retrieval'da güçlü bir model kümelemede vasat kalabilir.
+
+Ticari tarafta rakamlar şeffaftır: [OpenAI'nin embedding dokümantasyonuna](https://developers.openai.com/api/docs/guides/embeddings) göre <Kaynak id="1">text-embedding-3-small varsayılan 1536 boyutla MTEB'de %62,3, text-embedding-3-large ise 3072 boyutla %64,6 skor alır</Kaynak>. Aradaki fark kağıt üstünde birkaç puan; bu farkın sizin verinizde de geçerli olup olmadığını ancak kendi test setinizle görürsünüz.
+
+Türkçe için ek bir katman var: MTEB skorlarının büyük kısmı İngilizce veri setlerinden gelir. Çok dilli görev sonuçlarına bakmak iyi bir başlangıçtır ama yeterli değildir. Bizim önerimiz, seçim öncesi gerçek sorgulardan ve beklenen doküman eşleşmelerinden oluşan küçük bir retrieval test seti kurup adayları bu set üzerinde yarıştırmak. Kurulumu bir öğleden sonra sürer; yanlış model seçip tüm korpusu yeniden indekslemekten çok daha ucuzdur.
+
+## Boyut, maliyet ve depolama dengesi nasıl kurulur?
+
+Vektör boyutu doğrudan bir maliyet kalemidir: her boyut, saklanacak ve her sorguda karşılaştırılacak bir sayı demektir. Boyut büyüdükçe depolama, bellek ve sorgu süresi birlikte büyür; milyonlarca dokümanlık bir korpusta aradaki fark sunucu faturasına doğrudan yansır.
+
+İyi haber, büyük modellerin vektörlerini kısaltmanın artık resmen desteklenmesi. <Kaynak id="1">OpenAI, dimensions parametresiyle embedding'in sonundaki sayıların atılarak kısaltılabildiğini ve temsilin kavram taşıyan özelliklerini kaybetmediğini dokümante eder</Kaynak>. Benzer esneklik diğer sağlayıcılarda da var; <Kaynak id="5">Google'ın Vertex AI embedding dokümantasyonu ayrıca görev türü (task type) seçimini ayrı bir başlık olarak işler</Kaynak> — sorgu ile doküman için farklı optimize edilmiş temsiller üretmek retrieval kalitesine doğrudan dokunan bir ayardır.
+
+Pratikte karar şöyle kurulur: önce kalite tavanını büyük modelle ölçün, sonra boyutu kademeli düşürüp kendi test setinizde kaliteyi izleyin. Çoğu kurumsal senaryoda kısaltılmış büyük model, tam boyutlu küçük modelden daha iyi bir kalite-maliyet noktasına oturur — ama bunu varsaymayın, ölçün. Depolama tarafında quantization ek kazanç sağlar; kalite kaybı görev tipine göre değişir ve hakem yine kendi test setinizdir.
+
+## Üretimde embedding: RAG hattında nelere dikkat etmeli?
+
+Embedding üretimde tek başına değil, bir hattın parçası olarak yaşar: doküman parçalama (chunking), embedding üretimi, indeksleme, sorgu embedding'i ve retrieval. Bu hattın en sık kırıldığı yerler modelin kendisi değil, çevresindeki operasyonel kararlardır.
+
+Birincisi: embedding modeli değiştiğinde tüm korpusu yeniden indekslemek zorundasınız. Farklı modellerin — hatta aynı modelin farklı sürümlerinin — vektör uzayları birbiriyle karşılaştırılamaz. Model seçimini bu yüzden geçici bir tercih gibi değil, migrasyon maliyeti olan bir altyapı kararı gibi ele alın.
+
+İkincisi: sorgu ile doküman simetrik değildir. Sorgular kısa ve devriktir, dokümanlar uzun ve düzenlidir; görev türü desteği olan modellerde bu ayrımı kullanmak ölçülebilir fark yaratır.
+
+Üçüncüsü: embedding kalitesi kötü chunking'i kurtarmaz. Anlamsal bütünlüğü ortasından bölen parçalama, en iyi modelin vektörlerini bile işe yaramaz hale getirir.
+
+<Uyari tip="tuzak">
+Embedding tabanlı retrieval'ı tek başına doğruluk garantisi sanmayın: sistem yine de alakasız parça getirebilir ve LLM bu parçalardan güvenle yanlış cevap üretebilir. Retrieval kalitesini ayrı, üretilen cevabı ayrı ölçün.
+</Uyari>
+
+Embedding'in RAG içindeki yerini bütün olarak görmek için [RAG rehberimize](/rehber/rag-nedir), retrieval ile model eğitimi arasındaki karar için [RAG mı fine-tuning mi yazımıza](/makale/rag-fine-tuning-karsilastirmasi) bakabilirsiniz.

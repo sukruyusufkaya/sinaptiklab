@@ -1,0 +1,71 @@
+{
+  "type": "article",
+  "slug": "ab-yapay-zeka-yasasi-ai-act-rehberi",
+  "title": "AB Yapay Zeka Yasası (AI Act): Takvim ve Yükümlülükler",
+  "dek": "AI Act'in risk sınıfları, ertelenen yüksek risk takvimi, GPAI kuralları ve şeffaflık yükümlülükleri: AB pazarına ürün gönderen Türk ekipleri için saha rehberi.",
+  "answerFirst": "AI Act (Tüzük 2024/1689), yapay zeka sistemlerini risk temelli dört sınıfa ayıran ve AB pazarına dokunan herkese uygulanan ilk kapsamlı YZ yasasıdır. Yasak uygulamalar Şubat 2025'ten, genel amaçlı model (GPAI) kuralları Ağustos 2025'ten beri yürürlükte; chatbot ve sentetik içerik şeffaflığı 2 Ağustos 2026'da uygulanmaya başladı. Yüksek riskli sistem yükümlülükleri ise Digital Omnibus değişikliğiyle Aralık 2027 ve Ağustos 2028'e ertelendi. Çıktısı AB'de kullanılan Türk şirketleri de kapsamdadır.",
+  "level": "orta",
+  "pillar": "regulasyon-yonetisim",
+  "clusters": ["eu-ai-act"],
+  "tags": ["ai-act", "eu-ai-act", "regulasyon", "gpai", "uyum"],
+  "faq": [
+    {
+      "q": "AI Act Türkiye'deki şirketleri bağlar mı?",
+      "a": "Türkiye AB üyesi olmasa da tüzüğün kapsamı sınır ötesidir: sisteminizi AB pazarına sürüyorsanız, AB'deki bir müşteriye hizmet olarak sunuyorsanız veya sistemin çıktısı AB'de kullanılıyorsa yükümlülükler size de uygulanır. GDPR'daki Brüksel etkisinin aynısı burada da işler."
+    },
+    {
+      "q": "2 Ağustos 2026'da ne değişti?",
+      "a": "Madde 50 şeffaflık yükümlülükleri uygulanmaya başladı: kullanıcı bir YZ ile etkileştiğini bilmeli, sentetik içerik makine tarafından okunabilir şekilde işaretlenmeli, deepfake'ler etiketlenmelidir. Ayrıca üye devlet otoritelerinin yasaklar ve GPAI kuralları için yaptırım uygulayacağı dönem başladı."
+    },
+    {
+      "q": "Yüksek riskli sistem yükümlülükleri ne zaman başlıyor?",
+      "a": "Digital Omnibus değişikliği sonrası Ek III'teki bağımsız yüksek riskli sistemler (işe alım, kredi skorlama vb.) için 2 Aralık 2027, AB ürün mevzuatına tabi ürünlere gömülü sistemler için 2 Ağustos 2028 geçerlidir. Kalite yönetim sistemi, veri yönetişimi ve insan gözetimi gereksinimlerinin kurulumu uzun sürdüğünden hazırlığı erteleme tarihine göre planlamak riskli olur."
+    },
+    {
+      "q": "ChatGPT, Claude ve Gemini gibi modeller AI Act'e tabi mi?",
+      "a": "Evet; bunlar genel amaçlı YZ (GPAI) modeli sayılır ve sağlayıcıları 2 Ağustos 2025'ten beri teknik dokümantasyon, telif politikası ve eğitim verisi özeti yükümlülüklerine tabidir. Sistemik risk eşiğini aşan modeller için ek değerlendirme ve raporlama gerekir. Bu modellerin üzerine uygulama kuran ekipler ise genellikle 'deployer' rolündedir ve kendi risk sınıfına göre yükümlülük taşır."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Regulation (EU) 2024/1689 (Artificial Intelligence Act) — tam metin",
+      "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng",
+      "publisher": "EUR-Lex, Avrupa Birliği Resmî Gazetesi",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Timeline: Implementation of the EU AI Act",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/timeline/timeline-implementation-eu-ai-act",
+      "publisher": "European Commission, AI Act Service Desk",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "AI Act — Regulatory framework on Artificial Intelligence",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "publisher": "European Commission",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Article 99: Penalties — EU AI Act Explorer",
+      "url": "https://artificialintelligenceact.eu/article/99/",
+      "publisher": "Future of Life Institute",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "EU AI Act Omnibus Agreement — Postponed High-Risk Deadlines and Other Key Changes",
+      "url": "https://www.gibsondunn.com/eu-ai-act-omnibus-agreement-postponed-high-risk-deadlines-and-other-key-changes/",
+      "publisher": "Gibson Dunn",
+      "accessedAt": "2026-08-08",
+      "kind": "news"
+    }
+  ],
+  "seo": {
+    "description": "AB Yapay Zeka Yasası (AI Act) rehberi: risk sınıfları, güncel uygulama takvimi, GPAI ve şeffaflık yükümlülükleri, cezalar ve Türk şirketlerine etkisi."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

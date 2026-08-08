@@ -1,0 +1,71 @@
+{
+  "type": "guide",
+  "slug": "prompt-muhendisligi-rehberi",
+  "title": "Prompt Mühendisliği Rehberi: Teknikten Üretime",
+  "dek": "Prompt mühendisliği el yordamı değil, ölçülebilir bir disiplindir. Net talimat, few-shot örnekler, chain-of-thought ve değerlendirme döngüsünü üretim deneyimiyle anlatan rehber.",
+  "answerFirst": "Prompt mühendisliği, bir dil modelinden istenen çıktıyı güvenilir şekilde almak için girdiyi — talimat, bağlam, örnekler ve format — sistematik olarak tasarlama disiplinidir. Model ağırlıklarına dokunmadan çalışır; bu yüzden en hızlı ve en ucuz iyileştirme kaldıracıdır. Etkili pratik üç ayağa oturur: net ve açık talimat, iyi seçilmiş örnekler (few-shot) ve adım adım akıl yürütme (chain-of-thought). Hepsinin üstünde ise ölçüm vardır: değerlendirme seti olmadan prompt iyileştirmesi tahminden ibarettir.",
+  "level": "giris",
+  "pillar": "llm-uretken-yz",
+  "clusters": ["prompt-muhendisligi"],
+  "tags": ["prompt mühendisliği", "few-shot", "chain-of-thought", "istem tasarımı", "LLM", "değerlendirme"],
+  "faq": [
+    {
+      "q": "Prompt mühendisliği yerine ne zaman fine-tuning gerekir?",
+      "a": "Prompt ve retrieval katmanıyla çözülemeyen durumlarda: kalıcı üslup ihtiyacı, alan diline derin adaptasyon ya da çok yüksek hacimde istem maliyetini düşürme. Önce prompt katmanını tüketin; çoğu kalite sorunu orada çözülür. Karar çerçevesi için RAG mı fine-tuning mi yazımıza bakın."
+    },
+    {
+      "q": "Chain-of-thought her modelde işe yarar mı?",
+      "a": "Klasik modellerde kazanç literatürde net biçimde gösterilmiştir; gövdedeki atıflarda iki temel çalışma var. Yerleşik akıl yürütme kipine sahip güncel modellerde ise elle yazılmış adım adım kalıpların etkisi azalır, bazen gereksiz uzunluk üretir. Tekniği kendi değerlendirme setinizde ölçüp karar verin."
+    },
+    {
+      "q": "İyi bir prompt ne kadar uzun olmalı?",
+      "a": "Uzunluk hedef değil sonuçtur. Gerekli bağlamı, örnekleri ve kısıtları taşıyan en kısa istem idealdir; her gereksiz cümle token maliyeti ve talimat karmaşası ekler. Uzayan istemleri kısaltmak yerine görevi aşamalara bölüp zincirlemeyi değerlendirin."
+    },
+    {
+      "q": "Prompt'ları nasıl saklamalı ve sürümlemeliyim?",
+      "a": "Uygulama kodundan ayrı dosyalarda ve sürüm kontrolünde tutun; her değişikliği değerlendirme setinden geçirin. Model sürümü yükseltmelerini de bir prompt değişikliği gibi test edin — aynı istem, farklı model sürümünde farklı davranabilir."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Prompt engineering overview — Claude Developer Platform dokümantasyonu",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Prompting best practices — Claude Developer Platform dokümantasyonu",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    },
+    {
+      "label": "Wei ve ark., Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+      "url": "https://arxiv.org/abs/2201.11903",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Kojima ve ark., Large Language Models are Zero-Shot Reasoners",
+      "url": "https://arxiv.org/abs/2205.11916",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Brown ve ark., Language Models are Few-Shot Learners (GPT-3)",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    }
+  ],
+  "seo": {
+    "description": "Prompt mühendisliği rehberi: net talimat, few-shot, chain-of-thought, format kontrolü ve değerlendirme döngüsü. Kaynaklı, üretim odaklı anlatım."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

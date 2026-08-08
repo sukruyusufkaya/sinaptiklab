@@ -1,0 +1,67 @@
+{
+  "type": "article",
+  "slug": "yapay-zeka-halusinasyonu-nedir",
+  "title": "Yapay Zeka Halüsinasyonu Nedir, Neden Olur, Nasıl Azaltılır?",
+  "dek": "Halüsinasyon, modelin akıcı ama yanlış bilgi üretmesi. Neden kaçınılmaz olduğu, görev bazında oranlar ve üretimde işe yarayan azaltma katmanları — kaynaklı anlatım.",
+  "answerFirst": "Yapay zeka halüsinasyonu, büyük dil modelinin akıcı ve kendinden emin görünen ama gerçekle ya da verilen bağlamla çelişen bilgi üretmesidir. Model metni doğruluk kaydından okuyarak değil, olasılık dağılımından örnekleyerek üretir; bu yüzden halüsinasyon bir yazılım hatası değil, eğitim ve değerlendirme kurgusunun istatistiksel sonucudur. Tamamen yok edilemez; RAG ile zeminleme, \"bilmiyorum\" deme izni, alıntıya dayalı doğrulama ve sürekli ölçümle üretimde yönetilebilir seviyeye indirilir.",
+  "level": "giris",
+  "pillar": "llm-uretken-yz",
+  "clusters": ["halusinasyon-guvenilirlik"],
+  "tags": ["halüsinasyon", "llm", "güvenilirlik", "rag", "llm değerlendirme"],
+  "faq": [
+    {
+      "q": "Halüsinasyon bir yazılım hatası mı, tamamen giderilebilir mi?",
+      "a": "Hayır, klasik anlamda bir bug değil; modelin olasılıksal üretim biçiminin ve değerlendirme teşviklerinin istatistiksel sonucu. Güncel araştırma, üretken hatanın sınıflandırma hatasıyla aynı kökten geldiğini ve tamamen sıfırlanamayacağını gösteriyor. Doğru hedef yok etmek değil, göreve göre kabul edilebilir seviyeye indirip sürekli ölçmek."
+    },
+    {
+      "q": "RAG halüsinasyonu tamamen çözer mi?",
+      "a": "Hayır. RAG gerçeklik halüsinasyonunu belirgin azaltır, çünkü model bellekten değil verilen bağlamdan cevaplar. Ama retrieval yanlış parçayı getirirse veya model bağlama sadık kalmazsa halüsinasyon sürer; bu yüzden RAG kurulduktan sonra da sadakat ölçümü gerekir."
+    },
+    {
+      "q": "Hangi model en az halüsinasyon üretir?",
+      "a": "Göreve göre değişir ve sıralama sık güncellenir. Vectara'nın liderlik tablosu, özetleme sadakatinde modeller arasında on kata varan fark gösteriyor. Kendi görevinizde, kendi değerlendirme setinizle test etmek tek güvenilir yöntemdir."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Kalai, Nachum, Vempala, Zhang — Why Language Models Hallucinate",
+      "url": "https://arxiv.org/abs/2509.04664",
+      "publisher": "arXiv (OpenAI)",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Huang vd. — A Survey on Hallucination in Large Language Models (ACM TOIS)",
+      "url": "https://arxiv.org/abs/2311.05232",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Vectara Hallucination Leaderboard (HHEM)",
+      "url": "https://github.com/vectara/hallucination-leaderboard",
+      "publisher": "Vectara",
+      "accessedAt": "2026-08-08",
+      "kind": "data"
+    },
+    {
+      "label": "Dahl, Magesh, Suzgun, Ho — Large Legal Fictions: Profiling Legal Hallucinations in Large Language Models",
+      "url": "https://arxiv.org/abs/2401.01301",
+      "publisher": "arXiv (Stanford)",
+      "accessedAt": "2026-08-08",
+      "kind": "paper"
+    },
+    {
+      "label": "Anthropic — Reduce hallucinations (resmi dokümantasyon)",
+      "url": "https://platform.claude.com/docs/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-08",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "Yapay zeka halüsinasyonu nedir, neden olur? Kaçınılmazlığın nedeni, görev bazlı oranlar ve üretimde kanıta dayalı azaltma teknikleri."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

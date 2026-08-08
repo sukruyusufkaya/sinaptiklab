@@ -1,0 +1,57 @@
+## Büyük dil modeli tam olarak nedir?
+
+Büyük dil modeli (LLM, large language model), çok büyük metin derlemleri üzerinde tek bir hedefle eğitilmiş derin öğrenme modelidir: eldeki metnin devamında hangi token'ın geleceğini tahmin etmek. Kulağa fazla basit geliyor, farkındayız — biz de ilk duyduğumuzda "bu kadar mı?" demiştik. Ama bu basit hedef, yeterince veri ve parametreyle ölçeklendiğinde çeviri, özetleme, kod yazma ve muhakeme gibi hiç doğrudan öğretilmemiş yetenekler ortaya çıkarıyor. <Kaynak id="2">GPT-3 bu ölçek sıçramasının dönüm noktasıydı: 2020'de yayımlanan model 175 milyar parametreyle, o güne kadarki en büyük yoğun dil modelinin 10 katı boyutundaydı</Kaynak> ve görevleri hiç yeniden eğitilmeden, yalnızca istemdeki birkaç örnekten öğrenebildiğini gösterdi.
+
+Buradaki kritik ayrım şu: LLM bir bilgi veritabanı değildir. Eğitim verisindeki örüntüleri parametrelerine sıkıştırır ve üretim anında bir olasılık dağılımından örnekleme yapar. "Ankara Türkiye'nin başkentidir" cümlesini doğru kurması, bu bilgiyi bir tablodan çekmesinden değil, bu örüntünün eğitim verisinde ezici sıklıkta geçmesindendir. Sahada kurduğumuz her LLM sisteminde mimari kararların çoğu bu tek cümleden türedi: model bilgiyi *bilmez*, *tahmin eder* — ve tahmin, doğrulama katmanı ister.
+
+## LLM nasıl çalışır? Token, olasılık ve Transformer
+
+Bir LLM metni kelime kelime değil, token adı verilen alt parçalara bölerek işler ve her adımda bir sonraki token'ın olasılık dağılımını hesaplar. Bu döngü — token üret, diziye ekle, tekrar tahmin et — otoregresif üretim olarak adlandırılır ve chat arayüzünde gördüğünüz "akan yazı"nın teknik karşılığıdır. Türkçe gibi eklemeli dillerde tokenlaşmanın maliyet ve kalite etkileri ayrı bir yazıyı hak ediyor; ayrıntısı [token ve Türkçede tokenlaşma](/makale/token-nedir-turkcede-tokenlasma) yazısında.
+
+Bu tahmini mümkün kılan mimari Transformer'dır. <Kaynak id="1">2017'de yayımlanan "Attention Is All You Need" makalesi, tekrarlayan ağları ve konvolüsyonu tamamen bırakıp yalnızca dikkat (attention) mekanizmasına dayanan bu mimariyi tanıttı; model, makine çevirisi denemesinde 8 GPU üzerinde 3,5 günlük eğitimle önceki en iyi sonuçları geçti</Kaynak>. Dikkat mekanizması, dizideki her token'ın diğer tüm token'larla ilişkisini paralel hesaplamaya izin verir — RNN'lerin sıralı darboğazını kaldıran da budur. Mimarinin iç işleyişini [Transformer mimarisi nasıl çalışır](/makale/transformer-mimarisi-nasil-calisir) yazısında katman katman açıyoruz; orijinal makale [arXiv'de](https://arxiv.org/abs/1706.03762) açık erişimde.
+
+Modelin tek seferde işleyebildiği token miktarına bağlam penceresi denir ve pratik sınırlarınızı bu belirler. <Kaynak id="4">Llama 3.1 ailesi 128 bin token'lık bağlam penceresiyle geldi</Kaynak>; <Kaynak id="5">Anthropic'in güncel Claude modelleri ise resmi dokümantasyona göre 1 milyon token'a kadar bağlam destekliyor</Kaynak>.
+
+## LLM nasıl eğitilir? Ön eğitimden RLHF'e
+
+Modern bir LLM'in eğitimi tek aşama değil, üç aşamalı bir hattır: ön eğitim, denetimli ince ayar ve insan geri bildirimiyle pekiştirmeli öğrenme (RLHF). Ön eğitimde model, internetten ve lisanslı derlemlerden toplanan trilyonlarca token üzerinde sıradaki token'ı tahmin etmeyi öğrenir — dil yeteneğinin tamamına yakını burada oluşur. Ancak ham ön eğitilmiş model bir asistan değildir; soru sorduğunuzda soruyla aynı formatta yeni sorular üretmesi bile mümkündür.
+
+Modeli kullanılabilir asistan yapan, sonraki iki aşamadır. Denetimli ince ayarda (SFT) modele insan eliyle yazılmış talimat-cevap çiftleri gösterilir; RLHF aşamasında ise insanların sıraladığı model çıktıları üzerinden bir ödül modeli eğitilir ve model bu ödüle göre optimize edilir. Bu hattın etkisi çarpıcı biçimde ölçüldü: <Kaynak id="3">2022'deki InstructGPT çalışmasında, insan değerlendiriciler 1,3 milyar parametrelik hizalanmış modelin çıktılarını, 100 kat büyük olan 175 milyar parametrelik ham GPT-3'e tercih etti</Kaynak>.
+
+Sahadaki karşılığı şu: parametre sayısı tek başına kalite göstergesi değildir. Model seçerken "kaç milyar parametre" sorusundan önce "hangi veriyle, nasıl hizalanmış" sorusunu sorun. Kendi verinizle ince ayar yapmayı düşünüyorsanız da önce [fine-tuning gerçekten ne zaman gerekir](/makale/fine-tuning-nedir-ne-zaman-gerekir) yazısındaki karar çerçevesinden geçin — deneyimimiz, vakaların çoğunda daha ucuz bir çözümün var olduğu yönünde.
+
+## LLM neyi iyi yapar, nerede çuvallar?
+
+LLM'ler örüntüsü bol işlerde parlar, kesinlik gerektiren işlerde tökezler — sistem tasarımınız bu çizgiyi doğru çekmeye dayanır. İyi yaptıkları: metin dönüştürme (özet, çeviri, ton değiştirme), taslak üretme, kod yazma ve gözden geçirme, serbest metinden yapılandırılmış veri çıkarma, sınıflandırma. Bu işlerin ortak özelliği, eğitim verisinde milyonlarca benzer örneğin bulunması ve "yeterince iyi" cevabın kabul edilebilir olmasıdır.
+
+Zayıf yanlar da aynı mekanizmadan doğar. Model olasılık dağılımından örnekleme yaptığı için, bilmediği konuda da aynı akıcılıkla üretir — buna halüsinasyon diyoruz ve nedenlerini [yapay zeka halüsinasyonu](/makale/yapay-zeka-halusinasyonu-nedir) yazısında ayrıntılı işledik. Eğitim verisi bir tarihte kesildiği için model güncel olayları bilmez; aritmetik ve sayım gibi sembolik işlemlerde token tabanlı üretim güvenilmezdir; aynı istem iki çalıştırmada farklı cevap verebilir.
+
+<Uyari tip="tuzak">
+LLM çıktısının dil kalitesi ile doğruluğu arasında korelasyon yoktur. En akıcı, en özgüvenli paragraf tamamen uydurma olabilir. Üretim sisteminde "cevap ikna edici görünüyor" hiçbir zaman bir doğrulama kriteri değildir; kritik akışlarda kaynak zorunluluğu, şema doğrulaması veya insan onayı katmanı koyun.
+</Uyari>
+
+Pratik kural: çıktının yanlış olma maliyeti düşükse (taslak, beyin fırtınası) LLM'i serbest bırakın; maliyet yüksekse (finans, hukuk, sağlık) modeli üretici değil *yardımcı* rolüne itin ve son kararı sistemin deterministik katmanına ya da insana bırakın.
+
+## Kapalı model mi, açık ağırlıklı model mi?
+
+Kısa cevap: veri gizliliği ve kontrol öncelikliyse açık ağırlıklı, en yüksek kalite ve düşük operasyon yüküyse kapalı API genellikle daha doğru başlangıçtır. Kapalı modellerde (GPT, Claude, Gemini) modeli API üzerinden kullanır, altyapıyı sağlayıcıya bırakırsınız. Açık ağırlıklı modellerde ise ağırlık dosyaları elinizdedir; kendi donanımınızda çalıştırır, dilerseniz ince ayar yaparsınız. <Kaynak id="4">Meta'nın Temmuz 2024'te yayımladığı Llama 3.1 405B, açık ağırlıklı tarafın kapalı modellerle rekabet edebildiğini gösteren ilk sınır seviyesi model oldu</Kaynak>; duyurunun tamamı [Meta AI blogunda](https://ai.meta.com/blog/meta-llama-3-1/).
+
+<Karsilastirma>
+| Kriter | Kapalı model (API) | Açık ağırlıklı model |
+|---|---|---|
+| Başlangıç maliyeti | Düşük — API anahtarıyla dakikalar içinde | Yüksek — GPU ve servis altyapısı gerekir |
+| Veri kontrolü | Veri sağlayıcıya gider, sözleşmeyle sınırlanır | Veri tesisinizden çıkmaz |
+| Kalite tavanı | En üst seviye modeller burada | Sınır seviyesine yaklaşıyor, ekosistem hızlı |
+| Özelleştirme | İstem ve araçlarla sınırlı | Tam ince ayar, quantization, mimari müdahale |
+| Operasyon yükü | Sağlayıcıda | Sizde — izleme, ölçekleme, güncelleme dahil |
+</Karsilastirma>
+
+Sahadan gözlemimiz: ekipler prototipi kapalı API ile kurup, hacim ve gizlilik gereksinimleri netleşince kritik akışları açık modele taşıyor. Seçim kriterlerinin tamamı [açık ağırlıklı modeller seçim rehberinde](/makale/acik-agirlikli-modeller-secim-rehberi); güncel kapalı model spesifikasyonları için de sağlayıcıların resmi dokümantasyonunu — örneğin [Anthropic'in model sayfasını](https://platform.claude.com/docs/en/about-claude/models/overview) — birincil kaynak olarak kullanın.
+
+## İlk LLM projenize nereden başlamalı?
+
+Başlangıç sırası bellidir: önce istem, sonra bağlam, en son eğitim. İlk refleks olarak model eğitmeye ya da ince ayara koşan her ekipte aynı sonucu gördük: haftalar sonra, aynı işin iyi yazılmış bir istemle çözüldüğü ortaya çıkıyor. İyi istem tasarımı — rol tanımı, örnekler, çıktı şeması — tek başına projelerin önemli kısmını hedefe taşır; tekniklerin tamamı [prompt mühendisliği rehberinde](/rehber/prompt-muhendisligi-rehberi).
+
+İstem yetmediğinde ikinci adım bağlam eklemektir: modelin bilmediği kurumsal veya güncel bilgiyi, cevap anında bulup bağlam penceresine koyarsınız. Bu mimarinin adı RAG'dir ve kurumsal LLM uygulamalarının bugün en yaygın desenidir; nasıl kurulduğunu [RAG rehberinde](/rehber/rag-nedir) adım adım anlatıyoruz. İnce ayar ise üçüncü ve en pahalı adımdır: davranış (üslup, format, alan dili) değiştirmek için güçlüdür, bilgi eklemek için genellikle yanlış araçtır.
+
+Bir de ölçüm disiplini: LLM projesinde "çalışıyor gibi" hissi aldatıcıdır, çünkü çıktı olasılıksaldır. Daha ilk günden küçük bir değerlendirme seti kurun — birkaç düzine gerçek girdi ve beklenen çıktı bile yeterli başlangıçtır — ve her istem ya da model değişikliğini bu set üzerinden karşılaştırın. Bu alışkanlık, "dün iyiydi bugün bozuldu" tartışmalarını veriye bağlayan en ucuz sigortadır.
