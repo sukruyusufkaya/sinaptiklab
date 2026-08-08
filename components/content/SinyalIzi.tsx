@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 /**
  * "Aksiyon Potansiyeli" sinyal izi (BRIEF §5.4) — markanın tek gösterişli,
@@ -70,43 +77,45 @@ export function SinyalIzi({ bolumler }: { bolumler: Bolum[] }) {
   const [aktifId, setAktifId] = useState<string | null>(null);
   const hareketAzalt = useSyncExternalStore(hareketAboneligi, hareketDurumu, sunucuHareketDurumu);
 
-  // Ölçüm: makale ve başlık konumları → ray koordinatları (mount + resize)
-  useEffect(() => {
-    function olc() {
-      const govde = document.getElementById("icerik-govde");
-      const ray = rayRef.current;
-      if (!govde || !ray) return;
-      const yukseklik = ray.clientHeight;
-      const govdeUst = govde.getBoundingClientRect().top + window.scrollY;
-      const govdeBoy = govde.scrollHeight;
-      if (yukseklik === 0 || govdeBoy === 0) return;
+  // Ölçüm: makale ve başlık konumları → ray koordinatları
+  const olc = useCallback(() => {
+    const govde = document.getElementById("icerik-govde");
+    const ray = rayRef.current;
+    if (!govde || !ray) return;
+    const yukseklik = ray.clientHeight;
+    const govdeUst = govde.getBoundingClientRect().top + window.scrollY;
+    const govdeBoy = govde.scrollHeight;
+    if (yukseklik === 0 || govdeBoy === 0) return;
 
-      const yeni: Olcum[] = [];
-      for (const b of bolumler) {
-        const el = document.getElementById(b.id);
-        if (!el) continue;
-        const elUst = el.getBoundingClientRect().top + window.scrollY;
-        const oran = Math.min(Math.max((elUst - govdeUst) / govdeBoy, 0), 1);
-        yeni.push({ y: Math.round(oran * yukseklik), id: b.id, text: b.text });
-      }
-      setRayYuksekligi(yukseklik);
-      setOlcumler(yeni);
+    const yeni: Olcum[] = [];
+    for (const b of bolumler) {
+      const el = document.getElementById(b.id);
+      if (!el) continue;
+      const elUst = el.getBoundingClientRect().top + window.scrollY;
+      const oran = Math.min(Math.max((elUst - govdeUst) / govdeBoy, 0), 1);
+      yeni.push({ y: Math.round(oran * yukseklik), id: b.id, text: b.text });
     }
+    setRayYuksekligi(yukseklik);
+    setOlcumler(yeni);
+  }, [bolumler]);
 
-    // İlk ölçüm rAF'a ertelenir (effect içinde senkron setState kaskadı olmasın)
-    const ilkOlcum = requestAnimationFrame(olc);
+  // İlk ölçüm boyamadan önce senkron yapılır (DOM ölçümü için meşru
+  // useLayoutEffect deseni; rAF frame-starved ortamlarda hiç ateşlenmiyordu).
+  useLayoutEffect(() => {
+    olc();
+  }, [olc]);
+
+  // Yeniden ölçüm: gövde/ray boyut değişimlerine abone ol
+  useEffect(() => {
     const gozlemci = new ResizeObserver(olc);
     const govde = document.getElementById("icerik-govde");
     if (govde) gozlemci.observe(govde);
     if (rayRef.current) gozlemci.observe(rayRef.current);
-    return () => {
-      cancelAnimationFrame(ilkOlcum);
-      gozlemci.disconnect();
-    };
-  }, [bolumler]);
+    return () => gozlemci.disconnect();
+  }, [olc]);
 
-  // Path uzunluğu (dashoffset dolgusu için) — path değişince yeniden ölç
-  useEffect(() => {
+  // Path uzunluğu (dashoffset dolgusu için) — path değişince boyamadan önce ölç
+  useLayoutEffect(() => {
     if (izRef.current) setIzUzunlugu(izRef.current.getTotalLength());
   }, [rayYuksekligi, olcumler]);
 
