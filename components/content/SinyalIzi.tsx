@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 /**
  * "Aksiyon Potansiyeli" sinyal izi (BRIEF §5.4) — markanın tek gösterişli,
@@ -34,6 +34,17 @@ interface Olcum {
 const SPIKE_YARI_YUKSEKLIK = 7; // px — spike'ın hat üzerinde kapladığı dikey pay
 const HAT_X = 24; // rayın içindeki hat merkezi
 
+// prefers-reduced-motion aboneliği (effect içinde setState yerine
+// useSyncExternalStore — SSR anlık görüntüsü false).
+const HAREKET_SORGUSU = "(prefers-reduced-motion: reduce)";
+function hareketAboneligi(bildir: () => void) {
+  const sorgu = window.matchMedia(HAREKET_SORGUSU);
+  sorgu.addEventListener("change", bildir);
+  return () => sorgu.removeEventListener("change", bildir);
+}
+const hareketDurumu = () => window.matchMedia(HAREKET_SORGUSU).matches;
+const sunucuHareketDurumu = () => false;
+
 function izYoluCiz(yukseklik: number, olcumler: Olcum[]): string {
   // Yukarıdan aşağı tek yol: hat → spike → hat → spike…
   let d = `M ${HAT_X} 0`;
@@ -57,15 +68,10 @@ export function SinyalIzi({ bolumler }: { bolumler: Bolum[] }) {
   const [izUzunlugu, setIzUzunlugu] = useState(0);
   const [ilerleme, setIlerleme] = useState(0);
   const [aktifId, setAktifId] = useState<string | null>(null);
-  const [hareketAzalt, setHareketAzalt] = useState(false);
+  const hareketAzalt = useSyncExternalStore(hareketAboneligi, hareketDurumu, sunucuHareketDurumu);
 
   // Ölçüm: makale ve başlık konumları → ray koordinatları (mount + resize)
   useEffect(() => {
-    const sorgu = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setHareketAzalt(sorgu.matches);
-    const dinle = (e: MediaQueryListEvent) => setHareketAzalt(e.matches);
-    sorgu.addEventListener("change", dinle);
-
     function olc() {
       const govde = document.getElementById("icerik-govde");
       const ray = rayRef.current;
@@ -87,14 +93,15 @@ export function SinyalIzi({ bolumler }: { bolumler: Bolum[] }) {
       setOlcumler(yeni);
     }
 
-    olc();
+    // İlk ölçüm rAF'a ertelenir (effect içinde senkron setState kaskadı olmasın)
+    const ilkOlcum = requestAnimationFrame(olc);
     const gozlemci = new ResizeObserver(olc);
     const govde = document.getElementById("icerik-govde");
     if (govde) gozlemci.observe(govde);
     if (rayRef.current) gozlemci.observe(rayRef.current);
     return () => {
+      cancelAnimationFrame(ilkOlcum);
       gozlemci.disconnect();
-      sorgu.removeEventListener("change", dinle);
     };
   }, [bolumler]);
 
