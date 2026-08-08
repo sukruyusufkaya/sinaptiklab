@@ -14,6 +14,7 @@ import { Karsilastirma } from "./Karsilastirma";
 import { Kaynak } from "./Kaynak";
 import { KisaCevap } from "./KisaCevap";
 import { Kod } from "./Kod";
+import { KodGenislet } from "./KodGenislet";
 import { KopyalaButonu } from "./KopyalaButonu";
 import { Olcum } from "./Olcum";
 import { Terim } from "./Terim";
@@ -57,9 +58,11 @@ function SadeKod(props: ComponentPropsWithoutRef<"pre">) {
       <div className="kod-sade-arac absolute right-2 top-2 z-10">
         <KopyalaButonu />
       </div>
-      <div data-kopya-icerik>
-        <pre {...props} />
-      </div>
+      <KodGenislet>
+        <div data-kopya-icerik>
+          <pre {...props} />
+        </div>
+      </KodGenislet>
     </div>
   );
 }

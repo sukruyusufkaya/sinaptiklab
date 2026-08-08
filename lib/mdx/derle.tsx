@@ -85,38 +85,49 @@ function rehypeBaslikId(secenekler: { toc: TocMaddesi[] }) {
 // Vurgulu satıra `.highlighted` sınıfı basılır — stil app/globals.css'te.
 
 const VURGU_DESENI =
-  /(?:\/\/|#|--|;|\/\*|<!--)\s*\[!code highlight(?::(\d+))?\]\s*(?:\*\/|-->)?\s*$/;
+  /(?:\/\/|#|--|;|\/\*|<!--)\s*\[!code (highlight|\+\+|--)(?::(\d+))?\]\s*(?:\*\/|-->)?\s*$/;
+
+/** İşaret türü → satıra basılacak sınıf (stiller app/globals.css'te). */
+const ISARET_SINIFI: Record<string, string> = {
+  highlight: "highlighted",
+  "++": "diff-ekle",
+  "--": "diff-sil",
+};
 
 function satirVurguDonusturucu(): ShikiTransformer {
   // Blok başına durum: preprocess her kod bloğunda sıfırlar; Shiki bir bloğu
   // baştan sona işleyip sonrakine geçtiği için `line` kancaları aynı bloğun
   // kümesini okur.
-  let vurgulular = new Set<number>();
+  let isaretliler = new Map<number, string>();
 
   return {
     name: "sinaptiklab:satir-vurgu",
     preprocess(kod) {
-      vurgulular = new Set<number>();
-      if (!kod.includes("[!code highlight")) return undefined;
+      isaretliler = new Map<number, string>();
+      if (!kod.includes("[!code ")) return undefined;
 
       const sonuc: string[] = [];
       let kalan = 0;
+      let kalanSinif = "highlighted";
       for (const satir of kod.split("\n")) {
         const es = VURGU_DESENI.exec(satir);
-        if (es !== null) {
-          const adet = es[1] !== undefined ? Number.parseInt(es[1], 10) : 1;
+        if (es !== null && es[1] !== undefined) {
+          const sinif = ISARET_SINIFI[es[1]] ?? "highlighted";
+          const adet = es[2] !== undefined ? Number.parseInt(es[2], 10) : 1;
           const govde = satir.slice(0, es.index).replace(/\s+$/, "");
           if (govde.length === 0) {
             kalan += adet;
+            kalanSinif = sinif;
             continue;
           }
-          vurgulular.add(sonuc.length);
+          isaretliler.set(sonuc.length, sinif);
           sonuc.push(govde);
           kalan += adet - 1;
+          kalanSinif = sinif;
           continue;
         }
         if (kalan > 0) {
-          vurgulular.add(sonuc.length);
+          isaretliler.set(sonuc.length, kalanSinif);
           kalan -= 1;
         }
         sonuc.push(satir);
@@ -124,8 +135,9 @@ function satirVurguDonusturucu(): ShikiTransformer {
       return sonuc.join("\n");
     },
     line(dugum, satirNo) {
-      if (vurgulular.has(satirNo - 1)) {
-        addClassToHast(dugum, "highlighted");
+      const sinif = isaretliler.get(satirNo - 1);
+      if (sinif !== undefined) {
+        addClassToHast(dugum, sinif);
       }
     },
   };

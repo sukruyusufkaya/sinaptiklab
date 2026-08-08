@@ -110,3 +110,20 @@ describe("okumaSuresi", () => {
     expect(okumaSuresi(kaynak)).toBe(1); // 102 kelime; kod bloğu hariç
   });
 });
+
+describe("diff notasyonu", () => {
+  it("[!code ++] ve [!code --] satırlarına diff sınıfları basılır, işaret silinir", async () => {
+    const kaynak = [
+      "```ts",
+      'const eski = "kaldir"; // [!code --]',
+      'const yeni = "ekle"; // [!code ++]',
+      "const normal = 1;",
+      "```",
+    ].join("\n");
+    const { icerik } = await mdxDerle(kaynak);
+    const html = renderToStaticMarkup(icerik);
+    expect(html).toContain("diff-sil");
+    expect(html).toContain("diff-ekle");
+    expect(html).not.toContain("[!code");
+  });
+});

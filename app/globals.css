@@ -294,3 +294,39 @@ a:hover {
   box-shadow: inset 2px 0 0 0 var(--sinyal);
   background: color-mix(in srgb, var(--sinyal) 8%, transparent);
 }
+
+/* Genişletilmiş kod bloğu: yükseklik sınırı kalkar (KodGenislet.tsx) */
+.kod-acik .shiki {
+  max-height: none;
+}
+
+/* Diff satırları — `// [!code ++]` ve `// [!code --]` notasyonu.
+   ± işareti ::before ile basılır (kopyalamada metne karışmaz). */
+.shiki .line.diff-ekle,
+.shiki .line.diff-sil {
+  display: inline-block;
+  min-width: 100%;
+  position: relative;
+  padding-left: 1.1rem;
+}
+.shiki .line.diff-ekle {
+  background: color-mix(in srgb, var(--onay) 12%, transparent);
+}
+.shiki .line.diff-sil {
+  background: color-mix(in srgb, var(--uyari) 10%, transparent);
+  opacity: 0.75;
+}
+.shiki .line.diff-ekle::before,
+.shiki .line.diff-sil::before {
+  position: absolute;
+  left: 0.25rem;
+  font-family: var(--font-mono);
+}
+.shiki .line.diff-ekle::before {
+  content: "+";
+  color: var(--onay);
+}
+.shiki .line.diff-sil::before {
+  content: "−";
+  color: var(--uyari);
+}
