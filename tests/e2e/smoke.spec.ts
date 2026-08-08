@@ -29,7 +29,9 @@ test.describe("iskelet dumanı testi", () => {
   test("404 sayfası markalı", async ({ page }) => {
     const yanit = await page.goto("/boyle-bir-sayfa-yok");
     expect(yanit?.status()).toBe(404);
-    await expect(page.getByText("SİNYAL YOK — 404")).toBeVisible();
+    // metin DOM'da küçük harf; büyük görünüm CSS (uppercase) ile
+    await expect(page.getByText("sinyal yok · hata 404")).toBeVisible();
+    await expect(page.getByRole("link", { name: /Konu haritası/ })).toBeVisible();
   });
 
   test("erişilebilirlik: axe ihlali yok (açık ve koyu tema)", async ({ page }) => {

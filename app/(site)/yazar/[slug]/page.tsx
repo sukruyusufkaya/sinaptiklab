@@ -42,30 +42,37 @@ export default async function YazarSayfasi({ params }: Props) {
     <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-12">
       {jsonLdScript(kisiJsonLd(yazar, mutlakUrl))}
 
-      <p className="font-mono text-xs uppercase tracking-widest text-murekkep-2">Yazar</p>
-
-      <div className="mt-3 flex flex-wrap items-start gap-6">
-        {yazar.avatar !== "" && (
-          <Image
-            src={yazar.avatar}
-            alt={yazar.name}
-            width={96}
-            height={96}
-            className="border border-doku"
-          />
-        )}
-        <div className="min-w-0">
-          <h1 className="font-display text-3xl font-bold">{yazar.name}</h1>
-          <p className="mt-2 text-murekkep-2">
-            {yazar.title}
-            {yazar.employer !== "" && (
-              <span className="font-mono text-sm"> · {yazar.employer}</span>
-            )}
-          </p>
+      {/* Kimlik kartı: enstrüman etiketi görünümü (E-E-A-T ilk ekran) */}
+      <div className="mm-zemin border border-doku">
+        <p className="border-b border-doku bg-kagit px-5 py-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
+          yazar kaydı · {yazar.slug}
+        </p>
+        <div className="flex flex-wrap items-start gap-6 p-6">
+          {yazar.avatar !== "" && (
+            <Image
+              src={yazar.avatar}
+              alt={yazar.name}
+              width={96}
+              height={96}
+              className="border border-doku"
+            />
+          )}
+          <div className="min-w-0">
+            <h1 className="font-display text-3xl font-bold tracking-tight [font-stretch:94%]">
+              {yazar.name}
+            </h1>
+            <p className="mt-2 text-murekkep-2">
+              {yazar.title}
+              {yazar.employer !== "" && (
+                <span className="font-mono text-sm"> · {yazar.employer}</span>
+              )}
+            </p>
+            <p className="mt-4 max-w-[var(--govde-olcu)] leading-relaxed text-murekkep-2">
+              {yazar.longBio}
+            </p>
+          </div>
         </div>
       </div>
-
-      <p className="mt-6 max-w-[var(--govde-olcu)] text-murekkep-2">{yazar.longBio}</p>
 
       {yazar.expertise.length > 0 && (
         <section aria-labelledby="uzmanlik-baslik" className="mt-8">

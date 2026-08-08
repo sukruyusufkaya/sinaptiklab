@@ -2,13 +2,29 @@ import { NextResponse, type NextRequest } from "next/server";
 import { env } from "@/lib/env";
 
 /**
- * Geçici /admin koruması (ADR 0007): HTTP Basic Auth.
- * ADMIN_USER/ADMIN_PASS tanımlı değilse /admin tamamen 404 görünür (güvenli
- * varsayılan). Faz 7'de Auth.js rol tabanlı sisteme devredilecek.
- * (Redirect/kanonik host kuralları Faz 4'te bu middleware'e eklenecek.)
+ * İki iş yapar:
+ * 1. `.md` ham içerik yüzeyi (BRIEF §8.1): `/makale|rehber|uygulama/<slug>.md`
+ *    → `/api/md/<tur>/<slug>` rewrite. Handler türü ve yayın durumunu kendi
+ *    doğrular (yanlış tür / taslak / olmayan slug → 404).
+ * 2. Geçici /admin koruması (ADR 0007): HTTP Basic Auth. ADMIN_USER/ADMIN_PASS
+ *    tanımlı değilse /admin 404 görünür (güvenli varsayılan); Faz 7'de Auth.js
+ *    rol sistemine devredilecek.
+ * (Kanonik host normalizasyonu Vercel domain ayarında; redirect kayıtları
+ * rota katmanında — Edge'de mongodb driver çalışmaz.)
  */
+
+const MD_DESENI = /^\/(makale|rehber|uygulama)\/([^/]+)\.md$/;
+
 export function middleware(istek: NextRequest) {
-  if (!istek.nextUrl.pathname.startsWith("/admin")) return NextResponse.next();
+  const yol = istek.nextUrl.pathname;
+
+  const mdEs = MD_DESENI.exec(yol);
+  if (mdEs !== null) {
+    const [, tur, slug] = mdEs;
+    return NextResponse.rewrite(new URL(`/api/md/${tur}/${slug}`, istek.url));
+  }
+
+  if (!yol.startsWith("/admin")) return NextResponse.next();
 
   if (!env.ADMIN_USER || !env.ADMIN_PASS) {
     return new NextResponse(null, { status: 404 });
@@ -34,5 +50,5 @@ export function middleware(istek: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin"],
+  matcher: ["/admin/:path*", "/admin", "/makale/:slug*", "/rehber/:slug*", "/uygulama/:slug*"],
 };

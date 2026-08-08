@@ -4,9 +4,11 @@ export * from "./author";
 export * from "./term";
 export * from "./topic";
 export * from "./redirect";
+export * from "./event";
 
 import { authorIndexes } from "./author";
 import { contentIndexes } from "./content";
+import { eventIndexes } from "./event";
 import type { IndexTanimi } from "./ortak";
 import { redirectIndexes } from "./redirect";
 import { termIndexes } from "./term";
@@ -19,4 +21,5 @@ export const TUM_KOLEKSIYONLAR: { ad: string; indexler: IndexTanimi[] }[] = [
   { ad: "terms", indexler: termIndexes },
   { ad: "topics", indexler: topicIndexes },
   { ad: "redirects", indexler: redirectIndexes },
+  { ad: "events", indexler: eventIndexes },
 ];

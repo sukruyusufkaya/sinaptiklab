@@ -179,6 +179,68 @@ a:hover {
     );
 }
 
+/* ── Artı işaretli hizalama ızgarası: teknik çizim tescil işaretleri.
+   mm-zemin'in üstüne binen daha seyrek, daha "enstrüman" katman. ── */
+.arti-izgara {
+  background-image: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--doku) 70%, transparent) 0 1px,
+    transparent 1.2px
+  );
+  background-size: 56px 56px;
+}
+
+/* ── Veri rayı: mono etiket + hairline ayraç + değer.
+   Ölçüm cihazı okuma satırı; makale/konu/yazar başlıklarında kullanılır. ── */
+.veri-rayi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  border-block: 1px solid var(--doku);
+}
+.veri-rayi > * {
+  padding: 0.5rem 0.875rem;
+  border-inline-start: 1px solid var(--doku);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--murekkep-2);
+}
+.veri-rayi > *:first-child {
+  border-inline-start: 0;
+  padding-inline-start: 0;
+}
+.veri-rayi .deger {
+  color: var(--murekkep);
+}
+
+/* ── Spektrum ayırıcı: değişken yükseklikli çentik dizisi (cetvelin
+   "ölçekli" hâli). Bölüm sınırlarında derinlik/konum bildirir. ── */
+.spektrum {
+  height: 14px;
+  border-bottom: 1px solid var(--doku);
+  background-repeat: repeat-x;
+  background-position: bottom;
+  background-image:
+    repeating-linear-gradient(to right, var(--doku) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--sinyal) 55%, transparent) 0 1px,
+      transparent 1px 80px
+    );
+  background-size:
+    100% 5px,
+    100% 11px;
+}
+
+/* ── Bölüm başlığı için indeks damgası (§ numaralandırma) ── */
+.bolum-indeks {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  color: var(--sinyal);
+}
+
 /* ── Enstrüman köşe çentikleri: kartlarda hover'da beliren kesim işaretleri
    (yalnız renk/opaklık geçişi — §5.6 hareket bütçesine uygun) ── */
 .centik {

@@ -21,43 +21,74 @@ export default async function KonularSayfasi() {
     liste = [];
   }
 
+  const toplamIcerik = liste.reduce((toplam, p) => toplam + p.icerikSayisi, 0);
+
   return (
-    <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-12">
-      <p className="font-mono text-xs uppercase tracking-widest text-murekkep-2">Konu haritası</p>
-      <h1 className="mt-3 font-display text-3xl font-bold">Konular</h1>
-      <p className="mt-3 max-w-[var(--govde-olcu)] text-murekkep-2">
-        İçerik, 12 ana başlık (pillar) altında örgütlenir; her başlık kendi alt kümeleriyle bir
-        öğrenme ve referans alanıdır. Sayılar yalnız yayında olan içeriği gösterir.
-      </p>
+    <>
+      <section className="mm-zemin border-b border-doku">
+        <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">
+          <p className="bolum-indeks uppercase">§ konu haritası</p>
+          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight [font-stretch:94%]">
+            Konular
+          </h1>
+          <p className="mt-4 max-w-[var(--govde-olcu)] leading-relaxed text-murekkep-2">
+            İçerik, 12 ana başlık (pillar) altında örgütlenir; her başlık kendi alt kümeleriyle bir
+            öğrenme ve referans alanıdır. Sayılar yalnız yayında olan içeriği gösterir.
+          </p>
+          <div className="veri-rayi mt-7 max-w-md bg-kagit">
+            <div>
+              ana başlık
+              <br />
+              <span className="deger">{liste.length}</span>
+            </div>
+            <div>
+              yayında içerik
+              <br />
+              <span className="deger">{toplamIcerik}</span>
+            </div>
+            <div>
+              güncelleme
+              <br />
+              <span className="deger">sürekli</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div className="cetvel mt-8" aria-hidden />
+      <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-12">
+        {liste.length === 0 && (
+          <p className="mt-8 max-w-[52ch] text-murekkep-2">
+            Konu haritası hazırlanıyor — kısa süre içinde bu sayfada 12 ana başlık ve alt kümeleri
+            listelenecek.
+          </p>
+        )}
 
-      {liste.length === 0 && (
-        <p className="mt-8 max-w-[52ch] text-murekkep-2">
-          Konu haritası hazırlanıyor — kısa süre içinde bu sayfada 12 ana başlık ve alt kümeleri
-          listelenecek.
-        </p>
-      )}
-
-      <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {liste.map((pillar, sira) => (
-          <li key={pillar.slug} className="min-w-0">
-            <Link
-              href={`/konu/${pillar.slug}`}
-              className="flex h-full flex-col border border-doku bg-kagit-alt p-5 no-underline transition-colors hover:border-sinyal"
-            >
-              <p className="font-mono text-xs text-sinyal">{String(sira + 1).padStart(2, "0")}</p>
-              <h2 className="mt-2 font-display text-lg font-semibold text-murekkep">
-                {pillar.title}
-              </h2>
-              <p className="mt-2 text-sm text-murekkep-2">{pillar.intro}</p>
-              <p className="mt-auto pt-4 font-mono text-xs text-murekkep-2">
-                {pillar.icerikSayisi > 0 ? `${pillar.icerikSayisi} içerik` : "içerik hazırlanıyor"}
-              </p>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {liste.map((pillar, sira) => (
+            <li key={pillar.slug} className="min-w-0">
+              <Link
+                href={`/konu/${pillar.slug}`}
+                className="centik flex h-full flex-col border border-doku bg-kagit-alt no-underline transition-colors hover:border-sinyal"
+              >
+                <span className="flex items-baseline justify-between border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.18em]">
+                  <span className="text-sinyal">P{String(sira + 1).padStart(2, "0")}</span>
+                  <span className="text-murekkep-2">
+                    {pillar.icerikSayisi > 0 ? `${pillar.icerikSayisi} içerik` : "hazırlanıyor"}
+                  </span>
+                </span>
+                <span className="flex flex-1 flex-col p-5">
+                  <span className="font-display text-lg font-semibold leading-snug text-murekkep">
+                    {pillar.title}
+                  </span>
+                  <span className="mt-2.5 text-sm leading-relaxed text-murekkep-2">
+                    {pillar.intro}
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }

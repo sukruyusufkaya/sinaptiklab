@@ -76,22 +76,56 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
           </ol>
         </nav>
 
-        {/* 2 — pillar rozeti + seviye + okuma süresi + son doğrulama */}
-        <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-murekkep-2">
-          <span className="border border-doku px-2 py-0.5 text-sinyal">{icerik.pillar}</span>
-          <span>{seviyeEtiketi(icerik.level)}</span>
-          <span aria-hidden>·</span>
-          <span>{icerik.readingMinutes} dk okuma</span>
-          <span aria-hidden>·</span>
-          <span>son doğrulama: {tarih(icerik.lastVerifiedAt)}</span>
+        {/* 2 — tür + pillar damgası (enstrüman kayıt başlığı) */}
+        <p className="mt-6 flex flex-wrap items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.18em]">
+          <span className="bg-sinyal px-2 py-1 text-kagit">{turEtiketi(icerik.type)}</span>
+          <Link
+            href={`/konu/${icerik.pillar}`}
+            className="border border-doku px-2 py-1 text-murekkep-2 no-underline transition-colors hover:border-sinyal hover:text-sinyal"
+          >
+            {icerik.pillar}
+          </Link>
         </p>
 
         {/* 3 — H1 + dek */}
-        <h1 className="mt-4 max-w-[28ch] font-display text-4xl font-bold">{icerik.title}</h1>
-        <p className="mt-4 max-w-[var(--govde-olcu)] text-lg text-murekkep-2">{icerik.dek}</p>
+        <h1 className="mt-5 max-w-[26ch] font-display text-4xl font-bold leading-[1.05] tracking-tight [font-stretch:94%]">
+          {icerik.title}
+        </h1>
+        <p className="mt-5 max-w-[var(--govde-olcu)] text-lg leading-relaxed text-murekkep-2">
+          {icerik.dek}
+        </p>
+
+        {/* 3b — ölçüm rayı: okuma parametreleri tek satırda, cihaz okuması gibi */}
+        <div className="veri-rayi mt-7 max-w-[var(--govde-olcu)]">
+          <div>
+            seviye
+            <br />
+            <span className="deger">{seviyeEtiketi(icerik.level)}</span>
+          </div>
+          <div>
+            okuma
+            <br />
+            <span className="deger">{icerik.readingMinutes} dk</span>
+          </div>
+          <div>
+            kaynak
+            <br />
+            <span className="deger">{icerik.sources.length}</span>
+          </div>
+          <div>
+            son doğrulama
+            <br />
+            <span className="deger">{tarih(icerik.lastVerifiedAt)}</span>
+          </div>
+          <div>
+            sürüm
+            <br />
+            <span className="deger">v{icerik.version}</span>
+          </div>
+        </div>
 
         {/* 4 — yazar satırı */}
-        <div className="mt-6 flex max-w-[var(--govde-olcu)] flex-wrap items-baseline gap-x-4 gap-y-1 border-y border-doku py-3 text-sm">
+        <div className="mt-4 flex max-w-[var(--govde-olcu)] flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-doku pb-3 text-sm">
           <span className="font-medium">
             {icerik.yazarlar.length > 0
               ? icerik.yazarlar.map((y, sira) => (
@@ -139,11 +173,22 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
             aria-label="İçindekiler"
             className="mt-8 max-w-[var(--govde-olcu)] border border-doku bg-kagit-alt p-4"
           >
-            <p className="font-mono text-xs tracking-widest text-murekkep-2">İÇİNDEKİLER</p>
-            <ul className="mt-3 space-y-1 text-sm">
-              {icerik.toc.map((madde) => (
-                <li key={madde.id} className={madde.depth >= 3 ? "pl-4" : undefined}>
-                  <a href={`#${madde.id}`} className="text-murekkep no-underline hover:text-sinyal">
+            <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
+              İçindekiler · {icerik.toc.filter((m) => m.depth === 2).length} bölüm
+            </p>
+            <ul className="mt-4 space-y-1.5 text-sm">
+              {icerik.toc.map((madde, sira) => (
+                <li
+                  key={madde.id}
+                  className={`flex gap-3 ${madde.depth >= 3 ? "pl-5 text-murekkep-2" : ""}`}
+                >
+                  <span aria-hidden className="shrink-0 font-mono text-[0.7rem] text-murekkep-2">
+                    {String(sira + 1).padStart(2, "0")}
+                  </span>
+                  <a
+                    href={`#${madde.id}`}
+                    className="min-w-0 text-murekkep no-underline transition-colors hover:text-sinyal"
+                  >
                     {madde.text}
                   </a>
                 </li>

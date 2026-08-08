@@ -36,6 +36,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               İçerikler
             </Link>
             <Link
+              href="/admin/geo"
+              className="font-mono text-sm text-murekkep-2 no-underline hover:text-sinyal"
+            >
+              YZ Görünürlük
+            </Link>
+            <Link
               href="/"
               className="font-mono text-sm text-murekkep-2 no-underline hover:text-sinyal"
             >
