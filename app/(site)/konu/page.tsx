@@ -10,7 +10,14 @@ export const metadata: Metadata = {
 };
 
 export default async function KonularSayfasi() {
-  const liste = await pillarlar();
+  // DB'siz ortamda (örn. secret'sız CI build'i) sayfa kırılmaz; boş durumda
+  // dürüst "hazırlanıyor" mesajı basılır. DB varken build'de SSG.
+  let liste: Awaited<ReturnType<typeof pillarlar>> = [];
+  try {
+    liste = await pillarlar();
+  } catch {
+    liste = [];
+  }
 
   return (
     <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-12">
@@ -22,6 +29,13 @@ export default async function KonularSayfasi() {
       </p>
 
       <div className="cetvel mt-8" aria-hidden />
+
+      {liste.length === 0 && (
+        <p className="mt-8 max-w-[52ch] text-murekkep-2">
+          Konu haritası hazırlanıyor — kısa süre içinde bu sayfada 12 ana başlık ve alt kümeleri
+          listelenecek.
+        </p>
+      )}
 
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {liste.map((pillar, sira) => (
