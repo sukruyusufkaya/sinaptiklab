@@ -1,6 +1,7 @@
 // YZ Görünürlük paneli (BRIEF §8.5 + §11): AI asistan referral'ları —
 // hangi motor, hangi sayfalar, son 30 gün. Veri events koleksiyonundan
 // (90 gün TTL); kayıt kaynağı components/analytics/OlayBeacon.
+import { PanelBasligi } from "@/components/admin/PanelBasligi";
 import type { Event } from "@/lib/db/schemas";
 import { getDb } from "@/lib/mongodb";
 
@@ -51,7 +52,7 @@ async function panelVerisi() {
 function Tablo({ baslik, satirlar }: { baslik: string; satirlar: GrupSatiri[] }) {
   return (
     <section className="border border-doku">
-      <h2 className="border-b border-doku bg-kagit-alt px-4 py-2 font-mono text-xs uppercase tracking-widest text-murekkep-2">
+      <h2 className="border-b border-doku bg-kagit-alt px-4 py-2.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
         {baslik}
       </h2>
       {satirlar.length === 0 ? (
@@ -80,24 +81,44 @@ export default async function GeoPaneli() {
   const veri = await panelVerisi();
 
   return (
-    <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-8">
-      <h1 className="font-display text-2xl font-bold">YZ Görünürlük</h1>
-      <p className="mt-2 max-w-[60ch] text-sm text-murekkep-2">
-        Son 30 günde YZ asistanlarından (ChatGPT, Perplexity, Claude, Gemini, Copilot) gelen
-        ziyaretler. Toplam:{" "}
-        <span className="font-mono text-sinyal">{SAYI_TR.format(veri.toplamYz)}</span>
-      </p>
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Tablo baslik="YZ motoru bazında" satirlar={veri.yzMotorlar} />
-        <Tablo baslik="Diğer referrer'lar (ilk 10)" satirlar={veri.digerReferrerlar} />
+    <>
+      <PanelBasligi
+        indeks="yz görünürlük"
+        baslik="YZ Görünürlük"
+        aciklama="Son 30 günde YZ asistanlarından (ChatGPT, Perplexity, Claude, Gemini, Copilot) gelen ziyaretler. Kayıt kaynağı: events koleksiyonu (90 gün TTL)."
+      >
+        <div className="veri-rayi mt-7 max-w-lg bg-kagit">
+          <div>
+            yz ziyareti
+            <br />
+            <span className="deger tabular-nums text-sinyal">{SAYI_TR.format(veri.toplamYz)}</span>
+          </div>
+          <div>
+            motor
+            <br />
+            <span className="deger tabular-nums">{veri.yzMotorlar.length}</span>
+          </div>
+          <div>
+            pencere
+            <br />
+            <span className="deger">30 gün</span>
+          </div>
+        </div>
+      </PanelBasligi>
+
+      <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-8">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Tablo baslik="YZ motoru bazında" satirlar={veri.yzMotorlar} />
+          <Tablo baslik="Diğer referrer'lar (ilk 10)" satirlar={veri.digerReferrerlar} />
+        </div>
+        <div className="mt-6">
+          <Tablo baslik="YZ trafiği alan sayfalar (ilk 15)" satirlar={veri.yzSayfalar} />
+        </div>
+        <p className="mt-6 font-mono text-xs text-murekkep-2">
+          Kaynak: events koleksiyonu (90 gün TTL) · haftalık manuel prompt seti denetimi Faz 10
+          operasyonunda (BRIEF §8.5)
+        </p>
       </div>
-      <div className="mt-6">
-        <Tablo baslik="YZ trafiği alan sayfalar (ilk 15)" satirlar={veri.yzSayfalar} />
-      </div>
-      <p className="mt-6 font-mono text-xs text-murekkep-2">
-        Kaynak: events koleksiyonu (90 gün TTL) · haftalık manuel prompt seti denetimi Faz 10
-        operasyonunda (BRIEF §8.5)
-      </p>
-    </div>
+    </>
   );
 }

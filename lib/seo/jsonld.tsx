@@ -114,6 +114,74 @@ export interface KisiJsonLd extends SemaKoku {
   knowsAbout: string[];
 }
 
+export interface TanimliTerimJsonLd extends SemaKoku {
+  "@type": "DefinedTerm";
+  name: string;
+  description: string;
+  url: string;
+  inLanguage: string;
+  termCode: string;
+  alternateName?: string[];
+  inDefinedTermSet: { "@type": "DefinedTermSet"; name: string; url: string };
+}
+
+export interface TeklifJsonLd {
+  "@type": "Offer";
+  price: string;
+  priceCurrency: string;
+  url?: string;
+  availability?: string;
+}
+
+export interface YazilimUygulamasiJsonLd extends SemaKoku {
+  "@type": "SoftwareApplication";
+  name: string;
+  description: string;
+  url: string;
+  inLanguage: string;
+  applicationCategory: string;
+  dateModified: string;
+  citation: AtifJsonLd[];
+  offers?: TeklifJsonLd;
+  operatingSystem?: string;
+}
+
+export interface VeriKumesiJsonLd extends SemaKoku {
+  "@type": "Dataset";
+  name: string;
+  description: string;
+  url: string;
+  inLanguage: string;
+  datePublished?: string;
+  dateModified: string;
+  creator: KisiRefJsonLd[];
+  citation: AtifJsonLd[];
+  isAccessibleForFree: true;
+  keywords?: string[];
+  measurementTechnique?: string;
+}
+
+export interface ListeOgesiJsonLd {
+  "@type": "ListItem";
+  position: number;
+  name: string;
+  url: string;
+}
+
+export interface KoleksiyonSayfasiJsonLd extends SemaKoku {
+  "@type": "CollectionPage";
+  name: string;
+  description: string;
+  url: string;
+  inLanguage: string;
+  isPartOf: { "@type": "WebSite"; name: string; url: string };
+  mainEntity: {
+    "@type": "ItemList";
+    numberOfItems: number;
+    itemListElement: ListeOgesiJsonLd[];
+  };
+}
+
 export type JsonLdVerisi =
   | OrganizasyonJsonLd
   | WebSitesiJsonLd
@@ -121,7 +189,11 @@ export type JsonLdVerisi =
   | HowToJsonLd
   | BreadcrumbJsonLd
   | FaqPageJsonLd
-  | KisiJsonLd;
+  | KisiJsonLd
+  | TanimliTerimJsonLd
+  | YazilimUygulamasiJsonLd
+  | VeriKumesiJsonLd
+  | KoleksiyonSayfasiJsonLd;
 
 // ── Builder'lar ──────────────────────────────────────────────────────
 
@@ -249,6 +321,152 @@ export function kisiJsonLd(yazar: YazarDetayDTO, mutlakUrl: string): KisiJsonLd 
     sameAs: yazar.sameAs,
     worksFor: { "@type": "Organization", name: yazar.employer },
     knowsAbout: yazar.expertise,
+  };
+}
+
+/**
+ * Sözlük terimi (BRIEF §4.2 → `DefinedTerm`). `inDefinedTermSet` tüm terimleri
+ * tek kanonik kümeye (/sozluk) bağlar — TR YZ terminolojisinde otorite sinyali
+ * bu bağdan doğar. `alternateName` İngilizce karşılık + eşanlamlıları taşır;
+ * boşsa alan hiç yazılmaz.
+ */
+export function tanimliTerimJsonLd(
+  terim: { tr: string; en: string; shortDef: string; slug: string; aliases: string[] },
+  mutlakUrl: string,
+): TanimliTerimJsonLd {
+  const digerAdlar = [terim.en, ...terim.aliases].filter((ad) => ad.trim() !== "");
+  return {
+    "@context": SCHEMA_BAGLAMI,
+    "@type": "DefinedTerm",
+    name: terim.tr,
+    description: terim.shortDef,
+    url: mutlakUrl,
+    inLanguage: "tr",
+    termCode: terim.slug,
+    ...(digerAdlar.length > 0 ? { alternateName: digerAdlar } : {}),
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      name: "Sinaptiklab Türkçe Yapay Zeka Sözlüğü",
+      url: `${env.NEXT_PUBLIC_SITE_URL}/sozluk`,
+    },
+  };
+}
+
+/** Araç kartındaki fiyat bilgisi; çağrı yerinden AÇIKÇA verilir (aşağıya bkz.). */
+export interface AracTeklifi {
+  /** "0" ücretsiz katman anlamına gelir. */
+  fiyat: string;
+  /** ISO 4217 kodu (ör. "USD"). */
+  paraBirimi: string;
+  url?: string;
+  availability?: string;
+}
+
+/**
+ * Araç/model kartı için SoftwareApplication (BRIEF §7.2). `offers` OPSİYONELDİR
+ * ve çağrı yerinden geçilir: fiyat alanı `contents` şemasında henüz yok, uydurma
+ * fiyat basmak §14/7 (kaynaksız sayı) yasağına girer. Araç kartı alanları
+ * şemaya eklendiğinde tek yapılacak iş burada teklifi doldurmaktır.
+ * `Review` de aynı gerekçeyle dışarıda: puan verisini üretmiyoruz.
+ */
+export function yazilimUygulamasiJsonLd(
+  icerik: IcerikDetayDTO,
+  mutlakUrl: string,
+  teklif?: AracTeklifi,
+): YazilimUygulamasiJsonLd {
+  return {
+    "@context": SCHEMA_BAGLAMI,
+    "@type": "SoftwareApplication",
+    name: icerik.title,
+    description: icerik.dek,
+    url: mutlakUrl,
+    inLanguage: icerik.lang,
+    applicationCategory: "DeveloperApplication",
+    dateModified: icerik.updatedAt,
+    citation: icerik.sources.map((kaynak) => ({
+      "@type": "CreativeWork",
+      name: kaynak.label,
+      url: kaynak.url,
+    })),
+    ...(teklif !== undefined
+      ? {
+          offers: {
+            "@type": "Offer" as const,
+            price: teklif.fiyat,
+            priceCurrency: teklif.paraBirimi,
+            ...(teklif.url !== undefined ? { url: teklif.url } : {}),
+            ...(teklif.availability !== undefined ? { availability: teklif.availability } : {}),
+          },
+        }
+      : {}),
+  };
+}
+
+/**
+ * Ölçüm (benchmark) için Dataset (BRIEF §7.2). Karşılaştırma verisi bir veri
+ * kümesidir: `citation[]` kaynaklardan, `measurementTechnique` yeniden üretim
+ * kutusundaki GERÇEK donanım bilgisinden gelir — repro yoksa alan hiç yazılmaz.
+ */
+export function veriKumesiJsonLd(icerik: IcerikDetayDTO, mutlakUrl: string): VeriKumesiJsonLd {
+  const donanim = icerik.repro?.hardware;
+  return {
+    "@context": SCHEMA_BAGLAMI,
+    "@type": "Dataset",
+    name: icerik.title,
+    description: icerik.dek,
+    url: mutlakUrl,
+    inLanguage: icerik.lang,
+    ...(icerik.publishedAt !== null ? { datePublished: icerik.publishedAt } : {}),
+    dateModified: icerik.updatedAt,
+    creator: icerik.yazarlar.map(kisiRef),
+    citation: icerik.sources.map((kaynak) => ({
+      "@type": "CreativeWork",
+      name: kaynak.label,
+      url: kaynak.url,
+    })),
+    isAccessibleForFree: true,
+    ...(icerik.tags.length > 0 ? { keywords: icerik.tags } : {}),
+    ...(donanim !== undefined && donanim !== "" ? { measurementTechnique: donanim } : {}),
+  };
+}
+
+/**
+ * Arşiv/liste sayfaları için CollectionPage + ItemList (tür indeksleri, etiket
+ * arşivi, cluster hub'ı). `toplam` verilmezse öğe sayısı kullanılır; sayfalı
+ * listelerde toplam kayıt sayısı geçilir ki ItemList gerçeği söylesin.
+ */
+export function koleksiyonSayfasiJsonLd(params: {
+  ad: string;
+  aciklama: string;
+  url: string;
+  ogeler: { baslik: string; url: string }[];
+  toplam?: number;
+  /** Sayfa 2+ listelerinde ilk öğenin gerçek sırası (0 tabanlı atlama). */
+  atla?: number;
+}): KoleksiyonSayfasiJsonLd {
+  const atla = params.atla ?? 0;
+  return {
+    "@context": SCHEMA_BAGLAMI,
+    "@type": "CollectionPage",
+    name: params.ad,
+    description: params.aciklama,
+    url: params.url,
+    inLanguage: "tr",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Sinaptiklab",
+      url: env.NEXT_PUBLIC_SITE_URL,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: params.toplam ?? params.ogeler.length,
+      itemListElement: params.ogeler.map((oge, sira) => ({
+        "@type": "ListItem",
+        position: atla + sira + 1,
+        name: oge.baslik,
+        url: oge.url,
+      })),
+    },
   };
 }
 

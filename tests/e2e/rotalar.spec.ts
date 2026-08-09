@@ -29,7 +29,14 @@ const HER_ZAMAN = [
 ] as const;
 
 // Makine okunabilir yüzeyler (BRIEF §8.1)
-const MAKINE = ["/robots.txt", "/sitemap.xml", "/feed.xml", "/atom.xml", "/feed.json", "/llms.txt"] as const;
+const MAKINE = [
+  "/robots.txt",
+  "/sitemap.xml",
+  "/feed.xml",
+  "/atom.xml",
+  "/feed.json",
+  "/llms.txt",
+] as const;
 
 test.describe("rota kapsamı", () => {
   for (const yol of HER_ZAMAN) {

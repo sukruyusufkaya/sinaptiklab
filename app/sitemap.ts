@@ -8,7 +8,7 @@
 import type { MetadataRoute } from "next";
 import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
 import { terimListesi } from "@/lib/db/queries/terms";
-import { pillarlar } from "@/lib/db/queries/topics";
+import { pillarlar, tumClusterlar } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
 import { icerikYolu, type IcerikTuru } from "@/lib/rotalar";
 import { PARCA_ICERIK_TURU, SITEMAP_PARCALARI, sitemapParcasiMi } from "@/lib/sitemap-parcalari";
@@ -33,8 +33,11 @@ async function icerikParcasi(type: IcerikTuru): Promise<MetadataRoute.Sitemap> {
 
 async function konuParcasi(): Promise<MetadataRoute.Sitemap> {
   try {
-    const konular = await pillarlar();
-    return konular.map((pillar) => ({ url: mutlak(`/konu/${pillar.slug}`) }));
+    const [konular, clusterlar] = await Promise.all([pillarlar(), tumClusterlar()]);
+    return [
+      ...konular.map((pillar) => ({ url: mutlak(`/konu/${pillar.slug}`) })),
+      ...clusterlar.map((c) => ({ url: mutlak(`/konu/${c.pillar}/${c.slug}`) })),
+    ];
   } catch {
     return [];
   }

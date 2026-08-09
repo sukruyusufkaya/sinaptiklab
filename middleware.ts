@@ -13,7 +13,8 @@ import { env } from "@/lib/env";
  * rota katmanında — Edge'de mongodb driver çalışmaz.)
  */
 
-const MD_DESENI = /^\/(makale|rehber|uygulama)\/([^/]+)\.md$/;
+const MD_DESENI =
+  /^\/(makale|rehber|uygulama|laboratuvar|arac|olcum|vaka|uyum|bulten)\/([^/]+)\.md$/;
 
 export function middleware(istek: NextRequest) {
   const yol = istek.nextUrl.pathname;
@@ -50,5 +51,17 @@ export function middleware(istek: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin", "/makale/:slug*", "/rehber/:slug*", "/uygulama/:slug*"],
+  matcher: [
+    "/admin/:path*",
+    "/admin",
+    "/makale/:slug*",
+    "/rehber/:slug*",
+    "/uygulama/:slug*",
+    "/laboratuvar/:slug*",
+    "/arac/:slug*",
+    "/olcum/:slug*",
+    "/vaka/:slug*",
+    "/uyum/:slug*",
+    "/bulten/:slug*",
+  ],
 };

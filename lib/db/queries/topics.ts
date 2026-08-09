@@ -79,6 +79,30 @@ export function pillarDetay(slug: string): Promise<PillarDetayDTO | null> {
   })();
 }
 
+export interface ClusterYoluDTO {
+  pillar: string;
+  slug: string;
+}
+
+async function tumClusterlarHam(): Promise<ClusterYoluDTO[]> {
+  const db = await getDb();
+  const kayitlar = await db
+    .collection<Topic>("topics")
+    .find({ kind: "cluster", parent: { $ne: null } })
+    .project<{ slug: string; parent: string | null }>({ slug: 1, parent: 1 })
+    .toArray();
+  return kayitlar
+    .filter((k): k is { slug: string; parent: string } => typeof k.parent === "string")
+    .map((k) => ({ pillar: k.parent, slug: k.slug }));
+}
+
+/** Tüm cluster yolları (sitemap'in konular parçası için). */
+export function tumClusterlar(): Promise<ClusterYoluDTO[]> {
+  return unstable_cache(tumClusterlarHam, ["tum-clusterlar"], {
+    tags: [ICERIK_LISTE_TAG],
+  })();
+}
+
 export interface SiteIstatistikleriDTO {
   yayindaIcerik: number;
   pillarSayisi: number;

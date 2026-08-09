@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IcerikEditoru } from "@/components/admin/IcerikEditoru";
 import { tumTopics, tumYazarlar } from "@/lib/db/queries/admin";
+import { env } from "@/lib/env";
 import type { IcerikTuru } from "@/lib/rotalar";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,7 @@ export default async function YeniIcerikSayfasi({ searchParams }: Props) {
       varsayilanTur={tur}
       konular={konular}
       yazarSecenekleri={yazarlar}
+      siteHost={new URL(env.NEXT_PUBLIC_SITE_URL).host}
     />
   );
 }

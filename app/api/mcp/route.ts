@@ -1,11 +1,10 @@
-import { MongoClient, type Collection } from "mongodb";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 import { yayindakiIcerik } from "@/lib/db/queries/contents";
 import { pillarlar } from "@/lib/db/queries/topics";
-import type { Content } from "@/lib/db/schemas";
 import { env } from "@/lib/env";
 import { icerikYolu, turEtiketi } from "@/lib/rotalar";
+import { icerikAra } from "@/lib/search/ara";
 
 /**
  * MCP (Model Context Protocol) endpoint'i (BRIEF §8.1) — ajanların Sinaptiklab
@@ -20,86 +19,9 @@ export const maxDuration = 60;
 
 const SITE = env.NEXT_PUBLIC_SITE_URL;
 
-type AramaSonucu = Pick<Content, "slug" | "title" | "dek" | "type" | "pillar">;
-
-const ARAMA_PROJEKSIYONU = { _id: 0, slug: 1, title: 1, dek: 1, type: 1, pillar: 1 } as const;
-
-/**
- * $search, lib/mongodb'deki Stable API strict client'ta Atlas'ta bile reddedilir
- * ("$search is not allowed with 'apiStrict: true' in API Version 1" — fiilen
- * doğrulandı). ensure-indexes.ts'teki emsalle aynı çözüm: bu route'a özel,
- * serverApi'siz düz client. Yalnız arama bu client'tan geçer; diğer araçlar
- * sorgu katmanını (getDb + unstable_cache) kullanmaya devam eder.
- */
-declare global {
-  var _mcpAramaClientPromise: Promise<MongoClient> | undefined;
-}
-
-let aramaClientPromise: Promise<MongoClient> | undefined;
-
-function aramaClientAl(): Promise<MongoClient> {
-  const uri = env.MONGODB_URI;
-  if (!uri) throw new Error("MONGODB_URI tanımlı değil; MCP araması yapılamaz.");
-  const kur = () =>
-    new MongoClient(uri, { maxPoolSize: 5, minPoolSize: 0, maxIdleTimeMS: 30_000 }).connect();
-  if (env.NODE_ENV === "development") {
-    global._mcpAramaClientPromise ??= kur();
-    return global._mcpAramaClientPromise;
-  }
-  aramaClientPromise ??= kur();
-  return aramaClientPromise;
-}
-
-async function aramaKoleksiyonu(): Promise<Collection<Content>> {
-  const client = await aramaClientAl();
-  return client.db(env.MONGODB_DB).collection<Content>("contents");
-}
-
-/**
- * Önce Atlas Search (content_search, Türkçe analyzer); Atlas dışı ortamda
- * ($search desteklenmez, aggregate hata fırlatır) title/dek üzerinde
- * case-insensitive regex yedeğine düşer. Hangi motorun çalıştığı çıktıya
- * yazılır ki uçtan uca testte fiilen doğrulanabilsin.
- */
-async function icerikAra(
-  sorgu: string,
-  adet: number,
-): Promise<{ sonuclar: AramaSonucu[]; motor: "atlas" | "regex" }> {
-  const koleksiyon = await aramaKoleksiyonu();
-  try {
-    const sonuclar = await koleksiyon
-      .aggregate<AramaSonucu>([
-        {
-          $search: {
-            index: "content_search",
-            text: { query: sorgu, path: ["title", "dek", "body", "tags"] },
-          },
-        },
-        { $match: { status: "published" } },
-        { $limit: adet },
-        { $project: ARAMA_PROJEKSIYONU },
-      ])
-      .toArray();
-    return { sonuclar, motor: "atlas" };
-  } catch {
-    const guvenli = sorgu.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const desen = new RegExp(guvenli, "i");
-    const docs = await koleksiyon
-      .find(
-        { status: "published", $or: [{ title: desen }, { dek: desen }] },
-        { projection: ARAMA_PROJEKSIYONU, limit: adet, sort: { publishedAt: -1 } },
-      )
-      .toArray();
-    const sonuclar = docs.map((d) => ({
-      slug: d.slug,
-      title: d.title,
-      dek: d.dek,
-      type: d.type,
-      pillar: d.pillar,
-    }));
-    return { sonuclar, motor: "regex" };
-  }
-}
+// Arama tek kaynaktan gelir: lib/search/ara.ts (Atlas Search + regex yedeği,
+// serverApi'siz arama client'ı lib/search/istemci.ts'te — $search Stable API
+// strict ile çalışmaz). /ara sayfasıyla MCP aracı aynı sıralamayı görür.
 
 function metinYaniti(text: string): { content: { type: "text"; text: string }[] } {
   return { content: [{ type: "text", text }] };
@@ -128,7 +50,7 @@ const handler = createMcpHandler(
         }),
       },
       async ({ sorgu, adet }) => {
-        const { sonuclar, motor } = await icerikAra(sorgu, adet);
+        const { sonuclar, motor } = await icerikAra({ sorgu, adet });
         const motorEtiketi = motor === "atlas" ? "Atlas Search" : "regex yedeği";
         if (sonuclar.length === 0) {
           return metinYaniti(

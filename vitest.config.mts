@@ -17,6 +17,7 @@ export default defineConfig({
       include: ["lib/**"],
       exclude: [
         "lib/mongodb.ts",
+        "lib/search/istemci.ts", // lib/mongodb.ts'in arama ikizi (MongoClient fabrikası)
         "lib/fonts.ts",
         "lib/env.ts",
         "lib/db/queries/**",

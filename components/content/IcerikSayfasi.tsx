@@ -13,6 +13,7 @@ import { KisaCevap } from "@/components/mdx/KisaCevap";
 import type { IcerikDetayDTO } from "@/lib/db/queries/dto";
 import { mdxDerle } from "@/lib/mdx/derle";
 import { seviyeEtiketi, turEtiketi } from "@/lib/rotalar";
+import { turIndeksYolu } from "@/lib/tur-arsivi";
 
 const TARIH_TR = new Intl.DateTimeFormat("tr-TR", { dateStyle: "long" });
 const SAYI_TR = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 2 });
@@ -78,7 +79,19 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
               </Link>
             </li>
             <li aria-hidden>/</li>
-            <li>{turEtiketi(icerik.type)}</li>
+            <li>
+              {/* Tür indeksi olan türlerde kırıntı linklidir (JSON-LD ile aynı) */}
+              {turIndeksYolu(icerik.type) !== null ? (
+                <Link
+                  href={turIndeksYolu(icerik.type) ?? "/"}
+                  className="text-murekkep-2 no-underline hover:text-sinyal"
+                >
+                  {turEtiketi(icerik.type)}
+                </Link>
+              ) : (
+                turEtiketi(icerik.type)
+              )}
+            </li>
             <li aria-hidden>/</li>
             <li aria-current="page" className="text-murekkep">
               {icerik.title}

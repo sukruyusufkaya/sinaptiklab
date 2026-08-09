@@ -11,7 +11,19 @@ export const revalidate = 3600;
 
 // Rota öneki lib/rotalar'daki tek kaynaktan tersine türetilir ("/makale/x" →
 // "makale") ki URL şeması değişirse eşleme kendiliğinden takip etsin.
-const ACIK_TURLER = ["article", "guide", "tutorial"] as const;
+// Tüm public içerik türleri .md yüzeyinde açıktır (BRIEF §8.1):
+// ajan bir içeriği hangi rotadan bulursa bulsun ham Markdown alabilir.
+const ACIK_TURLER = [
+  "article",
+  "guide",
+  "tutorial",
+  "lab",
+  "tool",
+  "benchmark",
+  "case",
+  "compliance",
+  "issue",
+] as const;
 const SEGMENT_TURU: ReadonlyMap<string, IcerikTuru> = new Map(
   ACIK_TURLER.map((tur) => [icerikYolu(tur, "x").split("/")[1] ?? "", tur]),
 );
