@@ -7,6 +7,7 @@
 // try/catch'li, hata → boş parça; build asla kırılmaz.
 import type { MetadataRoute } from "next";
 import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
+import { terimListesi } from "@/lib/db/queries/terms";
 import { pillarlar } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
 import { icerikYolu, type IcerikTuru } from "@/lib/rotalar";
@@ -39,6 +40,15 @@ async function konuParcasi(): Promise<MetadataRoute.Sitemap> {
   }
 }
 
+async function sozlukParcasi(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const terimler = await terimListesi();
+    return terimler.map((terim) => ({ url: mutlak(`/sozluk/${terim.slug}`) }));
+  } catch {
+    return [];
+  }
+}
+
 // Next 16: id, ".xml" uzantısı soyulmuş string'e çözülen Promise olarak gelir.
 export default async function sitemap(props: {
   id: Promise<string>;
@@ -48,8 +58,29 @@ export default async function sitemap(props: {
 
   switch (id) {
     case "sayfalar":
-      // Yalnız açık rotalar: / ve /konu. Kurumsal statik sayfalar henüz yok.
-      return [{ url: mutlak("/") }, { url: mutlak("/konu") }];
+      // Açık statik rotalar. /ara noindex olduğu için YOK; sonraki fazlara
+      // ait modül sayfaları (forum/kurs/patika/giris) bilinçli olarak var —
+      // gerçek içerik taşıyorlar ve plan şeffaflığı sağlıyorlar.
+      return [
+        "/",
+        "/konu",
+        "/sozluk",
+        "/bulten",
+        "/makale",
+        "/rehber",
+        "/uygulama",
+        "/hakkinda",
+        "/editoryal-politika",
+        "/kunye",
+        "/iletisim",
+        "/kvkk-aydinlatma",
+        "/gizlilik",
+        "/cerez-politikasi",
+        "/kullanim-sartlari",
+        "/forum",
+        "/kurs",
+        "/patika",
+      ].map((yol) => ({ url: mutlak(yol) }));
     case "makaleler":
     case "rehberler":
     case "uygulamalar": {
@@ -58,5 +89,7 @@ export default async function sitemap(props: {
     }
     case "konular":
       return konuParcasi();
+    case "sozluk":
+      return sozlukParcasi();
   }
 }

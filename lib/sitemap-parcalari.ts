@@ -11,6 +11,7 @@ export const SITEMAP_PARCALARI = [
   "rehberler",
   "uygulamalar",
   "konular",
+  "sozluk",
 ] as const;
 
 export type SitemapParcasi = (typeof SITEMAP_PARCALARI)[number];
