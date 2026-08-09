@@ -71,10 +71,10 @@ export function Footer() {
             </p>
             <Link
               href="/hakkinda"
-              className="mt-5 inline-flex items-center gap-1.5 font-mono text-xs text-murekkep-2 no-underline transition-colors hover:text-sinyal"
+              className="ok-kayar mt-5 inline-flex items-center gap-1.5 font-mono text-xs text-murekkep-2 no-underline transition-colors hover:text-sinyal"
             >
               nasıl çalışıyoruz
-              <OkSagIkon className="size-3.5" />
+              <OkSagIkon className="ok size-3.5" />
             </Link>
           </div>
 

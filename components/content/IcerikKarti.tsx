@@ -16,7 +16,10 @@ export function IcerikKarti({ icerik, sira }: { icerik: IcerikOzetDTO; sira?: nu
     <article className="centik group flex h-full flex-col border border-doku rounded-lg bg-kagit-alt transition-colors hover:border-doku-guclu">
       <div className="flex items-baseline justify-between border-b border-doku px-5 py-2.5">
         <p className="flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
-          <TurIkon tur={icerik.type} className="size-[15px]" />
+          <TurIkon
+            tur={icerik.type}
+            className="size-[15px] transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+          />
           {turEtiketi(icerik.type).toLocaleUpperCase("tr-TR")}
         </p>
         {sira !== undefined && (

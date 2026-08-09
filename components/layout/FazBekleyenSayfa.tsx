@@ -82,7 +82,10 @@ export function FazBekleyenSayfa({
             <p className="leading-relaxed text-murekkep-2">{simdilik.metin}</p>
             <p className="mt-5">
               <Link href={simdilik.href} className="dugme-cerceve">
-                {simdilik.etiket} <span aria-hidden>→</span>
+                {simdilik.etiket}{" "}
+                <span aria-hidden className="ok">
+                  →
+                </span>
               </Link>
             </p>
           </div>

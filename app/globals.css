@@ -757,6 +757,116 @@ pre {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   HAREKET KATMANI II — yalnız `transform` ve `opacity`.
+
+   Hero'daki SVG hareketinden ders: SVG'de dashoffset/transform compositor'a
+   çıkmaz, her kare ana iş parçacığında boyanır. Buradaki hareketlerin HEPSİ
+   HTML öğelerinde transform/opacity — compositor'da koşar, ana iş parçacığı
+   maliyeti ~sıfırdır. Layout tetikleyen özellik (width, height, top…) yok.
+
+   Kaydırma güdümlü olanlar `animation-timeline` ister; desteklemeyen
+   tarayıcıda öğe son hâliyle (görünür ve okunur) durur — bozulma yok.
+   Tamamı `prefers-reduced-motion: reduce` altında kapalı.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Giriş sahnesi: hero öğeleri sırayla yerine oturur.
+   OPAKLIK YOK, yalnız konum — `.beliren` ile aynı gerekçe: `opacity: 0` ile
+   başlayan giriş, animasyon sürerken metni görünmez yapıyor ve axe bunu
+   haklı olarak kontrast ihlali sayıyor (bu projede ölçüldü: 1.03:1).
+   Metin ilk kareden itibaren okunur kalmalı. ── */
+@keyframes sahne-giris {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ── Okuma ilerlemesi: makale boyunca dolan şerit ── */
+@keyframes ilerleme-dolum {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ── Ölçü dolumu: yoğunluk çubukları soldan sağa dolar ── */
+@keyframes olcu-dolum {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero giriş: `--s` sıra numarası kadar geciken kademeli yükseliş.
+     `both` ile ilk karede de doğru başlangıç değerinde durur. */
+  .sahne > *,
+  .sahne-tek {
+    animation: sahne-giris 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--s, 0) * 90ms);
+  }
+
+  /* Düğme oku: hover'da yol alır (metin kaymaz, yalnız ok) */
+  .dugme-birincil .ok,
+  .dugme-cerceve .ok,
+  .ok-kayar .ok {
+    display: inline-block;
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .dugme-birincil:hover .ok,
+  .dugme-cerceve:hover .ok,
+  .ok-kayar:hover .ok,
+  .dugme-birincil:focus-visible .ok,
+  .dugme-cerceve:focus-visible .ok,
+  .ok-kayar:focus-visible .ok {
+    transform: translateX(4px);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Okuma ilerleme şeridi — sayfanın kaydırma ilerlemesine bağlı */
+    .ilerleme-seridi {
+      transform-origin: left center;
+      animation: ilerleme-dolum linear;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Yoğunluk çubukları görüş alanına girerken dolar.
+       ÖNEMLİ: 12 çubuk 12 ayrı `view()` yerine listenin TEK adlandırılmış
+       zaman çizelgesini paylaşır. Ölçüldü: kaydırma güdümlü çizelge sayısı
+       doğrudan "Style & Layout" maliyetine yazılıyor (§9.1 bütçesi). */
+    .yogunluk-liste {
+      view-timeline-name: --yogunluk;
+      view-timeline-axis: block;
+    }
+    .olcu-dolum {
+      transform-origin: left center;
+      animation: olcu-dolum cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-timeline: --yogunluk;
+      animation-range: entry 10% cover 34%;
+    }
+    /* Bölüm başlığının altındaki çizgi görüş alanında çizilir */
+    .cizgi-ciz {
+      transform-origin: left center;
+      animation: olcu-dolum cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-timeline: view();
+      animation-range: entry 8% entry 62%;
+    }
+  }
+}
+
 /* Bağlantı altı çizgisi: hover'da soldan sağa çizilir (renk geçişi değil,
    solid çizginin genişlemesi) */
 .baglanti-iz {

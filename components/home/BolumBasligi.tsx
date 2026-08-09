@@ -22,7 +22,9 @@ export function BolumBasligi({
   bagEtiket?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-doku pb-3">
+    <div className="relative flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-doku pb-3">
+      {/* Alt çizginin sinyal katmanı: bölüm görüş alanına girerken çizilir */}
+      <span aria-hidden className="cizgi-ciz absolute inset-x-0 bottom-[-1px] h-px bg-sinyal/60" />
       <div className="min-w-0">
         <p className="bolum-indeks uppercase">§ {no}</p>
         <h2 id={id} className="mt-2 font-display text-2xl font-bold tracking-tight">
@@ -32,9 +34,12 @@ export function BolumBasligi({
       {bagAdres !== undefined && bagEtiket !== undefined ? (
         <Link
           href={bagAdres}
-          className="baglanti-iz font-mono text-xs text-murekkep-2 hover:text-sinyal"
+          className="baglanti-iz ok-kayar font-mono text-xs text-murekkep-2 hover:text-sinyal"
         >
-          {bagEtiket} →
+          {bagEtiket}{" "}
+          <span aria-hidden className="ok">
+            →
+          </span>
         </Link>
       ) : (
         not !== undefined && <p className="font-mono text-xs text-murekkep-2">{not}</p>

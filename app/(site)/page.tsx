@@ -112,19 +112,32 @@ export default async function AnaSayfa() {
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
             <div className="grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(300px,520px)] lg:py-24">
-              <div>
-                <h1 className="font-display text-4xl font-bold leading-[0.98] tracking-tight text-murekkep [font-stretch:88%]">
+              {/* `.sahne`: çocukları --s sırasına göre kademeli yükselir */}
+              <div className="sahne">
+                <h1
+                  style={{ "--s": 0 } as CSSProperties}
+                  className="font-display text-4xl font-bold leading-[0.98] tracking-tight text-murekkep [font-stretch:88%]"
+                >
                   Yapay zekanın
                   <br />
                   <span className="text-sinyal">Türkçe teknik kaynağı.</span>
                 </h1>
-                <p className="mt-7 max-w-[50ch] text-lg leading-relaxed text-murekkep-2">
+                <p
+                  style={{ "--s": 1 } as CSSProperties}
+                  className="mt-7 max-w-[50ch] text-lg leading-relaxed text-murekkep-2"
+                >
                   LLM, RAG, ajanlar, MLOps, güvenlik ve regülasyon. Yapay zeka sistemlerini{" "}
                   <em>üretenler</em> için Türkçe teknik yayın.
                 </p>
-                <div className="mt-9 flex flex-wrap items-center gap-3">
+                <div
+                  style={{ "--s": 2 } as CSSProperties}
+                  className="mt-9 flex flex-wrap items-center gap-3"
+                >
                   <Link href="/konu" className="dugme-birincil">
-                    Konu haritası <span aria-hidden>→</span>
+                    Konu haritası{" "}
+                    <span aria-hidden className="ok">
+                      →
+                    </span>
                   </Link>
                   <a href="#son-yayinlar" className="dugme-cerceve">
                     Son yayınlar <span aria-hidden>↓</span>
@@ -135,7 +148,10 @@ export default async function AnaSayfa() {
               {/* Ölçüm tezgâhı kompozisyonu (ADR 0010 görsel katmanı): sinyal
                   izi + ölçüm çubukları + bilgi ağı, ortak kalibrasyon rayında.
                   Küçük ekranda gizlenir; hero metni her koşulda önce gelir. */}
-              <div className="relative hidden rounded-xl border border-doku bg-kagit-alt/70 p-6 shadow-y2 lg:block">
+              <div
+                style={{ "--s": 3 } as CSSProperties}
+                className="sahne-tek relative hidden rounded-xl border border-doku bg-kagit-alt/70 p-6 shadow-y2 lg:block"
+              >
                 <p className="mb-4 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
                   tezgâh · üç panel · tek kalibrasyon
                 </p>

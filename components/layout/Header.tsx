@@ -23,6 +23,15 @@ export function Header() {
       id="tepe"
       className="sticky top-0 z-30 border-b border-doku bg-kagit/85 backdrop-blur-sm"
     >
+      {/* Okuma ilerlemesi: sayfanın kaydırma ilerlemesine bağlı şerit.
+          Kaydırma güdümlü CSS animasyonu — JS yok, scroll dinleyicisi yok,
+          yalnız `transform: scaleX` (compositor'da koşar). Header'ın kendi
+          alt kenarına oturur, böylece sabit bir yükseklik tahmini gerekmez.
+          Salt dekoratif: aria-hidden. */}
+      <span
+        aria-hidden
+        className="ilerleme-seridi pointer-events-none absolute inset-x-0 bottom-[-1px] block h-px origin-left bg-sinyal"
+      />
       <div className="relative mx-auto flex max-w-[1280px] items-center gap-x-5 px-[var(--gutter)] py-3">
         <Link
           href="/"

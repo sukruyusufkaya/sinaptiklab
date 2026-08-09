@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { pillarIkonu } from "@/components/gorsel";
 import type { PillarOzetDTO } from "@/lib/db/queries/topics";
 
@@ -13,12 +12,12 @@ export function KonuYogunlugu({ pillarlar }: { pillarlar: PillarOzetDTO[] }) {
   const enYuksek = Math.max(...pillarlar.map((p) => p.icerikSayisi), 1);
 
   return (
-    <ul className="mt-8 grid gap-x-10 gap-y-1 lg:grid-cols-2">
-      {pillarlar.map((pillar, sira) => {
+    <ul className="yogunluk-liste mt-8 grid gap-x-10 gap-y-1 lg:grid-cols-2">
+      {pillarlar.map((pillar) => {
         const oran = Math.round((pillar.icerikSayisi / enYuksek) * 100);
         const Ikon = pillarIkonu(pillar.slug);
         return (
-          <li key={pillar.slug} className="kademe min-w-0" style={{ "--k": sira } as CSSProperties}>
+          <li key={pillar.slug} className="min-w-0">
             <Link
               href={`/konu/${pillar.slug}`}
               className="group grid grid-cols-[2.5rem_minmax(0,1fr)_2.5rem] items-center gap-3 border-b border-doku py-2.5 no-underline"
@@ -34,7 +33,7 @@ export function KonuYogunlugu({ pillarlar }: { pillarlar: PillarOzetDTO[] }) {
                 {/* yoğunluk çubuğu: zemin + dolu kısım */}
                 <span aria-hidden className="mt-1.5 block h-[3px] w-full bg-doku/60">
                   <span
-                    className="block h-full bg-sinyal transition-[width] duration-500"
+                    className="olcu-dolum block h-full bg-sinyal"
                     style={{ width: `${oran}%` }}
                   />
                 </span>
