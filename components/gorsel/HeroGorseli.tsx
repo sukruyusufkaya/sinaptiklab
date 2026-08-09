@@ -11,8 +11,12 @@
  *   katman/opaklıkla kuruluyor (BRIEF §14 gradyan yasağı).
  * - Vurgular yalnız token: `--sinyal` (aktif yol), `--olcum` (kalibrasyon
  *   çentikleri, %3 alan sınırının çok altında), `--onay` (durum LED'i).
- * - Saf SVG: JS yok, `next/image` yok. Tek hareket, P1 izinin açılışta
- *   çizilmesi (`.iz-ciz`, ADR 0009) — CSS ile, reduced-motion'da kapalı.
+ * - Saf SVG: JS yok, `next/image` yok. Hareketin tamamı CSS ve tek bir dile
+ *   dayanır — SİNYAL YOL BOYUNCA İLERLER: paneller arası akış, iz üstündeki
+ *   kayıt kafası ve ağdaki nabız aynı tekniği paylaşır. Ölçüm çubukları
+ *   nefes alır, LED atar, kumpas rayda gidip gelir. Sınıf tanımları
+ *   `app/globals.css` (ADR 0009); reduced-motion altında hepsi kapalı ve
+ *   görsel çizili/okunur kalır.
  * - `viewBox` ölçekli; ~520px genişlikte tasarlandı, `w-full h-auto` ile
  *   her kolona oturur.
  */
@@ -38,6 +42,27 @@ const AG_DUGUMLERI = [
 
 /** Aktif yol üstündeki düğümler — `--sinyal` ile işaretlenir. */
 const AKTIF_DUGUMLER = new Set(["a", "b", "d", "f"]);
+
+/**
+ * Aktif yol: a→b→d→f düğümleri kesintisiz olduğu için TEK bir path.
+ * Üç ayrı nabız yerine tek nabız — hem anlatı daha doğru (sinyal zinciri
+ * baştan sona kat eder) hem de üç yerine bir animasyon boyanır (§9.1).
+ * `AKTIF_YOL_UZUNLUK` Öklid toplamı; dash boşluğunu belirler.
+ */
+const AKTIF_YOL = "M186 296l42-42l72 22l46-26";
+const AKTIF_YOL_UZUNLUK = "190";
+
+/**
+ * P2 ölçüm çubukları. Tabanları ortak (y=152); yükseklik `152 - y`.
+ * `tepe` nefes tepe noktası — uzun çubuk daha az büyür ki panel üst
+ * kenarını (y=44) taşırmasın. `gecikme` hepsinin aynı anda şişmesini önler.
+ */
+const OLCUM_CUBUKLARI = [
+  { x: 310, y: 112, tepe: "1.22", gecikme: "0s" },
+  { x: 340, y: 88, tepe: "1.1", gecikme: "0.9s" },
+  { x: 370, y: 100, tepe: "1.18", gecikme: "0.45s" },
+  { x: 430, y: 94, tepe: "1.12", gecikme: "1.35s" },
+] as const;
 
 export function HeroGorseli({ className = "w-full h-auto" }: { className?: string }) {
   return (
@@ -90,9 +115,10 @@ export function HeroGorseli({ className = "w-full h-auto" }: { className?: strin
 
       {/* ── Paneller arası veri akışı ── */}
       <g
-        stroke="currentColor"
+        className="akis-izi"
+        stroke="var(--sinyal)"
         strokeWidth={1.25}
-        strokeOpacity={0.28}
+        strokeOpacity={0.5}
         strokeLinecap="round"
         fill="none"
       >
@@ -122,6 +148,14 @@ export function HeroGorseli({ className = "w-full h-auto" }: { className?: strin
           stroke="var(--sinyal)"
           strokeWidth={2.25}
         />
+        {/* Kayıt kafası: kısa parlak parça izin üstünde ilerler */}
+        <path
+          className="yol-nabzi"
+          style={{ "--yol": "260", "--yol-son": "-260", "--sure": "5s" } as CSSProperties}
+          d="M54 140h34l10-30 12 62 10-46 12 14h58"
+          stroke="var(--sinyal-dip)"
+          strokeWidth={2.5}
+        />
         <circle cx="98" cy="110" r="4" stroke="var(--olcum)" strokeWidth={2} />
       </g>
 
@@ -130,15 +164,24 @@ export function HeroGorseli({ className = "w-full h-auto" }: { className?: strin
         <path d="M306 62h96" stroke="currentColor" strokeWidth={1.25} strokeOpacity={0.18} />
         <path d="M306 152h156" stroke="currentColor" strokeWidth={1.25} strokeOpacity={0.22} />
         <g fill="currentColor" fillOpacity={0.2}>
-          <rect x="310" y="112" width="20" height="40" rx="7" />
-          <rect x="340" y="88" width="20" height="64" rx="7" />
-          <rect x="370" y="100" width="20" height="52" rx="7" />
-          <rect x="430" y="94" width="20" height="58" rx="7" />
+          {OLCUM_CUBUKLARI.map((cubuk) => (
+            <rect
+              key={cubuk.x}
+              className="olcum-cubugu"
+              style={{ "--g": cubuk.gecikme, "--tepe": cubuk.tepe } as CSSProperties}
+              x={cubuk.x}
+              y={cubuk.y}
+              width="20"
+              height={152 - cubuk.y}
+              rx="7"
+            />
+          ))}
         </g>
         <rect x="400" y="70" width="20" height="82" rx="7" fill="var(--sinyal)" opacity={0.55} />
         {/* Durum LED'i: --onay koyu temada da kısık kaldığı için currentColor
             halka şekli taşır, token yalnız sıcaklığı verir. */}
         <circle
+          className="led"
           cx="466"
           cy="62"
           r="4"
@@ -159,11 +202,30 @@ export function HeroGorseli({ className = "w-full h-auto" }: { className?: strin
         <path d="m300 276 46-26" />
         <path d="m252 318 82 2" />
       </g>
-      <g stroke="var(--sinyal)" strokeWidth={2} fill="none" strokeLinecap="round">
-        <path d="m186 296 42-42" />
-        <path d="m228 254 72 22" />
-        <path d="m300 276 46-26" />
-      </g>
+      <path
+        d={AKTIF_YOL}
+        stroke="var(--sinyal)"
+        strokeWidth={2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Aktif zincir boyunca ilerleyen tek nabız */}
+      <path
+        className="yol-nabzi"
+        style={
+          {
+            "--yol": AKTIF_YOL_UZUNLUK,
+            "--yol-son": `-${AKTIF_YOL_UZUNLUK}`,
+            "--sure": "5s",
+          } as CSSProperties
+        }
+        d={AKTIF_YOL}
+        stroke="var(--sinyal-dip)"
+        strokeWidth={2.5}
+        fill="none"
+        strokeLinecap="round"
+      />
       {AG_DUGUMLERI.map((dugum) => {
         const aktif = AKTIF_DUGUMLER.has(dugum.id);
         return (
@@ -185,7 +247,11 @@ export function HeroGorseli({ className = "w-full h-auto" }: { className?: strin
       <g stroke="currentColor" strokeLinecap="round">
         <path d="M36 376h448" strokeWidth={1.25} strokeOpacity={0.24} />
         <path d="M150 358v6h230v-6" strokeWidth={1.25} strokeOpacity={0.3} fill="none" />
-        <path d="M265 364v6" strokeWidth={1.25} strokeOpacity={0.3} />
+      </g>
+      {/* Kumpas imleci: ray boyunca yavaşça gidip gelir */}
+      <g className="kumpas" stroke="var(--sinyal)" strokeLinecap="round">
+        <path d="M150 356v24" strokeWidth={2} />
+        <path d="M150 368h10" strokeWidth={1.25} strokeOpacity={0.55} />
       </g>
       <g strokeLinecap="round">
         {RAY_CENTIKLERI.map((x, i) => {

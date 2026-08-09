@@ -659,6 +659,104 @@ pre {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   ÖLÇÜM TEZGÂHI HAREKETİ (hero görseli — ADR 0009 kapsamında)
+
+   Tek bir hareket dili: SİNYAL YOL BOYUNCA İLERLER. Paneller arası akış,
+   iz üstündeki kayıt kafası ve bilgi ağındaki nabız aynı tekniği kullanır
+   (kısa parlak parça, uzun boşluk, dashoffset ile yürür) — böylece dokuz
+   ayrı animasyon değil, çalışan tek bir cihaz izlenimi doğar.
+
+   Kurallar: hepsi salt CSS, JS yok; süreler 3-9sn arası (dikkat çalmaz);
+   reduced-motion altında tamamı kapalı — görsel çizili ve okunur kalır.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Paneller arası veri akışı: kesikler yol boyunca yürür */
+@keyframes akis-yuru {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* Kayıt kafası / ağ nabzı: kısa parlak parça yolu baştan sona kat eder,
+   sonra bir süre bekler (yüzde durakları o beklemeyi verir).
+
+   Uç değerler DÜZ değişkenden gelir, `calc(var(--yol) * -1)` DEĞİL: kayıtsız
+   özel değişken calc içinde hesaplanmış değere sadeleşmediği için Chrome iki
+   uç arasında ara değer üretemiyor ve animasyon yerinde donuyordu (ölçüldü).
+   Desen `26 var(--yol)` olduğundan 26 → -yol tam bir periyot eder: parça
+   yola girer, çıkar, tekrarı beklemeye geçer. */
+@keyframes yol-nabzi {
+  0% {
+    stroke-dashoffset: 26;
+  }
+  55%,
+  100% {
+    stroke-dashoffset: var(--yol-son, -300);
+  }
+}
+
+/* Ölçüm çubukları: canlı okuma gibi nefes alır */
+@keyframes cubuk-nefes {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(var(--tepe, 1.14));
+  }
+}
+
+/* Kumpas: kalibrasyon rayı boyunca yavaşça gidip gelen ölçüm imleci */
+@keyframes kumpas-kay {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    /* rayın sol köşesinden (x=150) sağ köşesine (x=380) */
+    transform: translateX(230px);
+  }
+}
+
+/* MALİYET NOTU (ölçüldü): SVG'de `stroke-dashoffset` ve `transform`
+   compositor'a çıkmaz; her kare ana iş parçacığında yeniden boyanır.
+   İlk sürümde 17 eşzamanlı animasyon vardı ve Lighthouse TBT'yi 92ms'den
+   814ms'ye, performansı 0.97'den 0.76'ya düşürdü (§9.1 bütçesi kırıldı).
+   İki kaldıraçla düzeltildi:
+     1. Sayı 17 → 7: düğüm nabızları kaldırıldı, üç kenar nabzı tek zincire
+        indirildi (anlatı da düzeldi — sinyal zinciri baştan sona kat eder).
+     2. `steps()`: yürüyen kesik ve nefes gibi hareketlerde değer 60fps
+        yerine sınırlı kademede güncellenir; değer değişmeyen karede
+        tarayıcı boyama yapmaz. Gözle fark edilmiyor, maliyet katbekat
+        düşüyor. Kumpas kaydı sürekli kalır (tek öğe, düz çizgi). */
+@media (prefers-reduced-motion: no-preference) {
+  /* Ortam hareketi sayfa oturduktan SONRA başlar. Yükleme penceresinde
+     koşarsa hidrasyonla aynı ana iş parçacığını paylaşıp doğrudan TBT'ye
+     yazılıyor (ölçüldü: 4x CPU kısıtında 5 saniyede 155ms uzun görev).
+     1.4sn gecikme bunu bütçe dışına taşır; kullanıcı açısından da doğru —
+     önce iz çizilir (.iz-ciz, 2.2sn), sonra tezgâh çalışmaya başlar. */
+  .akis-izi {
+    stroke-dasharray: 4 8;
+    animation: akis-yuru 1.6s steps(12) 1.4s infinite;
+  }
+  .yol-nabzi {
+    /* kısa parça + yolun tamamı kadar boşluk → tek bir parça dolaşır */
+    stroke-dasharray: 26 var(--yol, 300);
+    animation: yol-nabzi var(--sure, 4s) steps(48) infinite;
+    animation-delay: calc(1.4s + var(--g, 0s));
+  }
+  .olcum-cubugu {
+    transform-box: fill-box;
+    transform-origin: bottom;
+    animation: cubuk-nefes 4.6s steps(24, jump-none) infinite;
+    animation-delay: calc(1.4s + var(--g, 0s));
+  }
+  .kumpas {
+    animation: kumpas-kay 11s cubic-bezier(0.45, 0, 0.55, 1) 1.4s infinite;
+  }
+}
+
 /* Bağlantı altı çizgisi: hover'da soldan sağa çizilir (renk geçişi değil,
    solid çizginin genişlemesi) */
 .baglanti-iz {
