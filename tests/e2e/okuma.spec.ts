@@ -97,8 +97,9 @@ test.describe("okuma deneyimi (gerçek makale)", () => {
     const dipnot = page.locator('#icerik-govde sup a[href^="#kaynak-"]').first();
     await dipnot.focus();
     await dipnot.press("Enter");
-    await page.waitForTimeout(300);
-    expect(page.url()).toMatch(/#kaynak-\d+$/);
+    // Sabit bekleme yerine gerçek sinyal: çapa URL'e yazılana kadar bekle.
+    // (waitForTimeout yüklü makinede dönüşümlü olarak erken bitiyordu.)
+    await page.waitForURL(/#kaynak-\d+$/);
   });
 });
 
@@ -119,7 +120,13 @@ test.describe("konu haritası (DB gerekli)", () => {
     const kartlar = page.locator('a[href^="/konu/"]');
     await expect.poll(() => kartlar.count()).toBe(12);
     await kartlar.first().click();
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    // İstemci tarafı geçiş bitmeden axe koşarsa yarı takas edilmiş DOM'u
+    // ölçüyor ("<title> boş" dahil 40+ sahte ihlal). Üç gerçek sinyal:
+    // URL pillar rotasına döndü, belge başlığı yazıldı, hub'ın kendi
+    // başlığı basıldı.
+    await page.waitForURL(/\/konu\/[a-z0-9-]+$/);
+    await expect(page).toHaveTitle(/.+/);
+    await expect(page.getByRole("heading", { name: "Yayındaki içerik" })).toBeVisible();
     const sonuc = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
       .analyze();
