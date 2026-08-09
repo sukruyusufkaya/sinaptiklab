@@ -1,0 +1,49 @@
+## Görsel-dil modeli nedir, OCR boru hattından nerede ayrılır?
+
+Görsel-dil modeli, görüntüyü ve metni tek bir modelde birlikte işleyen çok kipli bir sistemdir; belge işlemede değeri, sayfayı karakter dizisi değil bir bütün olarak görmesinden gelir. Klasik boru hattı üç ayrı parçadan kuruluydu: sayfayı bölgelere ayıran bir tespit modeli, karakterleri metne çeviren bir OCR motoru ve "fatura no şu etiketin sağındadır" diyen kural katmanı. Her parça ayrı ayrı bakım isterdi ve tedarikçi şablonu değiştiğinde kural katmanı sessizce bozulurdu.
+
+VLM bu üç katmanı tek bir çağrıya indirir: sayfayı verirsiniz, istediğiniz alanları tarif edersiniz, model doğrudan yapılandırılmış cevabı üretir. <Kaynak id="5">Güncel çok kipli modellerin teknik raporları bu yeteneği açıkça hedef olarak koyuyor: faturalardan, formlardan ve tablolardan sağlam yapılandırılmış veri çıkarımı ile grafik, diyagram ve düzenin ayrıntılı analizi; ayrıca nesneleri sınırlayıcı kutu veya noktalarla isabetle konumlandırma</Kaynak>.
+
+Ayrım pratikte şuradan anlaşılır: OCR "bu sayfada hangi karakterler var?" sorusunu cevaplar, VLM "bu faturanın KDV tutarı ne?" sorusunu cevaplar. İlkinde çıktı doğrulanabilir ve tekrarlanabilirdir; ikincisinde çıktı yorumdur, dolayısıyla doğrulama katmanı sizin sorumluluğunuzdadır. Bu yazının geri kalanı büyük ölçüde bu sorumluluğun nasıl kurulduğuyla ilgili.
+
+## Görüntü ve metin nasıl aynı uzayda buluşuyor?
+
+Temeldeki fikir, görüntüyü ve metni ortak bir vektör uzayına gömmektir: eşleşen görüntü-metin çiftleri birbirine yakın, eşleşmeyenler uzak olacak şekilde eğitim yapılır. <Kaynak id="1">Bu yaklaşımı yaygınlaştıran çalışma, internetten toplanan 400 milyon (görüntü, metin) çiftiyle eğitildi ve 30'dan fazla farklı bilgisayarlı görü veri setinde değerlendirildi; ImageNet'te, veri setinin 1,28 milyon eğitim örneğinin hiçbirini kullanmadan sıfır atışta orijinal ResNet-50 doğruluğuna eriştiği raporlandı</Kaynak>. Çalışmanın tamamı [arXiv'de açık](https://arxiv.org/abs/2103.00020).
+
+Buradaki asıl kazanç doğruluk değil esnekliktir. Sabit bir etiket kümesine bağlı sınıflandırıcı yerine, doğal dille tarif ettiğiniz her kavramı sorgulayabilirsiniz — "üzerinde ıslak imza olan sayfa" gibi, önceden eğitilmemiş bir kategoriyi bile. Ortak gömme uzayının nasıl kurulduğunu [gömme vektörü yazısında](/makale/gomme-vektoru-embedding-nedir) ayrıntılı anlattık; görüde de mantık aynıdır, yalnızca girdi kipi değişir.
+
+Salt sınıflandırma ve tespit tarafındaki mimari tartışmasını — evrişimli ağların ve Vision Transformer'ın nerede kazandığını — [CNN'den ViT'e yazısında](/makale/goruntu-siniflandirma-nesne-tespiti-cnn-vit) ayrı ele aldık. Belge işleme, o tartışmanın üstüne kurulan bir uygulama katmanıdır; omurga seçimi önemli ama belirleyici değil.
+
+## Belge anlamada asıl problem: düzen bilgisi
+
+Belge, düz metne indirgendiğinde bilgi kaybeder — bir tablodaki sayının anlamı, hangi satır ve sütunun kesişiminde durduğuna bağlıdır. Bu yüzden belge yapay zekası ayrı bir alt alan olarak gelişti. <Kaynak id="2">Alanın referans mimarilerinden biri, metin ve görüntüyü birleşik biçimde maskeleyerek ve bir kelimenin karşılık geldiği görüntü yamasının maskelenip maskelenmediğini tahmin ettiren kelime-yama hizalama hedefiyle kipler arası hizalamayı öğreniyor; sonuçta hem metin merkezli görevlerde (form anlama, fiş anlama, belge görsel soru-cevap) hem görüntü merkezli görevlerde (belge sınıflandırma, düzen analizi) tek bir genel amaçlı model kullanılabiliyor</Kaynak>.
+
+Problemin zorluğu ölçülmüş durumda. <Kaynak id="3">DocVQA veri seti, 12.000'den fazla belge görüntüsü üzerinde tanımlanmış 50.000 soru içeriyor; aynı çalışmada insan değerlendiricilerin doğruluğu %94,36 olarak raporlandı ve modellerin özellikle belgenin yapısını anlamayı gerektiren sorularda geride kaldığı vurgulandı</Kaynak>. Yani "sayfayı oku" değil "sayfanın mantığını çöz" görevinde açık hâlâ kapanmış değil.
+
+Sahada bunun pratik karşılığı şudur: aynı model, düz metin ağırlıklı sözleşmede çok iyi, çok sütunlu bir irsaliyede vasat sonuç verebilir. Belge tipini önce sınıflandırıp her tip için ayrı istem ve ayrı doğrulama kuralı kurmak, tek bir evrensel istemle her belgeyi çözmeye çalışmaktan istikrarlı biçimde daha iyi çalışıyor.
+
+## Üretimde maliyet: sayfa, token ve sınırlar
+
+Maliyet hesabı sayfa sayısından değil token sayısından çıkar ve sağlayıcılar bunu açıkça belgeliyor. <Kaynak id="4">Gemini API belgelerine göre model 50 MB'a veya 1000 sayfaya kadar PDF dosyalarını işleyebiliyor ve her belge sayfası 258 token'a eşdeğer sayılıyor; PDF dışı biçimler düz metin olarak işlendiği için grafik, diyagram ve biçimlendirme bilgisi kayboluyor</Kaynak>. Ayrıntılı sınırlar [Google'ın belge işleme dokümanında](https://ai.google.dev/gemini-api/docs/document-processing).
+
+Bu iki sayı bir mimari kararı doğrudan belirler: 1000 sayfalık bir arşivi tek çağrıda modele vermek teknik olarak mümkün olsa da, sorunun cevabı üç sayfadaysa ödediğiniz token'ın büyük kısmı israftır. Ölçekli arşivlerde tipik desen, önce ucuz bir arama katmanıyla aday sayfaları daraltmak, sonra yalnızca o sayfaları VLM'e vermektir. Bu tam olarak bir getirmeli üretim boru hattıdır; kurulumunu [RAG rehberimizde](/rehber/rag-nedir) uçtan uca anlattık.
+
+Token'ın ne olduğu ve Türkçe metinde nasıl davrandığı burada da işinize yarar — Türkçe sözcüklerin İngilizceye kıyasla daha fazla token'a bölünmesi, metin ağırlıklı belgelerde faturayı büyütür. Mekanizmayı [token ve Türkçe tokenlaşma yazısında](/makale/token-nedir-turkcede-tokenlasma) ölçümlerle işledik.
+
+## Nerede kırılıyor? Doğrulama katmanı olmadan üretime almayın
+
+VLM'in en tehlikeli hata modu, boş bırakmak yerine makul görünen bir değer uydurmasıdır: fatura numarası okunaksızsa model çoğu zaman "bilmiyorum" demek yerine biçime uygun bir numara üretir. Mekanizmayı [halüsinasyon yazısında](/makale/yapay-zeka-halusinasyonu-nedir) ayrıntılı anlattık; belge işlemede sonucu daha sinsidir, çünkü çıktı şema olarak geçerli görünür ve alt sistemlere sessizce akar.
+
+<Uyari tip="tuzak">
+Pilot çalışmalarda en sık yapılan hata, doğruluğu belge düzeyinde raporlamaktır: "belgelerin %92'si doğru okundu". Bu sayı karar için işe yaramaz. Alan bazında ölçün — fatura numarası %99, KDV tutarı %97, kalem tablosu %71 gibi. Otomasyon kararı da alan bazında verilir: bazı alanlar tam otomatik akabilir, bazıları her zaman insan onayına düşmelidir.
+</Uyari>
+
+Pratik savunma üç katmanlıdır. Birincisi katı şema: çıktı serbest metin değil, tipleri belirlenmiş bir yapı olsun. İkincisi aritmetik ve mantık kontrolü: kalem toplamları genel toplamı vermiyorsa belge otomatik olarak kuyruğa düşsün. Üçüncüsü güven eşiği: modelden alan başına konum veya gerekçe isteyip, gerekçesiz alanları düşük güven sayın. Bu üçü kurulmadan ölçülen "doğruluk", pilotta güzel görünüp üretimde çöken sayıdır.
+
+## Türkiye bağlamı: e-belge, KVKK ve gerçekçi kapsam
+
+Türkiye'de belge işleme projelerinin çoğu aslında yarı çözülmüş bir problemle başlıyor: e-fatura ve e-arşiv zaten yapılandırılmış veridir; VLM'e gerçekten ihtiyaç duyulan yer, tedarikçiden PDF olarak gelen irsaliyeler, banka dekontları, gümrük evrakı ve el yazısı içeren tutanaklardır. Kapsamı bu gerçek boşluğa daraltmak, projenin geri dönüşünü ilk aydan görünür kılar.
+
+İkinci konu kişisel veri. Belge görüntüleri sıklıkla kimlik numarası, adres ve imza taşır; bunları bir bulut modeline göndermek, yurt dışına veri aktarımı sorusunu doğrudan masaya koyar. Aktarım rejimi, açık rıza ve maskeleme seçeneklerini [KVKK yapay zeka uyum rehberimizde](/makale/kvkk-yapay-zeka-uyum-rehberi) ele aldık; pratikte en çok işe yarayan yaklaşım, modele gitmeden önce gerekmeyen alanları maskelemek ve saklama süresini kısaltmaktır.
+
+Son not ölçüm üzerine: Türkçe belge için yayımlanmış kamuya açık kıyaslama neredeyse yok. Bu bir dezavantaj gibi görünse de aslında fırsat — kendi 50-100 belgelik altın kümenizi kurup her model değişikliğini aynı düzenekte ölçtüğünüzde, elinizde rakiplerinizde olmayan bir karar verisi oluyor.

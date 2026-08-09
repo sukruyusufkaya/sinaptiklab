@@ -1,0 +1,59 @@
+## Görüntü sınıflandırma ile nesne tespiti arasındaki fark nedir?
+
+Fark çıktının şeklindedir: sınıflandırma bir görsele tek bir etiket ve olasılık döndürür, nesne tespiti ise görseldeki her nesne için ayrı bir sınıf artı sınırlayıcı kutu döndürür. Bu tek cümlelik ayrım, projenin bütçesini de belirler — çünkü etiketleme maliyeti buradan çıkar. Bir görsele "hasarlı" demek saniyeler alır; aynı görselde on iki hasar noktasını piksel hassasiyetiyle kutulamak dakikalar alır ve etiketleyiciler arası tutarsızlık üretir.
+
+Karar sırası bu yüzden şudur: probleminiz gerçekten kutu istiyor mu? Sahada gördüğümüz en yaygın israf, sınıflandırmanın yeteceği bir işe tespit modeli kurulmasıdır. "Bu üründe kusur var mı?" sorusu sınıflandırmadır. "Kusur nerede, kaç tane?" sorusu tespittir. İkincisi gerekiyorsa maliyeti baştan kabul edin; gerekmiyorsa etiket bütçenizi veri çeşitliliğine harcayın.
+
+Üçüncü bir katman daha var: segmentasyon, yani nesnenin kutusu yerine piksel maskesi. Alan ölçümü, örtüşen nesneler veya düzensiz geometri varsa kutu yetmez. Bu üç seviyenin her biri, bir öncekinin etiket maliyetini kabaca katlar. Mimari seçiminden önce bu seviyeyi netleştirmek, sonradan yapılan tüm optimizasyonlardan daha çok zaman kazandırır.
+
+## CNN neden hâlâ ayakta? Kalıntı bağlantıların getirdiği eşik
+
+Evrişimli ağlar hâlâ varsayılan başlangıç noktasıdır çünkü mimarilerine gömülü önyargı — yerellik ve öteleme değişmezliği — görüntü verisiyle doğal olarak uyuşur ve bu, az veriyle öğrenmeyi kolaylaştırır. Alanın kırılma noktası derinliğin eğitilebilir hale gelmesiydi. <Kaynak id="1">Kalıntı öğrenme çerçevesi, 152 katmana kadar — VGG'nin sekiz katı derinlikte — ağların eğitilebilmesini sağladı; bu ağların bir topluluğu ImageNet test kümesinde %3,57 hata verdi ve ILSVRC 2015 sınıflandırma yarışmasında birinci oldu, COCO nesne tespitinde ise %28 göreli iyileşme getirdi</Kaynak>. Orijinal çalışma [arXiv'de açık erişimde](https://arxiv.org/abs/1512.03385).
+
+Bu miras bugün pratik bir avantaja dönüşüyor: hazır ağırlıklar bol, araç zinciri olgun, uçta çalıştırma yolları test edilmiş. <Kaynak id="6">torchvision'ın yayımladığı tabloda ResNet50'nin ImageNet-1K top-1 doğruluğu %76,13 ve parametre sayısı 25,6 milyon; ViT_B_16'nın doğruluğu %81,072 ve parametre sayısı 86,6 milyon</Kaynak>. Yani ilk denemede erişebileceğiniz doğruluk farkı, üç kattan fazla parametre maliyetiyle geliyor.
+
+Mimari yarışının sonucu da sanıldığı kadar tek yönlü değil. <Kaynak id="3">ResNet'i Transformer tasarım tercihleriyle modernize eden ConvNeXt, %87,8 ImageNet top-1 doğruluğa ulaştı ve hem COCO nesne tespitinde hem ADE20K semantik segmentasyonunda Swin Transformer'ları geçti</Kaynak>. Sonuç net: fark mimari ailesinden değil, tasarım tercihlerinden ve ölçekten geliyor.
+
+## ViT ne zaman kazanıyor?
+
+Vision Transformer, görüntüyü yamalara bölüp bir dizi olarak işler; yani evrişim yerine dikkat mekanizmasını kullanır. <Kaynak id="2">Özgün çalışmanın iddiası doğrudan: CNN'lere bağımlılık zorunlu değildir ve doğrudan görüntü yamalarının dizisine uygulanan saf bir Transformer, en iyi evrişimli ağlarla karşılaştırılabilir sonuçlar verirken eğitim için belirgin biçimde daha az hesap kaynağı ister</Kaynak>. Kritik koşul makalede de vurgulanır: bu üstünlük büyük veriyle ön eğitim yapıldığında ortaya çıkar. Küçük veri setinde sıfırdan eğitilen bir ViT, aynı bütçedeki bir CNN'e genellikle yenilir.
+
+Pratikte ViT'i tercih etmenizi haklı çıkaran üç durum var. Birincisi, güçlü bir ön eğitimli kontrol noktasına erişiminiz varsa; ikincisi, görü modelinizi metin tarafıyla aynı temsil uzayında birleştirecekseniz — [görsel-dil modelleri yazısında](/makale/gorsel-dil-modelleri-vlm-belge-anlama) bu birleşmenin belge işlemede ne getirdiğini ayrıntılı işledik; üçüncüsü, uzun menzilli bağlam gerektiren sahnelerde, örneğin nesnenin anlamı sahnenin bütününden çıkıyorsa.
+
+Dikkat mekanizmasının nasıl çalıştığını [Transformer mimarisi yazısında](/makale/transformer-mimarisi-nasil-calisir) adım adım anlattık; görüde de aynı mekanizma çalışır, yalnızca token'lar kelime değil görüntü yamalarıdır. Bu benzeşim, dil tarafında öğrendiğiniz sezgilerin görüye taşınabilir olması demek — ekiplerin en çok hafife aldığı avantajlardan biri.
+
+## Nesne tespitinde karar: gerçek zaman kısıtı belirler
+
+Tespit tarafında seçim doğruluktan çok gecikme bütçesinden çıkar. <Kaynak id="5">YOLO11 ailesinin yayımlanmış COCO tablosunda en küçük varyant YOLO11n 39,5 mAP, 2,6 milyon parametre ve CPU üzerinde 56,1 ± 0,8 ms çıkarım süresi verirken; en büyük varyant YOLO11x 54,7 mAP, 56,9 milyon parametre ve 462,8 ± 6,7 ms süre veriyor</Kaynak>. Aynı aile içinde doğruluk 15 mAP artarken gecikme sekiz katına çıkıyor — üretim kararı tam olarak bu eğrinin neresinde durduğunuzdur. Tablonun tamamı [Ultralytics belgelerinde](https://docs.ultralytics.com/models/yolo11/).
+
+Öbür kolda Transformer tabanlı tespit var. <Kaynak id="4">DETR, tespiti doğrudan küme tahmini olarak kurgulayarak maksimum olmayan bastırma (NMS) veya çapa üretimi gibi elle tasarlanmış birçok bileşene olan ihtiyacı ortadan kaldırıyor ve COCO'da köklü, yüksek düzeyde optimize edilmiş Faster R-CNN temeliyle doğruluk ve çalışma süresi açısından başa baş sonuç veriyor</Kaynak>. Buradaki kazanç ham hızda değil, boru hattının sadeleşmesindedir: ayarlanacak eşik ve çapa kümesi azalır, hata ayıklama kolaylaşır.
+
+<Karsilastirma baslik="Üretimde model ailesi seçimi">
+
+| Kriter | CNN tabanlı (ResNet/ConvNeXt, YOLO) | Transformer tabanlı (ViT, DETR türevleri) |
+|---|---|---|
+| Az etiketli veri | Transfer öğrenmeyle güçlü | Büyük ön eğitim olmadan zayıf |
+| Uçta / CPU çalışma | Olgun; niceleme ve dışa aktarma yolları test edilmiş | Daha ağır; optimizasyon eforu ister |
+| Boru hattı karmaşıklığı | NMS, çapa, eşik ayarı gerekir | Sonrası işleme belirgin azalır |
+| Çok kipli genişleme | Ek katman ister | Doğal; metinle aynı mimari |
+| Ekip öğrenme eğrisi | Geniş Türkçe/İngilizce kaynak | Daha dar, hızlı değişen literatür |
+
+</Karsilastirma>
+
+## Üretime alırken: ölçüm düzeneği modelden önce gelir
+
+Model seçiminden önce kurulması gereken şey değerlendirme setidir. Yayımlanmış COCO veya ImageNet skorları ön eleme içindir; sizin sahanızdaki aydınlatma, kamera açısı ve nesne dağılımı bambaşkadır. Kendi verinizden ayrılmış, sınıf dengesizliğini yansıtan bir test kümesi kurmadan yapılan her mimari değişikliği körlemedir — sınıflandırma metriklerinin hangi durumda yanılttığını [aşırı öğrenme ve model değerlendirme yazısında](/makale/asiri-ogrenme-capraz-dogrulama-model-metrikleri) ayrıntılı işledik.
+
+Sonraki adım izlemedir. Görü modelleri sessizce çürür: kamera değişir, mevsim değişir, üretim hattına yeni bir ürün girer. Model performansı düşerken hata mesajı gelmez, yalnızca yanlış kutular birikir. Üretimde model izleme ve yeniden eğitim tetikleyicilerinin nasıl kurulacağını [MLOps yazısında](/makale/mlops-nedir) ele aldık; görü tarafında ek olarak girdi görüntülerinin istatistiklerini de izlemek gerekir.
+
+<Uyari tip="tuzak">
+Sahada en sık gördüğümüz hata, doğruluk hedefinin iş kararından kopuk seçilmesidir. "%95 mAP" bir hedef değildir; "yanlış alarm oranı operatörü boğmayacak kadar düşük olsun" bir hedeftir. Önce hata maliyetini iki yönde de fiyatlandırın, eşiği ona göre kalibre edin. Aynı model, eşiği değiştirdiğinizde farklı bir ürün olur.
+</Uyari>
+
+## Türkiye bağlamı: veri, donanım ve etiketleme maliyeti
+
+Yerelde en sık takıldığımız üç nokta şunlar. Birincisi veri: Türkçe plaka, yerel ambalaj, yerel tarım ürünü gibi alanlarda hazır veri seti yok denecek kadar az; projenin gerçek süresi model eğitimi değil veri toplama ve etiketleme takvimidir. İkincisi donanım: uçta çalıştırma senaryolarında GPU kiralamak yerine küçük varyantları CPU'da veya gömülü kartlarda çalıştırmak çoğu zaman daha ekonomiktir ve yukarıdaki gecikme tablosu bu kararı doğrudan besler.
+
+Üçüncüsü kişisel veri. Kamera görüntüsü işleyen her sistem, içinde insan geçiyorsa kişisel veri işliyor demektir; yüz görüntüsü söz konusuysa özel nitelikli veri rejimine girer. Bu, hukuk ekibinin sonradan bakacağı bir konu değil, mimari kararın parçasıdır: görüntü nerede saklanacak, ne kadar süreyle, hangi maskeleme uygulanacak. Uyum çerçevesini [KVKK yapay zeka uyum rehberimizde](/makale/kvkk-yapay-zeka-uyum-rehberi) tarttık.
+
+Ekip tarafında ise ilerleme sırası önemlidir: önce klasik bir sınıflandırma hattını uçtan uca üretime almak, ileri mimarilere sıçramaktan daha çok öğretir. Bu sıranın nasıl kurulacağını [yapay zeka mühendisi yol haritasında](/rehber/yapay-zeka-muhendisi-yol-haritasi) aşama aşama anlattık.

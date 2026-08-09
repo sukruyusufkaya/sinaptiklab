@@ -1,0 +1,68 @@
+{
+  "type": "article",
+  "slug": "asiri-ogrenme-capraz-dogrulama-model-metrikleri",
+  "title": "Aşırı Öğrenme, Çapraz Doğrulama ve Model Metrikleri",
+  "dek": "Aşırı öğrenme nasıl teşhis edilir, çapraz doğrulama neden zorunlu, accuracy ne zaman yanıltır? Precision, recall, F1 ve AUC'yi mühendis gözüyle okuma rehberi.",
+  "answerFirst": "Aşırı öğrenme, modelin eğitim verisini ezberleyip görülmemiş veride başarısız olmasıdır ve teşhisi tek bakışta yapılır: eğitim skoru yüksek, doğrulama skoru düşük. Çapraz doğrulama bu ölçümü tek bir şanslı bölünmeye bağlı olmaktan çıkarır. Metrik seçimi ise sınıf dengesine bağlıdır; dengesiz veride accuracy yanıltır, precision ve recall ayrı ayrı okunur, karşılaştırma için precision-recall eğrisi ROC'tan daha bilgilendiricidir.",
+  "level": "orta",
+  "pillar": "makine-ogrenmesi-temelleri",
+  "clusters": ["model-dogrulama-metrikler"],
+  "tags": [
+    "aşırı öğrenme",
+    "çapraz doğrulama",
+    "precision",
+    "recall",
+    "f1",
+    "roc auc",
+    "model değerlendirme"
+  ],
+  "faq": [
+    {
+      "q": "Kaç katlı çapraz doğrulama kullanmalıyım?",
+      "a": "Pratik varsayılan 5 veya 10 kattır. scikit-learn kılavuzu da bu ikisini leave-one-out'a tercih edildiğini belirtiyor; LOO hem çok pahalıdır hem de tahmin varyansı yüksektir. Sınıf dengesizliği varsa katmanlı (stratified) sürümü kullanın; zaman serisinde ise rastgele katlama sızıntı üretir, geçmişten geleceğe ilerleyen kayan pencere bölünmesi gerekir."
+    },
+    {
+      "q": "F1 skoru her zaman doğru özet metrik midir?",
+      "a": "Hayır. F1, precision ve recall'a eşit ağırlık verir; oysa çoğu iş probleminde iki hata türünün maliyeti eşit değildir. Kaçırılan dolandırıcılık ile yanlış alarm aynı şeye mal olmaz. Böyle durumlarda F-beta ile ağırlığı kaydırın veya doğrudan iş maliyetini modelleyip beklenen maliyeti enküçülten eşiği seçin. Tek sayıya indirgemek raporu kolaylaştırır, kararı kolaylaştırmaz."
+    },
+    {
+      "q": "Doğrulama skoru iyi ama üretimde model kötü çalışıyor, neden?",
+      "a": "En sık üç neden var. Birincisi veri sızıntısı: özellik üretiminde geleceğe ait bilgi kullanılmış olabilir. İkincisi dağılım kayması: eğitim verisi geçmiş bir dönemden, üretim verisi bugünden geliyordur. Üçüncüsü eşik: model olasılık üretir, kararı eşik verir ve eşik genellikle doğrulama kümesinde kalibre edilmeden varsayılan 0,5'te bırakılır. Üçünü de üretim verisiyle ayrı ayrı test edin."
+    }
+  ],
+  "sources": [
+    {
+      "label": "scikit-learn User Guide — Cross-validation: evaluating estimator performance",
+      "url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+      "publisher": "scikit-learn",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "scikit-learn User Guide — Metrics and scoring",
+      "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+      "publisher": "scikit-learn",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "scikit-learn User Guide — Validation curves: plotting scores to evaluate models",
+      "url": "https://scikit-learn.org/stable/modules/learning_curve.html",
+      "publisher": "scikit-learn",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets (Saito ve Rehmsmeier, 2015)",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432",
+      "publisher": "PLOS ONE",
+      "accessedAt": "2026-08-09",
+      "kind": "paper"
+    }
+  ],
+  "seo": {
+    "description": "Aşırı öğrenme teşhisi, çapraz doğrulama kurulumu ve precision, recall, F1, ROC AUC metriklerinin dengesiz veride doğru okunması."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

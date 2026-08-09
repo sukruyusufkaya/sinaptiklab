@@ -1,0 +1,74 @@
+{
+  "type": "article",
+  "slug": "gomme-boru-hatti-chunking-tazeleme-maliyet",
+  "title": "Gömme Boru Hatları: Chunking, Tazeleme, Maliyet",
+  "dek": "Vektör verisini üretimde ayakta tutan hat nasıl kurulur? Parçalama stratejisi, artımlı tazeleme, yeniden gömme maliyeti ve boyut seçimini ölçülmüş sayılarla anlatıyoruz.",
+  "answerFirst": "Gömme boru hattı, belgeleri parçalara bölen, her parçayı vektöre çeviren, dizine yazan ve kaynak değiştikçe bu dizini taze tutan veri hattıdır. Üretimde üç karar belirleyicidir: parçalama stratejisi getirme kalitesini, tazeleme stratejisi cevapların güncelliğini, boyut ve model seçimi ise depolama ile sorgu maliyetini belirler. Bu üçü ölçülmeden ayarlandığında sistem sessizce eskir ve kimse fark etmez.",
+  "level": "ileri",
+  "pillar": "veri-muhendisligi",
+  "clusters": ["etl-boru-hatlari", "veri-kalitesi-gozlemlenebilirlik"],
+  "tags": [
+    "gömme vektörü",
+    "embedding",
+    "chunking",
+    "vektör veritabanı",
+    "rag",
+    "veri boru hattı"
+  ],
+  "faq": [
+    {
+      "q": "Parça (chunk) boyutunu nasıl seçmeliyim?",
+      "a": "Belge türüne göre ölçerek. Tek bir evrensel doğru yok; teknik dokümantasyonda başlık altı bölümler, sözleşmelerde madde sınırları, destek kayıtlarında tek bir konuşma turu doğal sınırdır. Pratik yol: iki üç aday boyutla aynı değerlendirme setini koşup getirme başarısını karşılaştırmak. Sabit token sayısıyla kör bölme, cümlenin ortasından kesip anlamı bozduğu için genellikle en kötü seçenektir."
+    },
+    {
+      "q": "Gömme modelini değiştirirsem tüm dizini yeniden mi üretmeliyim?",
+      "a": "Evet. Farklı modellerin vektör uzayları uyumlu değildir; yarısı eski yarısı yeni modelle üretilmiş bir dizinde benzerlik skorları anlamsızlaşır. Bu yüzden model değişikliği bir bakım işi değil, planlanmış bir göç projesidir: yeni dizini paralel kurun, aynı değerlendirme setiyle karşılaştırın, kazanırsa trafiği çevirin. Bu maliyet, model seçimini baştan ciddiye almanın en güçlü gerekçesidir."
+    },
+    {
+      "q": "Vektör boyutunu düşürmek kaliteyi ne kadar bozar?",
+      "a": "Sanıldığından az; ölçülmesi gereken bir denge. Güncel gömme modelleri boyutu kısaltmayı destekliyor ve gövdede aktardığımız üretici verisi, büyük modelin 256 boyuta kısaltılmış hâlinin bile önceki neslin tam boyutlu modelini geçebildiğini gösteriyor. Depolama ve sorgu maliyeti boyutla doğrusal büyüdüğü için, kendi verinizde iki boyutu karşılaştırmak çoğu ekipte doğrudan bütçe kazancı demek."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Introducing Contextual Retrieval",
+      "url": "https://www.anthropic.com/news/contextual-retrieval",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-09",
+      "kind": "vendor"
+    },
+    {
+      "label": "MTEB: Massive Text Embedding Benchmark (Muennighoff vd., 2022)",
+      "url": "https://arxiv.org/abs/2210.07316",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-09",
+      "kind": "paper"
+    },
+    {
+      "label": "pgvector — open-source vector similarity search for Postgres",
+      "url": "https://github.com/pgvector/pgvector",
+      "publisher": "pgvector",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "OpenAI API — Vector embeddings guide",
+      "url": "https://developers.openai.com/api/docs/guides/embeddings",
+      "publisher": "OpenAI",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "Vector Database Benchmarks",
+      "url": "https://qdrant.tech/benchmarks/",
+      "publisher": "Qdrant",
+      "accessedAt": "2026-08-09",
+      "kind": "vendor"
+    }
+  ],
+  "seo": {
+    "description": "Gömme boru hattı kurulumu: parçalama stratejisi, artımlı tazeleme, yeniden gömme maliyeti, vektör boyutu ve dizin seçimi ölçülmüş verilerle."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}

@@ -1,0 +1,74 @@
+{
+  "type": "article",
+  "slug": "e-ticarette-yapay-zeka-arama-oneri-musteri-hizmetleri",
+  "title": "E-ticarette Yapay Zeka: Arama, Öneri, Müşteri Hizmetleri",
+  "dek": "E-ticarette yapay zeka nerede gerçekten para kazandırıyor? Site içi arama, öneri sistemi ve müşteri hizmetleri için ölçülebilir etki, kurulum sırası ve regülasyon notları.",
+  "answerFirst": "E-ticarette yapay zekanın ölçülebilir etkisi üç yerde toplanıyor: site içi arama, öneri sistemi ve müşteri hizmetleri. Sıralama tesadüf değil — arama, satın alma niyeti en yüksek trafiği taşıdığı için en hızlı geri dönüşü verir; öneri sistemi sepet ve keşif tarafını büyütür; müşteri hizmetleri asistanı ise gelirden çok maliyet ve yanıt süresini iyileştirir. Üçünün de ön koşulu temiz ürün verisidir.",
+  "level": "orta",
+  "pillar": "sektor-uygulamalari",
+  "clusters": ["e-ticaret-perakende-yz", "chatbot-musteri-deneyimi"],
+  "tags": [
+    "e-ticaret",
+    "öneri sistemi",
+    "site içi arama",
+    "chatbot",
+    "müşteri deneyimi",
+    "perakende"
+  ],
+  "faq": [
+    {
+      "q": "Küçük bir e-ticaret sitesi için önce hangisini kurmalıyım?",
+      "a": "Neredeyse her zaman site içi arama. Arama kutusunu kullanan ziyaretçi ne istediğini biliyordur; yani dönüşüm olasılığı en yüksek trafiktir ve bu trafikte boş sonuç sayfası doğrudan kayıp demektir. Öneri sistemi ise anlamlı çalışmak için davranış verisi biriktirmeyi gerektirir; günde birkaç yüz oturumla kurulan bir öneri motoru, çoğunlukla en çok satanlar listesinden daha iyi sonuç vermez."
+    },
+    {
+      "q": "Öneri sistemi için mutlaka derin öğrenme gerekli mi?",
+      "a": "Hayır. Birlikte satın alınma sayımına dayalı basit yöntemler, çoğu orta ölçekli katalogda şaşırtıcı derecede güçlü bir temel oluşturur ve açıklanabilir olduğu için iş birimiyle tartışması kolaydır. Derin modellere geçiş kararını, bu temeli kurup A/B testiyle ölçtükten sonra verin. Ölçmeden yapılan model yükseltmesi, e-ticarette en sık görülen sessiz bütçe kaybıdır."
+    },
+    {
+      "q": "Müşteri hizmetleri asistanının halüsinasyon riskini nasıl yönetirim?",
+      "a": "Asistanı serbest bilgi kaynağı değil, sınırlı bir araç kümesinin arayüzü olarak kurun. Kargo durumu, iade politikası ve stok bilgisi modelin belleğinden değil, sistem çağrısından gelmelidir. Fiyat ve kampanya gibi taahhüt doğuran alanlarda modeli serbest metin üretmekten alıkoyup şablona bağlayın. Ayrıca yükseltme yolu kurun: emin olamadığı her durumda insan temsilciye devretsin."
+    }
+  ],
+  "sources": [
+    {
+      "label": "E-Commerce Search Usability Research Studies",
+      "url": "https://baymard.com/research/ecommerce-search",
+      "publisher": "Baymard Institute",
+      "accessedAt": "2026-08-09",
+      "kind": "data"
+    },
+    {
+      "label": "Deep Learning based Recommender System: A Survey and New Perspectives (Zhang vd., 2017)",
+      "url": "https://arxiv.org/abs/1707.07435",
+      "publisher": "arXiv",
+      "accessedAt": "2026-08-09",
+      "kind": "paper"
+    },
+    {
+      "label": "EU AI Act — Article 50: Transparency Obligations for Providers and Deployers of Certain AI Systems",
+      "url": "https://artificialintelligenceact.eu/article/50/",
+      "publisher": "EU AI Act Explorer",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "Yapay Zekâ Alanında Kişisel Verilerin Korunmasına Dair Tavsiyeler (KVKK Yayınları No: 76, Nisan 2025)",
+      "url": "https://www.kvkk.gov.tr/SharedFolderServer/CMSFiles/25a1162f-0e61-4a43-98d0-3e7d057ac31a.pdf",
+      "publisher": "Kişisel Verileri Koruma Kurumu",
+      "accessedAt": "2026-08-09",
+      "kind": "docs"
+    },
+    {
+      "label": "Introducing Contextual Retrieval",
+      "url": "https://www.anthropic.com/news/contextual-retrieval",
+      "publisher": "Anthropic",
+      "accessedAt": "2026-08-09",
+      "kind": "vendor"
+    }
+  ],
+  "seo": {
+    "description": "E-ticarette yapay zeka: site içi arama, öneri sistemi ve müşteri hizmetleri asistanı için kurulum sırası, ölçüm yöntemi ve KVKK ile AI Act sınırları."
+  },
+  "onerilenDurum": "published",
+  "notlar": ""
+}
