@@ -1,11 +1,16 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { IcerikKarti } from "@/components/content/IcerikKarti";
+import { BolumBasligi } from "@/components/home/BolumBasligi";
+import { KonuYogunlugu } from "@/components/home/KonuYogunlugu";
+import { MakineYuzeyleri } from "@/components/home/MakineYuzeyleri";
+import { SozlukVitrini } from "@/components/home/SozlukVitrini";
+import { YayinAkisi } from "@/components/home/YayinAkisi";
 import { BultenCTA } from "@/components/layout/BultenCTA";
 import { HudCerceve } from "@/components/layout/HudCerceve";
 import { SayacDeger } from "@/components/layout/SayacDeger";
 import { sonYayinlar } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
+import { terimListesi, type TerimOzetDTO } from "@/lib/db/queries/terms";
 import {
   pillarlar,
   siteIstatistikleri,
@@ -13,9 +18,8 @@ import {
   type SiteIstatistikleriDTO,
 } from "@/lib/db/queries/topics";
 
-/** Marka izi: hero'daki EKG motifi. Sinyal parçası sayfa açılışında
- *  soldan sağa "kaydedilir" (.iz-ciz, ADR 0009); reduced-motion altında
- *  doğrudan çizili gelir. */
+/** Marka izi: hero'daki EKG motifi. Sinyal parçası açılışta soldan sağa
+ *  "kaydedilir" (.iz-ciz, ADR 0009); reduced-motion'da çizili gelir. */
 function HeroIzi() {
   return (
     <svg
@@ -37,7 +41,6 @@ function HeroIzi() {
         stroke="var(--sinyal)"
         strokeWidth="1.5"
       />
-      {/* ölçüm imleci */}
       <rect x="217" y="56" width="7" height="7" fill="var(--sinyal)" />
       <text
         x="230"
@@ -78,22 +81,56 @@ function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
   );
 }
 
+const ILKELER = [
+  {
+    no: "01",
+    baslik: "Kaynaklı derinlik",
+    metin:
+      "Her sayı, tarih ve iddia kaynağına bağlanır. Kaynağı olmayan içerik yayına teknik olarak çıkamaz — bu bir editoryal niyet değil, yayın hattındaki bir kapı.",
+    olcut: "yayın kapısı: 10 kontrol",
+  },
+  {
+    no: "02",
+    baslik: "Çalışan kod",
+    metin:
+      "Uygulamalar ve laboratuvarlar çalışan repo, model sürümü, donanım ve maliyet bilgisiyle gelir; yeniden üretilebilirlik varsayılandır.",
+    olcut: "repro kutusu zorunlu",
+  },
+  {
+    no: "03",
+    baslik: "Kanonik Türkçe",
+    metin:
+      "Türkçe yapay zeka terminolojisi tek sözlükte kanonikleşir; aynı kavram sitenin her yerinde aynı adla anılır ve terim sayfasına bağlanır.",
+    olcut: "sözlük: tek doğruluk kaynağı",
+  },
+] as const;
+
 export default async function AnaSayfa() {
   // DB yoksa/erişilemiyorsa bölümler sessizce atlanır — build DB'siz de geçmeli
   let yayinlar: IcerikOzetDTO[] = [];
   let konular: PillarOzetDTO[] = [];
   let istatistik: SiteIstatistikleriDTO | null = null;
+  let terimler: TerimOzetDTO[] = [];
   try {
-    [yayinlar, konular, istatistik] = await Promise.all([
+    const [y, k, i, t] = await Promise.all([
       sonYayinlar(6),
       pillarlar(),
       siteIstatistikleri(),
+      terimListesi(),
     ]);
+    yayinlar = y;
+    konular = k;
+    istatistik = i;
+    terimler = t;
   } catch {
     yayinlar = [];
     konular = [];
     istatistik = null;
+    terimler = [];
   }
+
+  // Vitrin için çekirdek terimler: tanımı kısa ve net olanlardan ilk altı
+  const vitrinTerimleri = terimler.slice(0, 6);
 
   return (
     <>
@@ -103,7 +140,6 @@ export default async function AnaSayfa() {
         <span aria-hidden className="supurme left-0" />
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
-            {/* cihaz üst çubuğu */}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-doku py-3 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
               <span className="flex items-center gap-2 text-onay">
                 <span aria-hidden className="led inline-block size-1.5 bg-onay" />
@@ -161,112 +197,86 @@ export default async function AnaSayfa() {
       </section>
 
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
+        {/* § 01 — yayın akışı (bento: manşet + kartlar) */}
         {yayinlar.length > 0 && (
-          <>
-            <section aria-labelledby="son-yayinlar" className="beliren scroll-mt-16 py-16">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 id="son-yayinlar" className="font-display text-2xl font-bold">
-                  Son yayınlar
-                </h2>
-                <p className="font-mono text-xs text-murekkep-2">son doğrulamalı · kaynaklı</p>
-              </div>
-              <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {yayinlar.map((yayin, sira) => (
-                  <li
-                    key={yayin.id}
-                    className="kademe min-w-0"
-                    style={{ "--k": sira } as CSSProperties}
-                  >
-                    <IcerikKarti icerik={yayin} sira={sira + 1} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <div className="cetvel" aria-hidden />
-          </>
+          <section aria-labelledby="son-yayinlar" className="beliren scroll-mt-20 py-16">
+            <BolumBasligi
+              no="01"
+              id="son-yayinlar"
+              baslik="Son yayınlar"
+              bagAdres="/makale"
+              bagEtiket="tüm makaleler"
+            />
+            <YayinAkisi yayinlar={yayinlar} />
+          </section>
         )}
 
+        {/* § 02 — konu yoğunluk haritası */}
         {konular.length > 0 && (
-          <>
-            <section aria-labelledby="konu-haritasi" className="beliren py-16">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 id="konu-haritasi" className="font-display text-2xl font-bold">
-                  Konu haritası
-                </h2>
-                <Link href="/konu" className="font-mono text-xs no-underline hover:underline">
-                  tümü →
-                </Link>
-              </div>
-              <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {konular.map((pillar, sira) => (
-                  <li
-                    key={pillar.slug}
-                    className="kademe min-w-0"
-                    style={{ "--k": sira } as CSSProperties}
-                  >
-                    <Link
-                      href={`/konu/${pillar.slug}`}
-                      className="centik flex h-full items-baseline gap-3 border border-doku bg-kagit px-4 py-3 no-underline transition-colors hover:border-sinyal"
-                    >
-                      <span className="font-mono text-[0.65rem] text-murekkep-2">
-                        {String(sira + 1).padStart(2, "0")}
-                      </span>
-                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-murekkep">
-                        {pillar.title}
-                      </span>
-                      <span className="shrink-0 font-mono text-xs text-sinyal">
-                        {pillar.icerikSayisi}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <div className="cetvel" aria-hidden />
-          </>
+          <section aria-labelledby="konu-haritasi" className="beliren gec-boya py-16">
+            <BolumBasligi
+              no="02"
+              id="konu-haritasi"
+              baslik="Konu yoğunluğu"
+              bagAdres="/konu"
+              bagEtiket="konu haritası"
+            />
+            <KonuYogunlugu pillarlar={konular} />
+          </section>
         )}
 
-        <section aria-labelledby="ne-geliyor" className="beliren py-16">
-          <h2 id="ne-geliyor" className="font-display text-2xl font-bold">
-            Tezgâhta ne var?
-          </h2>
+        {/* § 03 — sözlük vitrini */}
+        {vitrinTerimleri.length > 0 && (
+          <section aria-labelledby="sozluk-vitrin" className="beliren gec-boya py-16">
+            <BolumBasligi
+              no="03"
+              id="sozluk-vitrin"
+              baslik="Kanonik Türkçe sözlük"
+              bagAdres="/sozluk"
+              bagEtiket={`${terimler.length} terim`}
+            />
+            <SozlukVitrini terimler={vitrinTerimleri} />
+          </section>
+        )}
+      </div>
+
+      {/* § 04 — makine okunabilir yüzeyler (tam genişlik koyu panel) */}
+      <MakineYuzeyleri />
+
+      <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
+        {/* § 05 — editoryal ilkeler */}
+        <section aria-labelledby="ilkeler" className="beliren gec-boya py-16">
+          <BolumBasligi
+            no="05"
+            id="ilkeler"
+            baslik="Tezgâhta ne var?"
+            not="üç ilke · üçü de kodla zorunlu"
+          />
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              {
-                no: "01",
-                baslik: "Kaynaklı derinlik",
-                metin:
-                  "Her sayı, tarih ve iddia kaynağına bağlanır; kaynağı olmayan içerik yayına teknik olarak çıkamaz.",
-              },
-              {
-                no: "02",
-                baslik: "Çalışan kod",
-                metin:
-                  "Uygulamalar ve laboratuvarlar çalışan repo, model sürümü, donanım ve maliyet bilgisiyle gelir: yeniden üretilebilirlik varsayılandır.",
-              },
-              {
-                no: "03",
-                baslik: "Kanonik Türkçe",
-                metin:
-                  "Türkçe yapay zeka terminolojisi tek sözlükte kanonikleşir; aynı kavram sitenin her yerinde aynı adla anılır.",
-              },
-            ].map((madde, sira) => (
+            {ILKELER.map((madde, sira) => (
               <li
                 key={madde.no}
-                className="kademe centik border border-doku bg-kagit-alt p-6"
+                className="kademe centik flex flex-col border border-doku bg-kagit-alt"
                 style={{ "--k": sira } as CSSProperties}
               >
-                <p className="font-mono text-xs text-sinyal">{madde.no}</p>
-                <h3 className="mt-3 font-display text-lg font-semibold">{madde.baslik}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-murekkep-2">{madde.metin}</p>
+                <span className="border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
+                  {madde.no}
+                </span>
+                <span className="flex flex-1 flex-col p-5">
+                  <span className="font-display text-lg font-semibold">{madde.baslik}</span>
+                  <span className="mt-2.5 text-sm leading-relaxed text-murekkep-2">
+                    {madde.metin}
+                  </span>
+                  <span className="mt-auto pt-5 font-mono text-[0.65rem] uppercase tracking-wider text-murekkep-2">
+                    {madde.olcut}
+                  </span>
+                </span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="beliren pb-20">
+        <section className="beliren gec-boya pb-20">
           <BultenCTA />
         </section>
       </div>

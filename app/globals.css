@@ -335,6 +335,16 @@ a:hover {
   box-shadow: inset 2px 0 0 0 var(--sinyal);
 }
 
+/* Ekran dışı bölümlerin boyaması ertelenir: tarayıcı ilk boyamada yalnız
+   görünen alanı işler (LCP/FCP kazancı). contain-intrinsic-size kaydırma
+   çubuğunun zıplamasını önler; desteklenmeyen tarayıcıda hiçbir etkisi yok. */
+@supports (content-visibility: auto) {
+  .gec-boya {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 640px;
+  }
+}
+
 /* ── Bölüm başlığı için indeks damgası (§ numaralandırma) ── */
 .bolum-indeks {
   font-family: var(--font-mono);
