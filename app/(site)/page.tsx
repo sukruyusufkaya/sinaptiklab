@@ -126,13 +126,13 @@ export default async function AnaSayfa() {
             <div className="grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(300px,520px)] lg:py-24">
               <div>
                 <h1 className="font-display text-4xl font-bold leading-[0.98] tracking-tight text-murekkep [font-stretch:88%]">
-                  Saha verisi,
+                  Yapay zekanın
                   <br />
-                  <span className="text-sinyal">uydurma yok.</span>
+                  <span className="text-sinyal">Türkçe teknik kaynağı.</span>
                 </h1>
                 <p className="mt-7 max-w-[50ch] text-lg leading-relaxed text-murekkep-2">
-                  Yapay zeka sistemlerini <em>gerçekten üretenler</em> için Türkçe teknik yayın: her
-                  iddia kaynaklı, her ölçüm yeniden üretilebilir, her içerik sürümlü.
+                  LLM, RAG, ajanlar, MLOps, güvenlik ve regülasyon. Yapay zeka sistemlerini{" "}
+                  <em>üretenler</em> için Türkçe teknik yayın.
                 </p>
                 <div className="mt-9 flex flex-wrap items-center gap-3">
                   <Link href="/konu" className="dugme-birincil">

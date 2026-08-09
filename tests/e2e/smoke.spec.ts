@@ -5,7 +5,7 @@ test.describe("iskelet dumanı testi", () => {
   test("ana sayfa yükleniyor ve dili Türkçe", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("lang", "tr");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Saha verisi");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Türkçe teknik kaynağı");
     await expect(page.getByRole("navigation", { name: "Ana gezinme" })).toBeVisible();
     await expect(page.getByRole("contentinfo")).toBeVisible();
   });
