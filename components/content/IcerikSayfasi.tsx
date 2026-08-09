@@ -12,7 +12,9 @@ import { BultenCTA } from "@/components/layout/BultenCTA";
 import { Kaynak } from "@/components/mdx/Kaynak";
 import { KisaCevap } from "@/components/mdx/KisaCevap";
 import type { IcerikDetayDTO } from "@/lib/db/queries/dto";
+import { linklemeSozlugu } from "@/lib/db/queries/terms";
 import { mdxDerle } from "@/lib/mdx/derle";
+import { terimleriLinkle } from "@/lib/mdx/terim-linkleme";
 import { icerikYolu, seviyeEtiketi, turEtiketi } from "@/lib/rotalar";
 import { turIndeksYolu } from "@/lib/tur-arsivi";
 
@@ -56,7 +58,17 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
   const KaynakBagli = (props: { id: string; children?: ReactNode }) => (
     <Kaynak {...props} kaynaklar={kenarKaynaklari} />
   );
-  const { icerik: govde } = await mdxDerle(icerik.body, { Kaynak: KaynakBagli });
+  // Otomatik terim linkleme (§6.4): sözlükteki her terim gövdede ilk
+  // geçtiği yerde bir kez kanonik tanımına bağlanır. Sözlüğe ulaşılamazsa
+  // gövde olduğu gibi derlenir — okuma asla bu yüzden kesilmez.
+  let govdeKaynagi = icerik.body;
+  try {
+    const sozluk = await linklemeSozlugu();
+    govdeKaynagi = terimleriLinkle(icerik.body, sozluk).govde;
+  } catch {
+    govdeKaynagi = icerik.body;
+  }
+  const { icerik: govde } = await mdxDerle(govdeKaynagi, { Kaynak: KaynakBagli });
 
   // Sinyal izi yalnız H2 sınırlarında spike verir (BRIEF §5.4)
   const izBolumleri = icerik.toc

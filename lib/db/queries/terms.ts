@@ -47,6 +47,26 @@ async function terimListesiHam(): Promise<TerimOzetDTO[]> {
   return docs.map(ozetDTO).sort((a, b) => a.tr.localeCompare(b.tr, "tr"));
 }
 
+export interface LinklemeTerimDTO {
+  slug: string;
+  tr: string;
+  aliases: string[];
+}
+
+async function linklemeSozlugumHam(): Promise<LinklemeTerimDTO[]> {
+  const db = await getDb();
+  const docs = await db
+    .collection<Term>("terms")
+    .find({}, { projection: { slug: 1, tr: 1, aliases: 1 } })
+    .toArray();
+  return docs.map((d) => ({ slug: d.slug, tr: d.tr, aliases: d.aliases ?? [] }));
+}
+
+/** Otomatik terim linkleme sözlüğü (BRIEF §6.4) — slug + ad + eşanlamlılar. */
+export function linklemeSozlugu(): Promise<LinklemeTerimDTO[]> {
+  return unstable_cache(linklemeSozlugumHam, ["linkleme-sozlugu"], { tags: [TERIM_TAG] })();
+}
+
 /** Sözlük indeksi — tüm terimler, Türkçe alfabetik. */
 export function terimListesi(): Promise<TerimOzetDTO[]> {
   return unstable_cache(terimListesiHam, ["terim-listesi"], { tags: [TERIM_TAG] })();
