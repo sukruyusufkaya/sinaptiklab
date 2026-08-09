@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { HataGorseli } from "@/components/gorsel";
 
 /**
  * Site tarafı hata sınırı (BRIEF §12.3/§9). Sunucu hatası, DB kesintisi ya
@@ -22,9 +23,10 @@ export default function SiteHatasi({
 
   return (
     <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-20">
-      <div className="max-w-[60ch] border border-doku bg-kagit-alt p-8">
-        <p className="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-uyari">
-          <span aria-hidden className="inline-block size-1.5 bg-uyari" />
+      <div className="max-w-[60ch] border border-doku rounded-lg bg-kagit-alt p-8">
+        <HataGorseli className="h-auto w-44 text-murekkep-2" />
+        <p className="mt-6 flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-uyari">
+          <span aria-hidden className="inline-block size-1.5 rounded-full bg-uyari" />
           ölçüm kesintisi · sunucu hatası
         </p>
         <h1 className="mt-5 font-display text-3xl font-bold leading-tight tracking-tight">
@@ -35,7 +37,7 @@ export default function SiteHatasi({
           bölüme geçebilirsiniz. Sorun sürerse hata kodunu iletirseniz kaydı hızla bulabiliriz.
         </p>
         {error.digest !== undefined && (
-          <p className="mt-4 border border-doku bg-kagit px-3 py-2 font-mono text-xs text-murekkep-2">
+          <p className="mt-4 border border-doku rounded-md bg-kagit px-3 py-2 font-mono text-xs text-murekkep-2">
             hata kodu: {error.digest}
           </p>
         )}

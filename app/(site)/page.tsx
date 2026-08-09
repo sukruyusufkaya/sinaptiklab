@@ -1,12 +1,17 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import {
+  CalisanKodGorseli,
+  HeroGorseli,
+  KanonikTurkceGorseli,
+  KaynakliDerinlikGorseli,
+} from "@/components/gorsel";
 import { BolumBasligi } from "@/components/home/BolumBasligi";
 import { KonuYogunlugu } from "@/components/home/KonuYogunlugu";
 import { MakineYuzeyleri } from "@/components/home/MakineYuzeyleri";
 import { SozlukVitrini } from "@/components/home/SozlukVitrini";
 import { YayinAkisi } from "@/components/home/YayinAkisi";
 import { BultenCTA } from "@/components/layout/BultenCTA";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 import { SayacDeger } from "@/components/layout/SayacDeger";
 import { sonYayinlar } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
@@ -17,42 +22,6 @@ import {
   type PillarOzetDTO,
   type SiteIstatistikleriDTO,
 } from "@/lib/db/queries/topics";
-
-/** Marka izi: hero'daki EKG motifi. Sinyal parçası açılışta soldan sağa
- *  "kaydedilir" (.iz-ciz, ADR 0009); reduced-motion'da çizili gelir. */
-function HeroIzi() {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 480 120"
-      fill="none"
-      className="h-auto w-full max-w-[480px] text-doku"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <path
-        d="M0 60 H120 L134 60 L142 18 L150 96 L158 60 H220 L232 60 L240 34 L248 82 L254 60 H340 L352 60 L362 8 L374 108 L384 60 H480"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        className="iz-ciz"
-        style={{ "--iz-uzunluk": "420" } as CSSProperties}
-        d="M0 60 H120 L134 60 L142 18 L150 96 L158 60 H220"
-        stroke="var(--sinyal)"
-        strokeWidth="1.5"
-      />
-      <rect x="217" y="56" width="7" height="7" fill="var(--sinyal)" />
-      <text
-        x="230"
-        y="50"
-        fill="var(--murekkep-2)"
-        style={{ font: "10px var(--font-mono)", letterSpacing: "0.08em" }}
-      >
-        t=şimdi
-      </text>
-    </svg>
-  );
-}
 
 /** Ekran içi okuma şeridi: gerçek verimizden ölçümler (§14/7 uyumlu). */
 function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
@@ -84,6 +53,7 @@ function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
 const ILKELER = [
   {
     no: "01",
+    Gorsel: KaynakliDerinlikGorseli,
     baslik: "Kaynaklı derinlik",
     metin:
       "Her sayı, tarih ve iddia kaynağına bağlanır. Kaynağı olmayan içerik yayına teknik olarak çıkamaz — bu bir editoryal niyet değil, yayın hattındaki bir kapı.",
@@ -91,6 +61,7 @@ const ILKELER = [
   },
   {
     no: "02",
+    Gorsel: CalisanKodGorseli,
     baslik: "Çalışan kod",
     metin:
       "Uygulamalar ve laboratuvarlar çalışan repo, model sürümü, donanım ve maliyet bilgisiyle gelir; yeniden üretilebilirlik varsayılandır.",
@@ -98,6 +69,7 @@ const ILKELER = [
   },
   {
     no: "03",
+    Gorsel: KanonikTurkceGorseli,
     baslik: "Kanonik Türkçe",
     metin:
       "Türkçe yapay zeka terminolojisi tek sözlükte kanonikleşir; aynı kavram sitenin her yerinde aynı adla anılır ve terim sayfasına bağlanır.",
@@ -134,9 +106,8 @@ export default async function AnaSayfa() {
 
   return (
     <>
-      {/* ── Hero: sayfaya gömülü koyu enstrüman ekranı (ADR 0008) ── */}
-      <section className="ekran hud relative overflow-hidden border-b border-doku">
-        <HudCerceve />
+      {/* ── Hero: yükseltilmiş vurgu yüzeyi + ölçüm tezgâhı görseli (ADR 0010) ── */}
+      <section className="ekran relative overflow-hidden border-b border-doku">
         <span aria-hidden className="supurme left-0" />
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
@@ -173,15 +144,18 @@ export default async function AnaSayfa() {
                 </div>
               </div>
 
-              <div className="hud relative hidden border border-doku bg-kagit-alt/70 p-6 lg:block">
-                <HudCerceve />
+              {/* Ölçüm tezgâhı kompozisyonu (ADR 0010 görsel katmanı): sinyal
+                  izi + ölçüm çubukları + bilgi ağı, ortak kalibrasyon rayında.
+                  Küçük ekranda gizlenir; hero metni her koşulda önce gelir. */}
+              <div className="relative hidden rounded-xl border border-doku bg-kagit-alt/70 p-6 shadow-y2 lg:block">
                 <p className="mb-4 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
-                  iz 01 · aksiyon potansiyeli
+                  tezgâh · üç panel · tek kalibrasyon
                 </p>
-                <HeroIzi />
+                <HeroGorseli className="h-auto w-full text-murekkep-2" />
                 <div className="mt-4 flex justify-between font-mono text-[0.65rem] tracking-wider text-murekkep-2">
-                  <span>64 px/s</span>
-                  <span>eşik −55 mV</span>
+                  <span>p1 sinyal</span>
+                  <span>p2 ölçüm</span>
+                  <span>p3 bilgi ağı</span>
                   <span className="text-sinyal">kayıt açık</span>
                 </div>
               </div>
@@ -213,7 +187,10 @@ export default async function AnaSayfa() {
 
         {/* § 02 — konu yoğunluk haritası */}
         {konular.length > 0 && (
-          <section aria-labelledby="konu-haritasi" className="beliren gec-boya py-16">
+          <section
+            aria-labelledby="konu-haritasi"
+            className="beliren gec-boya py-[var(--bolum-bosluk)]"
+          >
             <BolumBasligi
               no="02"
               id="konu-haritasi"
@@ -227,7 +204,10 @@ export default async function AnaSayfa() {
 
         {/* § 03 — sözlük vitrini */}
         {vitrinTerimleri.length > 0 && (
-          <section aria-labelledby="sozluk-vitrin" className="beliren gec-boya py-16">
+          <section
+            aria-labelledby="sozluk-vitrin"
+            className="beliren gec-boya py-[var(--bolum-bosluk)]"
+          >
             <BolumBasligi
               no="03"
               id="sozluk-vitrin"
@@ -245,7 +225,7 @@ export default async function AnaSayfa() {
 
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
         {/* § 05 — editoryal ilkeler */}
-        <section aria-labelledby="ilkeler" className="beliren gec-boya py-16">
+        <section aria-labelledby="ilkeler" className="beliren gec-boya py-[var(--bolum-bosluk)]">
           <BolumBasligi
             no="05"
             id="ilkeler"
@@ -256,11 +236,12 @@ export default async function AnaSayfa() {
             {ILKELER.map((madde, sira) => (
               <li
                 key={madde.no}
-                className="kademe centik flex flex-col border border-doku bg-kagit-alt"
+                className="kademe centik flex flex-col border border-doku rounded-lg bg-kagit-alt"
                 style={{ "--k": sira } as CSSProperties}
               >
-                <span className="border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
+                <span className="flex items-center justify-between border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
                   {madde.no}
+                  <madde.Gorsel className="size-14 text-murekkep-2" />
                 </span>
                 <span className="flex flex-1 flex-col p-5">
                   <span className="font-display text-lg font-semibold">{madde.baslik}</span>
@@ -276,7 +257,7 @@ export default async function AnaSayfa() {
           </ul>
         </section>
 
-        <section className="beliren gec-boya pb-20">
+        <section className="beliren gec-boya pb-[var(--bolum-bosluk)]">
           <BultenCTA />
         </section>
       </div>

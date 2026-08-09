@@ -1,8 +1,9 @@
 // İçerik özet kartı — ana sayfa "Son yayınlar" akışı ve liste sayfaları.
 // RSC; IcerikOzetDTO alır, başlık türün rotasına lib/rotalar ile bağlanır.
-// Enstrüman dili: üst çubukta tür + kayıt numarası (verilirse), hover'da
-// köşe çentikleri (.centik) ve sinyal bordürü — yalnız renk geçişi (§5.6).
+// Görsel dil (ADR 0010): üst çubukta tür ikonu + etiket + kayıt numarası;
+// hover'da yumuşak yükselti (.centik) ve kenar belirginleşmesi.
 import Link from "next/link";
+import { TurIkon } from "@/components/gorsel";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import { icerikYolu, seviyeEtiketi, turEtiketi } from "@/lib/rotalar";
 
@@ -12,9 +13,10 @@ export function IcerikKarti({ icerik, sira }: { icerik: IcerikOzetDTO; sira?: nu
   const tarih = TARIH_TR.format(new Date(icerik.publishedAt ?? icerik.updatedAt));
 
   return (
-    <article className="centik group flex h-full flex-col border border-doku bg-kagit-alt transition-colors hover:border-sinyal">
+    <article className="centik group flex h-full flex-col border border-doku rounded-lg bg-kagit-alt transition-colors hover:border-doku-guclu">
       <div className="flex items-baseline justify-between border-b border-doku px-5 py-2.5">
-        <p className="font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
+        <p className="flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
+          <TurIkon tur={icerik.type} className="size-[15px]" />
           {turEtiketi(icerik.type).toLocaleUpperCase("tr-TR")}
         </p>
         {sira !== undefined && (
@@ -34,7 +36,9 @@ export function IcerikKarti({ icerik, sira }: { icerik: IcerikOzetDTO; sira?: nu
         </h3>
         <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-murekkep-2">{icerik.dek}</p>
         <p className="mt-auto flex flex-wrap items-center gap-x-2 pt-5 font-mono text-[0.7rem] text-murekkep-2">
-          <span className="border border-doku px-1.5 py-0.5">{seviyeEtiketi(icerik.level)}</span>
+          <span className="border border-doku rounded-md px-1.5 py-0.5">
+            {seviyeEtiketi(icerik.level)}
+          </span>
           <span>{icerik.readingMinutes} dk</span>
           <span aria-hidden>·</span>
           <time>{tarih}</time>

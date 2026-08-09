@@ -59,10 +59,10 @@ const SEO_ACIKLAMA_SINIRI = 155;
 // ── Küçük yardımcılar ────────────────────────────────────────────────
 
 const ETIKET = "font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2";
-const GIRDI = "mt-1 w-full border border-doku bg-kagit px-3 py-2 text-sm text-murekkep";
+const GIRDI = "mt-1 w-full border border-doku rounded-md bg-kagit px-3 py-2 text-sm text-murekkep";
 const KUCUK_DUGME =
-  "border border-doku px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2 transition-colors hover:border-uyari hover:text-uyari";
-const KUTU = "border border-doku bg-kagit-alt p-4";
+  "border border-doku rounded-md px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2 transition-colors hover:border-uyari hover:text-uyari";
+const KUTU = "border border-doku rounded-lg bg-kagit-alt p-4";
 
 function bugunTarihGirdisi(): string {
   return new Date().toISOString().slice(0, 10);
@@ -578,7 +578,7 @@ export function IcerikEditoru({
                   Bu pillar altında tanımlı cluster yok.
                 </p>
               ) : (
-                <div className="mt-2 grid max-h-48 gap-1 overflow-y-auto border border-doku p-3 sm:grid-cols-2">
+                <div className="mt-2 grid max-h-48 gap-1 overflow-y-auto border border-doku rounded-md p-3 sm:grid-cols-2">
                   {clusterSecenekleri.map((secenek) => (
                     <label key={secenek.slug} className="flex items-center gap-2 text-sm">
                       <input
@@ -609,7 +609,7 @@ export function IcerikEditoru({
             <div className="grid gap-5 sm:grid-cols-2">
               <fieldset>
                 <legend className={ETIKET}>Yazarlar</legend>
-                <div className="mt-2 space-y-1 border border-doku p-3">
+                <div className="mt-2 space-y-1 border border-doku rounded-md p-3">
                   {yazarSecenekleri.map((yazar) => (
                     <label key={yazar.id} className="flex items-center gap-2 text-sm">
                       <input
@@ -674,7 +674,7 @@ export function IcerikEditoru({
               <legend className={ETIKET}>SSS (yayın için en az 2 soru)</legend>
               <div className="mt-2 space-y-3">
                 {sss.map((satir, sira) => (
-                  <div key={sira} className="border border-doku p-3">
+                  <div key={sira} className="border border-doku rounded-md p-3">
                     <div className="flex items-start justify-between gap-2">
                       <label htmlFor={`sss-soru-${sira}`} className={ETIKET}>
                         Soru {sira + 1}
@@ -729,7 +729,7 @@ export function IcerikEditoru({
                   const urlBos = satir.url.trim().length === 0;
                   const urlOk = urlGecerliMi(satir.url);
                   return (
-                    <div key={sira} className="border border-doku p-3">
+                    <div key={sira} className="border border-doku rounded-md p-3">
                       <div className="flex items-start justify-between gap-2">
                         <span className="font-mono text-[0.65rem] text-sinyal">[{sira + 1}]</span>
                         <button
@@ -870,7 +870,7 @@ export function IcerikEditoru({
                   </>
                 )}
               </p>
-              <div className="mt-2 grid gap-3 border border-doku p-3 sm:grid-cols-2">
+              <div className="mt-2 grid gap-3 border border-doku rounded-md p-3 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <label htmlFor="repro-repo" className={ETIKET}>
                     Depo (repoUrl)
@@ -1023,7 +1023,7 @@ export function IcerikEditoru({
                     key={`${id}-${kayitSayisi}`}
                     src={`/admin/onizleme/${id}`}
                     title="İçerik önizleme"
-                    className="mt-4 h-[70vh] w-full border border-doku bg-kagit"
+                    className="mt-4 h-[70vh] w-full border border-doku rounded-md bg-kagit"
                   />
                   <p className="mt-2 font-mono text-[0.65rem] text-murekkep-2">
                     Önizleme kaydedilmiş sürümü gösterir; formdaki değişiklikler için önce Kaydet.
@@ -1146,7 +1146,7 @@ export function IcerikEditoru({
 
                 {yayinSonucu !== null &&
                   (yayinSonucu.ok ? (
-                    <div className="mt-4 border border-onay p-4">
+                    <div className="mt-4 border border-onay rounded-lg p-4">
                       <p className="text-onay">Tüm kontroller geçti — içerik yayında.</p>
                       <p className="mt-2 text-sm">
                         <a
@@ -1161,7 +1161,7 @@ export function IcerikEditoru({
                   ) : (
                     <div className="mt-4 space-y-3">
                       {yayinSonucu.hatalar !== undefined && yayinSonucu.hatalar.length > 0 && (
-                        <ul className="space-y-1 border border-uyari p-3 text-sm text-uyari">
+                        <ul className="space-y-1 border border-uyari rounded-md p-3 text-sm text-uyari">
                           {yayinSonucu.hatalar.map((hata) => (
                             <li key={hata}>{hata}</li>
                           ))}
@@ -1258,7 +1258,7 @@ export function IcerikEditoru({
             </button>
           )}
           {kirli && (
-            <span className="inline-flex items-center gap-1.5 border border-olcum px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-olcum">
+            <span className="inline-flex items-center gap-1.5 border border-olcum rounded-md px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-olcum">
               <span aria-hidden className="inline-block size-1.5 shrink-0 bg-olcum" />
               Kaydedilmemiş değişiklikler var
             </span>

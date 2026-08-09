@@ -43,7 +43,7 @@ export default async function YazarSayfasi({ params }: Props) {
       {jsonLdScript(kisiJsonLd(yazar, mutlakUrl))}
 
       {/* Kimlik kartı: enstrüman etiketi görünümü (E-E-A-T ilk ekran) */}
-      <div className="mm-zemin border border-doku">
+      <div className="mm-zemin border border-doku rounded-md">
         <p className="border-b border-doku bg-kagit px-5 py-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
           yazar kaydı · {yazar.slug}
         </p>
@@ -54,7 +54,7 @@ export default async function YazarSayfasi({ params }: Props) {
               alt={yazar.name}
               width={96}
               height={96}
-              className="border border-doku"
+              className="border border-doku rounded-md"
             />
           )}
           <div className="min-w-0">
@@ -84,7 +84,10 @@ export default async function YazarSayfasi({ params }: Props) {
           </h2>
           <ul className="mt-3 flex flex-wrap gap-2">
             {yazar.expertise.map((alan) => (
-              <li key={alan} className="border border-doku bg-kagit-alt px-3 py-1 text-sm">
+              <li
+                key={alan}
+                className="border border-doku rounded-md bg-kagit-alt px-3 py-1 text-sm"
+              >
                 {alan}
               </li>
             ))}

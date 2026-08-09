@@ -14,7 +14,7 @@ export function Diyagram({ kod, svg, baslik }: { kod: string; svg?: string; basl
     );
   }
   return (
-    <figure className="my-6 border border-doku bg-kagit-alt p-4">
+    <figure className="my-6 border border-doku rounded-lg bg-kagit-alt p-4">
       <pre className="my-0 overflow-x-auto bg-transparent p-0 text-sm">
         <code>{kod}</code>
       </pre>

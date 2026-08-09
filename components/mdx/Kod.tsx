@@ -24,7 +24,7 @@ export function Kod({
     <figure
       data-kopyalanabilir
       data-satir-vurgu={satirVurgu}
-      className="my-6 border border-doku [&_.kod-sade]:my-0 [&_.kod-sade]:border-0 [&_.kod-sade-arac]:hidden"
+      className="my-6 border border-doku rounded-md [&_.kod-sade]:my-0 [&_.kod-sade]:border-0 [&_.kod-sade-arac]:hidden"
     >
       <figcaption className="flex items-center justify-between gap-2 border-b border-doku bg-kagit-alt px-3 py-1.5">
         <span className="font-mono text-xs text-murekkep-2">{dosya ?? "kod"}</span>

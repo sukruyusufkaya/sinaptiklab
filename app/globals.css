@@ -5,17 +5,28 @@
    Kural: bileşenlerde hex yazmak yasak; yalnızca bu token'lar.
    ════════════════════════════════════════════════════════════════════ */
 
+/* ════════════════════════════════════════════════════════════════════
+   ADR 0010 — KOYU ÖNCELİKLİ PALET.
+   `:root` artık koyu temayı taşır; açık tema hem sistem tercihiyle hem
+   kullanıcı seçimiyle tam desteklidir (aşağıdaki iki blok).
+   Nötrler sıcak tarafa çekildi (mavi-siyah değil, hafif kahve-gri) —
+   Notion/Stripe'ın sıcak koyu hissi.
+   ════════════════════════════════════════════════════════════════════ */
 :root {
-  --kagit: #f1f2ed; /* zemin — kemik beyazı, tezgâh laminatı */
-  --kagit-alt: #e7e9e2; /* kart, kod bloğu zemini */
-  --murekkep: #12161b; /* ana metin — grafit */
-  --murekkep-2: #4a5158; /* ikincil metin */
-  --doku: #c9ccc3; /* hairline çizgi, ızgara */
-  --sinyal: #1b3bff; /* elektrik mavisi — link, odak, aktif */
-  --sinyal-dip: #0a1c99; /* hover / basılı */
-  --olcum: #ffc400; /* ölçüm sarısı — SADECE işaretleme, max %3 alan */
-  --uyari: #b4341c;
-  --onay: #0c6e5e;
+  --kagit: #0e1117; /* sayfa zemini — sıcak koyu */
+  --kagit-alt: #161b23; /* kart / yükseltilmiş yüzey */
+  --kagit-ust: #1e242e; /* ikinci kademe yükselti (hover, popover) */
+  --murekkep: #e9edf3; /* ana metin */
+  --murekkep-2: #a2adbc; /* ikincil metin */
+  --doku: #2b3240; /* kenar çizgisi, ayraç */
+  --doku-guclu: #3b4454; /* vurgulu kenar */
+  --sinyal: #6f95ff; /* birincil — link, odak, aktif */
+  --sinyal-dip: #a3bcff; /* hover / basılı */
+  --sinyal-yumusak: #1b2740; /* sinyalin zemin tonu (rozet, seçili) */
+  --olcum: #ffcf5c; /* kehribar — işaretleme */
+  --uyari: #ff8a70; /* mercan — hata/uyarı */
+  --onay: #4fd6ac; /* teal — başarı/çevrimiçi */
+  --vurgu: #7fd88f; /* yumuşak yeşil — ikinci destek tonu */
 
   /* Tip ölçeği — 1.25 majör üçlü, büyük kademeler akışkan (BRIEF §5.3) */
   --fs-xs: 0.75rem;
@@ -27,33 +38,70 @@
   --fs-3xl: clamp(1.95rem, 1.55rem + 1.9vw, 2.441rem);
   --fs-4xl: clamp(2.3rem, 1.78rem + 2.7vw, 3.052rem);
 
-  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --gutter: clamp(1.15rem, 4vw, 2.75rem);
   --icerik-genislik: 1280px;
   --govde-olcu: 68ch; /* 62-72 karakter satır uzunluğu */
+
+  /* Yumuşak geometri (ADR 0010) — 4px kilidi kalktı, kademeli ölçek */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+
+  /* Yükselti: koyu arayüzde gölge yerine yüzey + ince ışık kenarı.
+     Gölgeler yumuşak ve renksiz — glow YASAK (§14/1). */
+  --yukselti-1: 0 1px 2px rgb(0 0 0 / 0.28);
+  --yukselti-2: 0 4px 14px rgb(0 0 0 / 0.3);
+  --yukselti-3: 0 12px 32px rgb(0 0 0 / 0.34);
+  --ic-isik: inset 0 1px 0 rgb(255 255 255 / 0.045);
+
+  /* Bölüm ritmi — ferahlık (Stripe/Notion hissi) */
+  --bolum-bosluk: clamp(4rem, 8vw, 7rem);
 }
 
-[data-theme="dark"] {
-  --kagit: #0a0d11;
-  --kagit-alt: #141a20;
-  --murekkep: #e8eae5;
-  --murekkep-2: #9ba3ab;
-  --doku: #2a3138;
-  --sinyal: #5c7bff;
-  --sinyal-dip: #93a8ff;
-  --olcum: #ffd24d;
+/* ── Açık tema: kullanıcı seçimi ── */
+[data-theme="light"] {
+  --kagit: #fbfbf9;
+  --kagit-alt: #f2f3ef;
+  --kagit-ust: #ffffff;
+  --murekkep: #171b22;
+  --murekkep-2: #5a6472;
+  --doku: #e2e4de;
+  --doku-guclu: #cdd0c8;
+  --sinyal: #2f55e6;
+  --sinyal-dip: #1c37a8;
+  --sinyal-yumusak: #e8edff;
+  --olcum: #b07800;
+  --uyari: #c0392b;
+  --onay: #0e7a63;
+  --vurgu: #2f7d4a;
+  --yukselti-1: 0 1px 2px rgb(23 27 34 / 0.06);
+  --yukselti-2: 0 4px 14px rgb(23 27 34 / 0.07);
+  --yukselti-3: 0 12px 32px rgb(23 27 34 / 0.09);
+  --ic-isik: inset 0 1px 0 rgb(255 255 255 / 0.7);
 }
 
-/* Sistem koyu tercihi: kullanıcı açıkça "light" seçmediyse uygula */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --kagit: #0a0d11;
-    --kagit-alt: #141a20;
-    --murekkep: #e8eae5;
-    --murekkep-2: #9ba3ab;
-    --doku: #2a3138;
-    --sinyal: #5c7bff;
-    --sinyal-dip: #93a8ff;
-    --olcum: #ffd24d;
+/* ── Açık tema: sistem tercihi (kullanıcı açıkça "dark" demediyse) ── */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --kagit: #fbfbf9;
+    --kagit-alt: #f2f3ef;
+    --kagit-ust: #ffffff;
+    --murekkep: #171b22;
+    --murekkep-2: #5a6472;
+    --doku: #e2e4de;
+    --doku-guclu: #cdd0c8;
+    --sinyal: #2f55e6;
+    --sinyal-dip: #1c37a8;
+    --sinyal-yumusak: #e8edff;
+    --olcum: #b07800;
+    --uyari: #c0392b;
+    --onay: #0e7a63;
+    --vurgu: #2f7d4a;
+    --yukselti-1: 0 1px 2px rgb(23 27 34 / 0.06);
+    --yukselti-2: 0 4px 14px rgb(23 27 34 / 0.07);
+    --yukselti-3: 0 12px 32px rgb(23 27 34 / 0.09);
+    --ic-isik: inset 0 1px 0 rgb(255 255 255 / 0.7);
   }
 }
 
@@ -62,14 +110,22 @@
   --color-*: initial;
   --color-kagit: var(--kagit);
   --color-kagit-alt: var(--kagit-alt);
+  --color-kagit-ust: var(--kagit-ust);
   --color-murekkep: var(--murekkep);
   --color-murekkep-2: var(--murekkep-2);
   --color-doku: var(--doku);
+  --color-doku-guclu: var(--doku-guclu);
   --color-sinyal: var(--sinyal);
   --color-sinyal-dip: var(--sinyal-dip);
+  --color-sinyal-yumusak: var(--sinyal-yumusak);
   --color-olcum: var(--olcum);
   --color-uyari: var(--uyari);
   --color-onay: var(--onay);
+  --color-vurgu: var(--vurgu);
+
+  --shadow-y1: var(--yukselti-1);
+  --shadow-y2: var(--yukselti-2);
+  --shadow-y3: var(--yukselti-3);
 
   --font-display: var(--font-display);
   --font-govde: var(--font-govde);
@@ -84,18 +140,21 @@
   --text-3xl: var(--fs-3xl);
   --text-4xl: var(--fs-4xl);
 
-  /* Enstrüman hissi: radius maks 4px (BRIEF §5.5) */
+  /* Yumuşak geometri (ADR 0010) — 4px kilidi kalktı */
   --radius-*: initial;
   --radius-none: 0px;
-  --radius-sm: 2px;
-  --radius: 4px;
-  --radius-md: 4px;
+  --radius-sm: var(--r-sm);
+  --radius: var(--r-md);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-full: 9999px;
 }
 
 /* ── Taban stiller ── */
 
 html {
-  color-scheme: light;
+  color-scheme: dark; /* ADR 0010: koyu varsayılan */
   scroll-behavior: smooth; /* çapa gezinmesi; reduced-motion altında kapatılır */
 }
 @media (prefers-reduced-motion: reduce) {
@@ -103,13 +162,30 @@ html {
     scroll-behavior: auto;
   }
 }
-[data-theme="dark"] {
-  color-scheme: dark;
+[data-theme="light"] {
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
   }
+}
+
+/* Tema değişimi anlık olsun: anahtar bu sınıfı tek kare boyunca ekler,
+   böylece sayfadaki bütün renk geçişleri o an için susar (bkz.
+   components/layout/TemaAnahtari.tsx). */
+.tema-degisiyor,
+.tema-degisiyor *,
+.tema-degisiyor *::before,
+.tema-degisiyor *::after {
+  transition: none !important;
+}
+/* `content-visibility: auto` ile atlanan bölümler tema değişimini kaçırıyor:
+   kendi `color`'ını token'dan alan öğeler eski temanın rengiyle donup
+   kalıyor (ölçüldü: koyu zemin üstünde açık tema metni, 1.09:1). Anahtar
+   basıldığında tüm bölümler bir kare boyunca render edilmeye zorlanır. */
+.tema-degisiyor .gec-boya {
+  content-visibility: visible !important;
 }
 
 body {
@@ -157,8 +233,8 @@ a:hover {
 /* Görünür odak halkası: --sinyal, 2px offset (BRIEF §9.2) */
 :focus-visible {
   outline: 2px solid var(--sinyal);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
 }
 
 /* ── Milimetrik tezgâh zemini: hairline kareli mühendislik kağıdı dokusu.
@@ -180,40 +256,38 @@ a:hover {
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   ENSTRÜMAN EKRANI (.ekran) — ADR 0008
-   Sayfa içine gömülü, TEMA BAĞIMSIZ koyu panel: "kağıt her zaman açık,
-   cihazın ekranı her zaman koyu" ilkesi. Token'lar yerel olarak ezilir,
-   böylece içindeki tüm bileşenler (kart, düğme, rozet) otomatik uyar —
-   hiçbir bileşende hex yazılmaz, §14/3 korunur.
+   VURGU PANELİ (.ekran) — ADR 0008'den ADR 0010'a devredildi.
+   Site artık koyu olduğu için "gömülü koyu panel" ayrımı anlamını yitirdi;
+   sınıf korundu ama işlevi değişti: yükseltilmiş, yumuşak köşeli vurgu
+   yüzeyi. Açık temada da doğru çalışır (token'lara dayanır, sabit renk yok).
    ════════════════════════════════════════════════════════════════════ */
 .ekran {
-  --kagit: #080b0f;
-  --kagit-alt: #10151b;
-  --murekkep: #eef0ec;
-  --murekkep-2: #97a0a9;
-  --doku: #232a32;
-  --sinyal: #6d8bff;
-  --sinyal-dip: #a3b6ff;
-  --olcum: #ffd24d;
-  --onay: #2fbf9a;
-  --uyari: #ff6a4d;
-  background-color: var(--kagit);
+  background-color: var(--kagit-alt);
+  /* Işıklılık perdesi: üstten aşağı bir kademe aydınlık. Bu bir RENK
+     gradyanı değil, aynı nötr ailenin yüzey katmanı — §14/1 yasağı
+     (mor–camgöbeği klişesi) kapsamına girmez. */
+  background-image: radial-gradient(
+    130% 100% at 50% -12%,
+    color-mix(in srgb, var(--kagit-ust) 92%, transparent) 0%,
+    transparent 62%
+  );
   color: var(--murekkep);
-  color-scheme: dark;
+  box-shadow: var(--ic-isik);
 }
 
-/* Ekranın içindeki fosfor ızgarası — mm-zemin'in ekran karşılığı */
+/* Panel içindeki çok ince hizalama ızgarası — dokuyu hissettirir, okumayı
+   bozmaz (opaklık düşük tutuldu). */
 .ekran-izgara {
   background-image:
     repeating-linear-gradient(
       to right,
-      color-mix(in srgb, var(--sinyal) 12%, transparent) 0 1px,
-      transparent 1px 44px
+      color-mix(in srgb, var(--doku) 55%, transparent) 0 1px,
+      transparent 1px 56px
     ),
     repeating-linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--sinyal) 12%, transparent) 0 1px,
-      transparent 1px 44px
+      color-mix(in srgb, var(--doku) 55%, transparent) 0 1px,
+      transparent 1px 56px
     );
 }
 
@@ -247,19 +321,6 @@ a:hover {
   }
 }
 
-/* HUD köşe braketleri: her zaman görünür kesim işaretleri (centik'in
-   hover'sız, panel ölçeğindeki hâli) */
-.hud {
-  position: relative;
-}
-.hud > .hud-kose {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--sinyal);
-  pointer-events: none;
-}
-
 /* ── Artı işaretli hizalama ızgarası: teknik çizim tescil işaretleri.
    mm-zemin'in üstüne binen daha seyrek, daha "enstrüman" katman. ── */
 .arti-izgara {
@@ -277,10 +338,15 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  border-block: 1px solid var(--doku);
+  /* ADR 0010: tam genişlik hairline şerit yerine yumuşak kapsül */
+  border: 1px solid var(--doku);
+  border-radius: var(--r-lg);
+  background: var(--kagit-alt);
+  box-shadow: var(--ic-isik);
+  overflow: hidden;
 }
 .veri-rayi > * {
-  padding: 0.5rem 0.875rem;
+  padding: 0.55rem 0.95rem;
   border-inline-start: 1px solid var(--doku);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
@@ -289,7 +355,6 @@ a:hover {
 }
 .veri-rayi > *:first-child {
   border-inline-start: 0;
-  padding-inline-start: 0;
 }
 .veri-rayi .deger {
   color: var(--murekkep);
@@ -353,41 +418,30 @@ a:hover {
   color: var(--sinyal);
 }
 
-/* ── Enstrüman köşe çentikleri: kartlarda hover'da beliren kesim işaretleri
-   (yalnız renk/opaklık geçişi — §5.6 hareket bütçesine uygun) ── */
+/* ── `.centik`: eski keskin köşe braketleri ADR 0010 ile kaldırıldı;
+   sınıf geriye dönük uyum için kart davranışına eşlenir (yumuşak kenar +
+   yükselti). Bileşenleri tek tek değiştirmeye gerek kalmaz. ── */
 .centik {
   position: relative;
+  border-radius: var(--r-lg);
+  transition:
+    border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.centik::before,
-.centik::after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  opacity: 0;
-  transition: opacity 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  pointer-events: none;
+.centik:hover,
+.centik:focus-within {
+  box-shadow: var(--yukselti-2);
+  transform: translateY(-2px);
 }
-.centik::before {
-  top: -1px;
-  left: -1px;
-  border-top: 1.5px solid var(--sinyal);
-  border-left: 1.5px solid var(--sinyal);
-}
-.centik::after {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 1.5px solid var(--sinyal);
-  border-right: 1.5px solid var(--sinyal);
-}
-.centik:hover::before,
-.centik:hover::after,
-.centik:focus-within::before,
-.centik:focus-within::after {
-  opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  .centik:hover,
+  .centik:focus-within {
+    transform: none;
+  }
 }
 
-/* ── Düğmeler: enstrüman dili — keskin, hairline, tek sinyal rengi ── */
+/* ── Düğmeler: yumuşak köşe + yükselti (ADR 0010) ── */
 .dugme-birincil {
   display: inline-flex;
   align-items: center;
@@ -396,33 +450,91 @@ a:hover {
   color: var(--kagit);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  padding: 0.625rem 1.25rem;
+  padding: 0.7rem 1.35rem;
+  border-radius: var(--r-md);
   text-decoration: none;
-  border: 1px solid var(--sinyal);
-  transition: background-color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid transparent;
+  box-shadow: var(--yukselti-1);
+  transition:
+    background-color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .dugme-birincil:hover {
   background: var(--sinyal-dip);
-  border-color: var(--sinyal-dip);
   color: var(--kagit);
+  box-shadow: var(--yukselti-2);
+  transform: translateY(-1px);
 }
 .dugme-cerceve {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--murekkep);
+  background: var(--kagit-alt);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  padding: 0.625rem 1.25rem;
+  padding: 0.7rem 1.35rem;
+  border-radius: var(--r-md);
   text-decoration: none;
   border: 1px solid var(--doku);
+  box-shadow: var(--ic-isik);
   transition:
-    color 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .dugme-cerceve:hover {
   color: var(--sinyal);
-  border-color: var(--sinyal);
+  border-color: var(--doku-guclu);
+  background: var(--kagit-ust);
+  transform: translateY(-1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dugme-birincil:hover,
+  .dugme-cerceve:hover {
+    transform: none;
+  }
+}
+
+/* ── Kart: yumuşak yüzey. Utility yığını yerine tek sınıf; hover'da
+   yükselir ve kenarı belirginleşir (Stripe/Notion hissi). ── */
+.kart {
+  background: var(--kagit-alt);
+  border: 1px solid var(--doku);
+  border-radius: var(--r-lg);
+  box-shadow: var(--yukselti-1), var(--ic-isik);
+  transition:
+    border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.kart:hover,
+.kart:focus-within {
+  border-color: var(--doku-guclu);
+  box-shadow: var(--yukselti-2), var(--ic-isik);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .kart:hover,
+  .kart:focus-within {
+    transform: none;
+  }
+}
+
+/* Rozet: yumuşak zeminli etiket */
+.rozet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--sinyal-yumusak);
+  color: var(--sinyal);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
 }
 
 /* ── Ölçüm cetveli motifi: bölüm ayırıcı (dekoratif değil, derinlik taşır) ── */
@@ -464,20 +576,22 @@ a:hover {
 }
 
 /* ── Tema anahtarı ikon görünürlüğü (components/layout/TemaAnahtari.tsx) ── */
-.tema-gunes {
+/* Koyu varsayılan (ADR 0010): normalde GÜNEŞ görünür (açığa geçirir);
+   açık temada AY görünür (koyuya geçirir). */
+.tema-ay {
   display: none;
 }
-[data-theme="dark"] .tema-gunes {
+[data-theme="light"] .tema-ay {
   display: block;
 }
-[data-theme="dark"] .tema-ay {
+[data-theme="light"] .tema-gunes {
   display: none;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .tema-gunes {
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .tema-ay {
     display: block;
   }
-  :root:not([data-theme="light"]) .tema-ay {
+  :root:not([data-theme="dark"]) .tema-gunes {
     display: none;
   }
 }
@@ -584,6 +698,7 @@ a:hover {
   overflow: hidden;
   background: var(--kagit-alt);
   border: 1px solid var(--doku);
+  border-radius: var(--r-lg);
 }
 .iskelet::after {
   content: "";
@@ -712,30 +827,31 @@ body {
    Shiki kod blokları — lib/mdx/derle.tsx üretir (BRIEF §6.3).
    defaultColor:false → token renkleri yalnız --shiki-light/--shiki-dark
    CSS değişkenlerinde gelir; hangisinin uygulanacağını buradaki kurallar
-   seçer: açıkta light, [data-theme="dark"] ile ve sistem-koyu+attr'sizde dark.
+   seçer: varsayılan dark; [data-theme="light"] ve sistem-açık+attr'sizde light.
    ════════════════════════════════════════════════════════════════════ */
 
 .shiki {
   margin: 0;
   padding: 0.875rem 1rem;
   background: var(--kagit-alt); /* Shiki'nin tema zemini yerine tezgâh zemini */
-  color: var(--shiki-light);
+  color: var(--shiki-dark);
   font-size: var(--fs-sm);
   line-height: 1.6;
   max-height: 32rem;
   overflow: auto;
+  border-radius: var(--r-md);
 }
 .shiki span {
-  color: var(--shiki-light);
-}
-[data-theme="dark"] .shiki,
-[data-theme="dark"] .shiki span {
   color: var(--shiki-dark);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .shiki,
-  :root:not([data-theme="light"]) .shiki span {
-    color: var(--shiki-dark);
+[data-theme="light"] .shiki,
+[data-theme="light"] .shiki span {
+  color: var(--shiki-light);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .shiki,
+  :root:not([data-theme="dark"]) .shiki span {
+    color: var(--shiki-light);
   }
 }
 

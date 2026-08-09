@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { KonsolGezinme } from "@/components/admin/KonsolGezinme";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 
 /**
  * Admin kabuğu — site Header/Footer'ı YOK; yalnız enstrüman konsolu şeridi
@@ -20,8 +19,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <header className="ekran hud relative border-b border-doku">
-        <HudCerceve />
+      <header className="ekran relative border-b border-doku">
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
             {/* Cihaz üst çubuğu: durum LED'i + konsol kimliği */}

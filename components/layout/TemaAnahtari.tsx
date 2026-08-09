@@ -8,14 +8,26 @@ export function TemaAnahtari() {
   function temayiDegistir() {
     const kok = document.documentElement;
     const acik = kok.getAttribute("data-theme");
+    // ADR 0010: varsayılan KOYU. Kullanıcı seçimi yoksa, yalnız sistem
+    // açıkça "light" derse açık kabul edilir; diğer her durumda koyu.
     const mevcut =
       acik === "dark" || acik === "light"
         ? acik
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
+        : window.matchMedia("(prefers-color-scheme: light)").matches
+          ? "light"
+          : "dark";
     const yeni = mevcut === "dark" ? "light" : "dark";
+
+    // Tema değişimi ANLIK olmalı. Aksi hâlde sayfadaki her `transition-colors`
+    // aynı anda tetiklenir ve ~150ms boyunca metin ile zemin birbirine yakın
+    // ara renklerde kalır — ölçüldü: 1.09:1 kontrast (axe, WCAG 1.4.3 ihlali).
+    // Geçişler tek karelik bir sınıfla susturulur, sonra geri açılır.
+    kok.classList.add("tema-degisiyor");
     kok.setAttribute("data-theme", yeni);
+    // Yeni stilin hesaplanmasını zorla ki sınıf kalkarken geçiş başlamasın
+    void kok.offsetHeight;
+    kok.classList.remove("tema-degisiyor");
+
     try {
       localStorage.setItem("tema", yeni);
     } catch {
@@ -28,7 +40,7 @@ export function TemaAnahtari() {
       type="button"
       onClick={temayiDegistir}
       aria-label="Açık ve koyu tema arasında geçiş yap"
-      className="flex size-8 items-center justify-center border border-doku text-murekkep-2 hover:border-sinyal hover:text-sinyal"
+      className="flex size-9 items-center justify-center rounded-md border border-doku bg-kagit-alt text-murekkep-2 transition-colors hover:border-doku-guclu hover:text-sinyal"
     >
       {/* ay: açık temada görünür (koyuya geçirir) */}
       <svg className="tema-ay" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>

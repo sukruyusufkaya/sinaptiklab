@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
+import { PillarIkon } from "@/components/gorsel";
 import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
 import { pillarDetay } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
@@ -56,7 +57,11 @@ export default async function PillarSayfasi({ params }: Props) {
         </ol>
       </nav>
 
-      <h1 className="mt-6 font-display text-3xl font-bold">{detay.title}</h1>
+      {/* Pillar işareti: dekoratif; kimliği başlık taşır */}
+      <span className="mt-6 flex size-12 items-center justify-center rounded-lg border border-doku bg-kagit-alt text-murekkep-2">
+        <PillarIkon pillar={detay.slug} className="size-6" />
+      </span>
+      <h1 className="mt-4 font-display text-3xl font-bold">{detay.title}</h1>
       <p className="mt-3 max-w-[var(--govde-olcu)] text-murekkep-2">{detay.intro}</p>
       <p className="mt-2 font-mono text-xs text-murekkep-2">
         {detay.icerikSayisi} yayında içerik · {detay.clusters.length} alt küme
@@ -74,7 +79,7 @@ export default async function PillarSayfasi({ params }: Props) {
             {detay.clusters.map((k) => (
               <li
                 key={k.slug}
-                className="border border-doku bg-kagit-alt px-3 py-1 text-sm text-murekkep"
+                className="border border-doku rounded-md bg-kagit-alt px-3 py-1 text-sm text-murekkep"
                 title={k.intro}
               >
                 {k.title}

@@ -7,7 +7,8 @@ import { useActionState, useState } from "react";
 import { yonlendirmeEkle, type YonlendirmeSonucu } from "./actions";
 
 const ETIKET = "font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2";
-const GIRDI = "mt-1 w-full border border-doku bg-kagit px-3 py-2 font-mono text-sm text-murekkep";
+const GIRDI =
+  "mt-1 w-full border border-doku rounded-md bg-kagit px-3 py-2 font-mono text-sm text-murekkep";
 
 const BASLANGIC: YonlendirmeSonucu = { ok: false, mesaj: "", hatalar: [], uyarilar: [] };
 
@@ -43,7 +44,7 @@ export function YonlendirmeFormu() {
   const toIpucu = yolIpucu(to, true);
 
   return (
-    <form action={gonder} className="border border-doku bg-kagit-alt p-5">
+    <form action={gonder} className="border border-doku rounded-lg bg-kagit-alt p-5">
       <p className={ETIKET}>yeni yönlendirme</p>
       <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_1fr_8rem]">
         <div>

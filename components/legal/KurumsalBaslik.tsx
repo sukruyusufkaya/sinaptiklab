@@ -2,7 +2,6 @@
 // § indeks damgası, H1, spot ve mono okuma rayı (BRIEF §5.5 deseni;
 // /konu başlığıyla aynı ritim). HUD braketleri sayfayı "panel" olarak çerçeveler.
 import type { ReactNode } from "react";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 
 export interface BaslikRayi {
   readonly etiket: string;
@@ -22,8 +21,7 @@ interface Props {
 
 export function KurumsalBaslik({ indeks, baslik, spot, raylar, not }: Props) {
   return (
-    <section className="mm-zemin hud relative border-b border-doku">
-      <HudCerceve />
+    <section className="mm-zemin relative border-b border-doku">
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">
         <p className="bolum-indeks uppercase">§ {indeks}</p>
         <h1 className="mt-3 font-display text-3xl font-bold tracking-tight [font-stretch:94%]">

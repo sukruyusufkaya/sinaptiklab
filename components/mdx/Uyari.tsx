@@ -20,7 +20,7 @@ export function Uyari({ tip = "dikkat", children }: { tip?: UyariTipi; children:
   return (
     <aside
       role="note"
-      className={`my-7 border border-doku border-l-[3px] ${secim.bordur} bg-kagit-alt`}
+      className={`my-7 border border-doku rounded-md border-l-[3px] ${secim.bordur} bg-kagit-alt`}
     >
       <p className="flex items-center gap-2 border-b border-doku px-4 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep">
         <span aria-hidden className="font-bold">

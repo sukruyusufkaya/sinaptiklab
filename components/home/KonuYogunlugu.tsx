@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { pillarIkonu } from "@/components/gorsel";
 import type { PillarOzetDTO } from "@/lib/db/queries/topics";
 
 /**
@@ -15,14 +16,16 @@ export function KonuYogunlugu({ pillarlar }: { pillarlar: PillarOzetDTO[] }) {
     <ul className="mt-8 grid gap-x-10 gap-y-1 lg:grid-cols-2">
       {pillarlar.map((pillar, sira) => {
         const oran = Math.round((pillar.icerikSayisi / enYuksek) * 100);
+        const Ikon = pillarIkonu(pillar.slug);
         return (
           <li key={pillar.slug} className="kademe min-w-0" style={{ "--k": sira } as CSSProperties}>
             <Link
               href={`/konu/${pillar.slug}`}
-              className="group grid grid-cols-[2.2rem_minmax(0,1fr)_2.5rem] items-center gap-3 border-b border-doku py-2.5 no-underline"
+              className="group grid grid-cols-[2.5rem_minmax(0,1fr)_2.5rem] items-center gap-3 border-b border-doku py-2.5 no-underline"
             >
-              <span className="font-mono text-[0.65rem] text-murekkep-2">
-                P{String(sira + 1).padStart(2, "0")}
+              {/* Pillar ikonu: dekoratif; anlamı yandaki başlık taşır */}
+              <span className="flex size-9 items-center justify-center rounded-md border border-doku bg-kagit-alt text-murekkep-2 transition-colors group-hover:border-doku-guclu group-hover:text-sinyal">
+                <Ikon className="size-[18px]" />
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-murekkep transition-colors group-hover:text-sinyal">

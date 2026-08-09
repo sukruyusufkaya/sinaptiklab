@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
+import { AramaBosGorseli } from "@/components/gorsel";
 import { sonYayinlar } from "@/lib/db/queries/contents";
 import { pillarlar } from "@/lib/db/queries/topics";
 import { icerikTuruSema, seviyeSema, type Content } from "@/lib/db/schemas";
@@ -159,7 +160,7 @@ export default async function AramaSayfasi({ searchParams }: Props) {
                 defaultValue={q}
                 placeholder="ör. RAG, ollama, değerlendirme"
                 autoComplete="off"
-                className="min-w-0 flex-1 border border-doku bg-kagit px-4 py-3 font-mono text-base text-murekkep placeholder:text-murekkep-2 focus-visible:border-sinyal"
+                className="min-w-0 flex-1 border border-doku rounded-lg bg-kagit px-4 py-3 font-mono text-base text-murekkep placeholder:text-murekkep-2 focus-visible:border-sinyal"
               />
               <button type="submit" className="dugme-birincil px-6">
                 Ara
@@ -315,7 +316,7 @@ export default async function AramaSayfasi({ searchParams }: Props) {
             </h2>
 
             {terimler.length > 0 && (
-              <div className="mt-6 border border-doku bg-kagit-alt">
+              <div className="mt-6 border border-doku rounded-md bg-kagit-alt">
                 <p className="border-b border-doku px-5 py-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
                   sözlükte eşleşen terim
                 </p>
@@ -342,25 +343,28 @@ export default async function AramaSayfasi({ searchParams }: Props) {
                 ))}
               </ul>
             ) : (
-              <div className="mt-6 max-w-[var(--govde-olcu)] border border-doku bg-kagit-alt p-6">
-                <p className="font-display text-lg font-semibold">Bu sorgu için kayıt yok.</p>
-                <ul className="mt-3 list-disc space-y-1 pl-5 text-murekkep-2">
-                  <li>Yazımı kontrol edin; tek kelimelik ve daha genel bir terim deneyin.</li>
-                  <li>
-                    Türkçe terim sonuç vermezse İngilizce karşılığını deneyin (ör. “çıkarım” →
-                    “inference”).
-                  </li>
-                  {suzgecVar && (
+              <div className="mt-6 flex max-w-[var(--govde-olcu)] flex-col gap-5 rounded-lg border border-doku bg-kagit-alt p-6 sm:flex-row sm:items-start">
+                <AramaBosGorseli className="h-auto w-40 shrink-0 text-murekkep-2" />
+                <div>
+                  <p className="font-display text-lg font-semibold">Bu sorgu için kayıt yok.</p>
+                  <ul className="mt-3 list-disc space-y-1 pl-5 text-murekkep-2">
+                    <li>Yazımı kontrol edin; tek kelimelik ve daha genel bir terim deneyin.</li>
                     <li>
-                      Filtreler sonucu daraltıyor olabilir —{" "}
-                      <Link href={araYolu({ q })}>filtreleri temizleyin</Link>.
+                      Türkçe terim sonuç vermezse İngilizce karşılığını deneyin (ör. “çıkarım” →
+                      “inference”).
                     </li>
-                  )}
-                  <li>
-                    <Link href="/konu">Konu haritasına</Link> ya da{" "}
-                    <Link href="/sozluk">sözlüğe</Link> göz atın.
-                  </li>
-                </ul>
+                    {suzgecVar && (
+                      <li>
+                        Filtreler sonucu daraltıyor olabilir —{" "}
+                        <Link href={araYolu({ q })}>filtreleri temizleyin</Link>.
+                      </li>
+                    )}
+                    <li>
+                      <Link href="/konu">Konu haritasına</Link> ya da{" "}
+                      <Link href="/sozluk">sözlüğe</Link> göz atın.
+                    </li>
+                  </ul>
+                </div>
               </div>
             )}
 

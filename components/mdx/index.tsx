@@ -54,7 +54,7 @@ function Tablo(props: ComponentPropsWithoutRef<"table">) {
  *  buradaki araç (.kod-sade-arac) Kod tarafından CSS ile gizlenir. */
 function SadeKod(props: ComponentPropsWithoutRef<"pre">) {
   return (
-    <div data-kopyalanabilir className="kod-sade relative my-6 border border-doku">
+    <div data-kopyalanabilir className="kod-sade relative my-6 border border-doku rounded-md">
       <div className="kod-sade-arac absolute right-2 top-2 z-10">
         <KopyalaButonu />
       </div>

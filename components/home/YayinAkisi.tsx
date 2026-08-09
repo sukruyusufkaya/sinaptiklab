@@ -21,7 +21,7 @@ export function YayinAkisi({ yayinlar }: { yayinlar: IcerikOzetDTO[] }) {
   return (
     <div className="mt-8 grid gap-4 lg:grid-cols-3">
       {/* Manşet — iki kolon, iki satır */}
-      <article className="centik kademe group relative flex flex-col justify-between border border-doku bg-kagit-alt lg:col-span-2 lg:row-span-2">
+      <article className="centik kademe group relative flex flex-col justify-between border border-doku rounded-lg bg-kagit-alt lg:col-span-2 lg:row-span-2">
         <div className="flex items-baseline justify-between border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] uppercase tracking-[0.18em]">
           <span className="flex items-center gap-2 text-sinyal">
             <span aria-hidden className="led inline-block size-1.5 bg-sinyal" />

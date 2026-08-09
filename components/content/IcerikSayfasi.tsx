@@ -117,7 +117,7 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
           <span className="bg-sinyal px-2 py-1 text-kagit">{turEtiketi(icerik.type)}</span>
           <Link
             href={`/konu/${icerik.pillar}`}
-            className="border border-doku px-2 py-1 text-murekkep-2 no-underline transition-colors hover:border-sinyal hover:text-sinyal"
+            className="border border-doku rounded-md px-2 py-1 text-murekkep-2 no-underline transition-colors hover:border-sinyal hover:text-sinyal"
           >
             {icerik.pillar}
           </Link>
@@ -210,7 +210,7 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
         {icerik.toc.length > 0 && (
           <nav
             aria-label="İçindekiler"
-            className="mt-8 max-w-[var(--govde-olcu)] border border-doku bg-kagit-alt p-4"
+            className="mt-8 max-w-[var(--govde-olcu)] border border-doku rounded-lg bg-kagit-alt p-4"
           >
             <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
               İçindekiler · {icerik.toc.filter((m) => m.depth === 2).length} bölüm
@@ -248,7 +248,7 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
         {icerik.repro !== null && (
           <section
             aria-labelledby="repro-baslik"
-            className="mt-12 max-w-[var(--govde-olcu)] border border-doku bg-kagit-alt p-4"
+            className="mt-12 max-w-[var(--govde-olcu)] border border-doku rounded-lg bg-kagit-alt p-4"
           >
             <h2
               id="repro-baslik"
@@ -340,7 +340,7 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
             aria-label="Değişiklik günlüğü"
             className="beliren mt-12 max-w-[var(--govde-olcu)]"
           >
-            <details className="acilir border border-doku bg-kagit-alt">
+            <details className="acilir border border-doku rounded-md bg-kagit-alt">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-mono text-xs uppercase tracking-[0.16em] text-murekkep-2 hover:text-sinyal">
                 <span>
                   değişiklik günlüğü · {icerik.changelog.length} kayıt · v{icerik.version}
@@ -358,7 +358,7 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
                     <span className="font-mono text-[0.7rem] tabular-nums text-murekkep-2">
                       {tarih(kayit.at)}
                     </span>
-                    <span className="border border-doku px-1.5 font-mono text-[0.65rem] uppercase tracking-wider text-sinyal">
+                    <span className="border border-doku rounded-md px-1.5 font-mono text-[0.65rem] uppercase tracking-wider text-sinyal">
                       {DEGISIKLIK_TURU[kayit.kind]}
                     </span>
                     <span className="min-w-0 flex-1 text-murekkep-2">{kayit.note}</span>

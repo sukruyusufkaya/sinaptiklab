@@ -10,7 +10,7 @@ export function Video({ videoId, baslik }: { videoId: string; baslik: string }) 
 
   if (aktif) {
     return (
-      <div className="my-6 aspect-video w-full border border-doku">
+      <div className="my-6 aspect-video w-full border border-doku rounded-md">
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
           title={baslik}
@@ -27,7 +27,7 @@ export function Video({ videoId, baslik }: { videoId: string; baslik: string }) 
       type="button"
       onClick={() => setAktif(true)}
       aria-label={`Videoyu oynat: ${baslik}`}
-      className="group relative my-6 block aspect-video w-full cursor-pointer overflow-hidden border border-doku bg-kagit-alt p-0"
+      className="group relative my-6 block aspect-video w-full cursor-pointer overflow-hidden border border-doku rounded-lg bg-kagit-alt p-0"
     >
       {/* Kapak üçüncü parti alan adından geldiği için next/image yerine img;
           next.config remotePatterns yapılandırması Faz 3'te ele alınacak. */}

@@ -63,11 +63,11 @@ export default async function YonlendirmeYoneticisi() {
         </h2>
 
         {kayitlar.length === 0 ? (
-          <p className="mt-4 border border-doku bg-kagit-alt p-6 text-murekkep-2">
+          <p className="mt-4 border border-doku rounded-lg bg-kagit-alt p-6 text-murekkep-2">
             Henüz yönlendirme kaydı yok — slug değiştirdiğinizde eski yolu buraya ekleyin.
           </p>
         ) : (
-          <div className="mt-4 overflow-x-auto border border-doku">
+          <div className="mt-4 overflow-x-auto border border-doku rounded-md">
             <table className="w-full min-w-[48rem] border-collapse text-sm">
               <caption className="sr-only">
                 Kayıtlı yönlendirmeler: kaynak yol, hedef yol, HTTP kodu ve oluşturma tarihi
@@ -125,7 +125,7 @@ export default async function YonlendirmeYoneticisi() {
                           <button
                             type="submit"
                             aria-label={`${kayit.from} yönlendirmesini sil`}
-                            className="border border-doku px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2 transition-colors hover:border-uyari hover:text-uyari"
+                            className="border border-doku rounded-md px-2 py-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2 transition-colors hover:border-uyari hover:text-uyari"
                           >
                             Sil
                           </button>
@@ -140,7 +140,7 @@ export default async function YonlendirmeYoneticisi() {
         )}
 
         {zincirliSayisi > 0 && (
-          <p className="mt-4 border border-olcum p-3 font-mono text-xs text-murekkep-2">
+          <p className="mt-4 border border-olcum rounded-md p-3 font-mono text-xs text-murekkep-2">
             {zincirliSayisi} kayıt zincir oluşturuyor (bir kaydın hedefi başka bir kaydın kaynağı).
             Zinciri kısaltmak için ilk kaydı doğrudan son hedefe bağlayın.
           </p>

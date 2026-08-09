@@ -13,8 +13,8 @@ export function BultenCTA() {
         Ayda iki kez: yeni derinlemesine içerikler, güncellenen ölçümler ve Türkçe yapay zeka
         ekosisteminden kaynaklı notlar. Reklamsız, devirsiz, tek tıkla iptal.
       </p>
-      <p className="mt-4 inline-flex items-center gap-2 border border-doku bg-kagit px-3 py-2 font-mono text-xs text-murekkep-2">
-        <span aria-hidden className="inline-block size-2 border border-sinyal" />
+      <p className="mt-4 inline-flex items-center gap-2 border border-doku rounded-md bg-kagit px-3 py-2 font-mono text-xs text-murekkep-2">
+        <span aria-hidden className="inline-block size-2 border border-sinyal rounded-md" />
         Kayıt, çift onaylı (KVKK uyumlu) altyapıyla birlikte açılacak — yakında.
       </p>
     </aside>

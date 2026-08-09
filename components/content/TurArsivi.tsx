@@ -7,7 +7,6 @@
 // arşivler (etiket, cluster) .mm-zemin kağıt zemininde kalır.
 import Link from "next/link";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 import { ARSIV_SAYFA_ADEDI, turListesi, turSayisi } from "@/lib/db/queries/arsiv";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import { env } from "@/lib/env";
@@ -48,8 +47,7 @@ export async function TurArsivi({ tur, sayfa }: { tur: ArsivliTur; sayfa: number
 
   return (
     <>
-      <section className="ekran hud relative overflow-hidden border-b border-doku">
-        <HudCerceve />
+      <section className="ekran relative overflow-hidden border-b border-doku">
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">
             <p className="bolum-indeks uppercase">{metin.indeks}</p>
@@ -138,7 +136,7 @@ export async function TurArsivi({ tur, sayfa }: { tur: ArsivliTur; sayfa: number
             )}
           </>
         ) : (
-          <div className="max-w-[var(--govde-olcu)] border border-doku bg-kagit-alt p-6">
+          <div className="max-w-[var(--govde-olcu)] border border-doku rounded-lg bg-kagit-alt p-6">
             <p className="font-display text-lg font-semibold">
               {araligiAsti ? "Bu sayfada kayıt yok." : "Kayıt yok."}
             </p>

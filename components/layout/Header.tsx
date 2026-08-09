@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MobilMenu, type MenuMaddesi } from "./MobilMenu";
+import { AraIkon } from "@/components/gorsel";
 import { TemaAnahtari } from "./TemaAnahtari";
 
 // Ana gezinme — BRIEF §2.2 URL şeması. `hazir: false` olanlar sonraki
@@ -51,12 +52,9 @@ export function Header() {
           <Link
             href="/ara"
             aria-label="Sitede ara"
-            className="flex items-center gap-2 border border-doku px-2.5 py-1.5 font-mono text-xs text-murekkep-2 no-underline transition-colors hover:border-sinyal hover:text-sinyal"
+            className="flex items-center gap-2 rounded-md border border-doku bg-kagit-alt px-3 py-1.5 font-mono text-xs text-murekkep-2 no-underline transition-colors hover:border-doku-guclu hover:text-sinyal"
           >
-            <svg width="13" height="13" viewBox="0 0 15 15" fill="none" aria-hidden>
-              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.3" />
-              <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.3" />
-            </svg>
+            <AraIkon className="size-4" />
             <span className="max-sm:hidden">ara</span>
           </Link>
           <TemaAnahtari />

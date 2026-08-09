@@ -40,9 +40,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // ADR 0010: koyu varsayılan; açık tema sistem tercihine bağlı
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f1f2ed" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0d11" },
+    { media: "(prefers-color-scheme: light)", color: "#fbfbf9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1117" },
   ],
 };
 

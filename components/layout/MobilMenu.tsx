@@ -46,7 +46,7 @@ export function MobilMenu({ maddeler }: { maddeler: readonly MenuMaddesi[] }) {
         aria-controls={panelId}
         aria-label={acik ? "Menüyü kapat" : "Menüyü aç"}
         onClick={() => setAcik((o) => !o)}
-        className="flex size-9 items-center justify-center border border-doku text-murekkep-2 transition-colors hover:border-sinyal hover:text-sinyal"
+        className="flex size-9 items-center justify-center border border-doku rounded-md text-murekkep-2 transition-colors hover:border-sinyal hover:text-sinyal"
       >
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>
           {acik ? (

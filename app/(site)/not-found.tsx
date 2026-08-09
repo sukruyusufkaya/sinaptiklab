@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 
 /**
  * Site tarafı 404 — kök `app/not-found.tsx`'ten farkı: header/footer
@@ -9,8 +8,7 @@ import { HudCerceve } from "@/components/layout/HudCerceve";
 export default function SiteBulunamadi() {
   return (
     <>
-      <section className="ekran hud relative overflow-hidden border-b border-doku">
-        <HudCerceve />
+      <section className="ekran relative overflow-hidden border-b border-doku">
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-16">
             <p className="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-uyari">
@@ -72,7 +70,7 @@ export default function SiteBulunamadi() {
             <li key={madde.href}>
               <Link
                 href={madde.href}
-                className="centik flex items-center justify-between border border-doku px-4 py-3 text-sm text-murekkep no-underline transition-colors hover:border-sinyal"
+                className="centik flex items-center justify-between border border-doku rounded-lg px-4 py-3 text-sm text-murekkep no-underline transition-colors hover:border-doku-guclu"
               >
                 {madde.etiket}
                 <span aria-hidden className="font-mono text-xs text-sinyal">

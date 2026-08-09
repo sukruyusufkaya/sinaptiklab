@@ -9,7 +9,7 @@ export default function BulunamadiSayfasi() {
   return (
     <div className="mm-zemin arti-izgara flex min-h-dvh items-center">
       <div className="mx-auto w-full max-w-[1280px] px-[var(--gutter)] py-20">
-        <div className="max-w-[60ch] border border-doku bg-kagit p-8 sm:p-12">
+        <div className="max-w-[60ch] border border-doku rounded-lg bg-kagit p-8 sm:p-12">
           <p className="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-uyari">
             <span aria-hidden className="inline-block size-1.5 bg-uyari" />
             sinyal yok · hata 404

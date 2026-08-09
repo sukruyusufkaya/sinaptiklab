@@ -221,7 +221,7 @@ export function SinyalIzi({ bolumler }: { bolumler: Bolum[] }) {
                 {/* görsel tooltip; erişilebilir ad yukarıdaki aria-label'da */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute left-16 z-10 hidden w-56 border border-doku bg-kagit px-2 py-1 text-xs text-murekkep shadow-none group-hover:block group-focus-visible:block"
+                  className="pointer-events-none absolute left-16 z-10 hidden w-56 border border-doku rounded-md bg-kagit px-2 py-1 text-xs text-murekkep shadow-none group-hover:block group-focus-visible:block"
                 >
                   {o.text}
                 </span>

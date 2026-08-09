@@ -18,7 +18,7 @@ export function Adim({
       className="group/adim relative my-7 flex gap-4 pb-1"
     >
       <div className="flex shrink-0 flex-col items-center">
-        <span className="flex size-9 items-center justify-center border border-murekkep bg-kagit font-mono text-sm font-bold tabular-nums">
+        <span className="flex size-9 items-center justify-center border border-murekkep rounded-md bg-kagit font-mono text-sm font-bold tabular-nums">
           {n}
         </span>
         {/* sonraki adıma giden kılavuz çizgi (son adımda görünmez kalır) */}

@@ -105,7 +105,7 @@ export default async function TerimSayfasi({ params }: Props) {
       </header>
 
       {/* Kısa tanım kutusu: ekranda ilk okunan, GEO'da alıntılanan blok */}
-      <div className="mm-zemin mt-8 max-w-[var(--govde-olcu)] border border-doku">
+      <div className="mm-zemin mt-8 max-w-[var(--govde-olcu)] border border-doku rounded-md">
         <p className="border-b border-doku bg-kagit px-5 py-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
           kısa tanım
         </p>
@@ -131,7 +131,7 @@ export default async function TerimSayfasi({ params }: Props) {
             {terim.aliases.map((ad) => (
               <li
                 key={ad}
-                className="border border-doku bg-kagit-alt px-3 py-1 font-mono text-sm text-murekkep-2"
+                className="border border-doku rounded-md bg-kagit-alt px-3 py-1 font-mono text-sm text-murekkep-2"
               >
                 {ad}
               </li>
@@ -153,7 +153,7 @@ export default async function TerimSayfasi({ params }: Props) {
               <li key={baglanti.slug}>
                 <Link
                   href={`/sozluk/${baglanti.slug}`}
-                  className="centik border border-doku bg-kagit-alt px-3 py-1 font-mono text-sm no-underline transition-colors hover:border-sinyal"
+                  className="centik border border-doku rounded-md bg-kagit-alt px-3 py-1 font-mono text-sm no-underline transition-colors hover:border-doku-guclu"
                 >
                   {baglanti.tr}
                 </Link>

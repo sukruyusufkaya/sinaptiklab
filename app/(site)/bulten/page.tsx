@@ -3,7 +3,6 @@
 // gösterir ve tek kayıt yolunu (Faz 7 çift opt-in) anlatır.
 import type { Metadata } from "next";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import { env } from "@/lib/env";
@@ -25,8 +24,7 @@ export default async function BultenArsiviSayfasi() {
 
   return (
     <>
-      <section className="ekran hud relative overflow-hidden border-b border-doku">
-        <HudCerceve />
+      <section className="ekran relative overflow-hidden border-b border-doku">
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">
             <p className="bolum-indeks uppercase">§ bülten</p>
@@ -68,7 +66,7 @@ export default async function BultenArsiviSayfasi() {
             ))}
           </ul>
         ) : (
-          <div className="max-w-[var(--govde-olcu)] border border-doku bg-kagit-alt p-6">
+          <div className="max-w-[var(--govde-olcu)] border border-doku rounded-lg bg-kagit-alt p-6">
             <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
               arşiv boş
             </p>

@@ -48,7 +48,7 @@ export function SiraliMadde({ no, children }: { no: number; children: ReactNode 
 /** Kenar kutusu: mono etiketli, hairline çerçeveli not. */
 export function Kutu({ etiket, children }: { etiket: string; children: ReactNode }) {
   return (
-    <div className="mt-6 border border-doku bg-kagit-alt px-5 py-4">
+    <div className="mt-6 border border-doku rounded-lg bg-kagit-alt px-5 py-4">
       <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
         {etiket}
       </p>

@@ -51,7 +51,7 @@ async function panelVerisi() {
 
 function Tablo({ baslik, satirlar }: { baslik: string; satirlar: GrupSatiri[] }) {
   return (
-    <section className="border border-doku">
+    <section className="border border-doku rounded-md">
       <h2 className="border-b border-doku bg-kagit-alt px-4 py-2.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
         {baslik}
       </h2>

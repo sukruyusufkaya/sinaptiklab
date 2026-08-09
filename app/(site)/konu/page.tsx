@@ -1,6 +1,7 @@
 // Konu haritası — 12 pillar (onaylı ağaç, topics koleksiyonundan).
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PillarIkon } from "@/components/gorsel";
 import { pillarlar } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
 
@@ -68,7 +69,7 @@ export default async function KonularSayfasi() {
             <li key={pillar.slug} className="min-w-0">
               <Link
                 href={`/konu/${pillar.slug}`}
-                className="centik flex h-full flex-col border border-doku bg-kagit-alt no-underline transition-colors hover:border-sinyal"
+                className="centik flex h-full flex-col border border-doku rounded-lg bg-kagit-alt no-underline transition-colors hover:border-doku-guclu"
               >
                 <span className="flex items-baseline justify-between border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.18em]">
                   <span className="text-sinyal">P{String(sira + 1).padStart(2, "0")}</span>
@@ -77,6 +78,10 @@ export default async function KonularSayfasi() {
                   </span>
                 </span>
                 <span className="flex flex-1 flex-col p-5">
+                  {/* Pillar ikonu: dekoratif işaret; başlık anlamı taşır */}
+                  <span className="mb-4 flex size-11 items-center justify-center rounded-lg border border-doku bg-kagit text-murekkep-2">
+                    <PillarIkon pillar={pillar.slug} />
+                  </span>
                   <span className="font-display text-lg font-semibold leading-snug text-murekkep">
                     {pillar.title}
                   </span>

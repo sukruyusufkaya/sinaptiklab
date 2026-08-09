@@ -87,7 +87,7 @@ export function Footer() {
             Yapay zeka sistemlerini gerçekten üretenler için Türkçe teknik yayın. Saha verisi,
             uydurma yok.
           </p>
-          <p className="mt-5 inline-flex items-center gap-2 border border-doku px-2.5 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-murekkep-2">
+          <p className="mt-5 inline-flex items-center gap-2 border border-doku rounded-md px-2.5 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-murekkep-2">
             <span aria-hidden className="inline-block size-1.5 bg-onay" />
             içerik ajanlara açık · llms.txt + mcp
           </p>

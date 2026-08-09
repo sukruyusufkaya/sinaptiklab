@@ -42,7 +42,7 @@ export function MakaleAraclari({ yol, baslik }: { yol: string; baslik: string })
   }
 
   const dugme =
-    "flex items-center gap-1.5 border border-doku px-2.5 py-1.5 font-mono text-[0.7rem] text-murekkep-2 transition-colors hover:border-sinyal hover:text-sinyal";
+    "flex items-center gap-1.5 border border-doku rounded-md px-2.5 py-1.5 font-mono text-[0.7rem] text-murekkep-2 transition-colors hover:border-sinyal hover:text-sinyal";
 
   return (
     <div className="mt-6 flex max-w-[var(--govde-olcu)] flex-wrap items-center gap-2 print:hidden">

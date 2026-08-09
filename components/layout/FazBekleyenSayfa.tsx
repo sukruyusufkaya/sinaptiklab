@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 
 /**
  * Sonraki fazda açılacak modüller için gerçek sayfa (404 yerine): ne
@@ -23,8 +22,7 @@ export function FazBekleyenSayfa({
 }) {
   return (
     <>
-      <section className="ekran hud relative overflow-hidden border-b border-doku">
-        <HudCerceve />
+      <section className="ekran relative overflow-hidden border-b border-doku">
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">
             <p className="bolum-indeks uppercase">§ {indeks}</p>
@@ -80,7 +78,7 @@ export function FazBekleyenSayfa({
           >
             Şimdilik
           </h2>
-          <div className="centik mt-4 border border-doku bg-kagit-alt p-6">
+          <div className="centik mt-4 border border-doku rounded-lg bg-kagit-alt p-6">
             <p className="leading-relaxed text-murekkep-2">{simdilik.metin}</p>
             <p className="mt-5">
               <Link href={simdilik.href} className="dugme-cerceve">

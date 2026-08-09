@@ -30,7 +30,7 @@ export default async function OnizlemeSayfasi({ params }: Props) {
     if (hata instanceof MdxDerlemeHatasi) {
       return (
         <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-10">
-          <div role="alert" className="border border-uyari p-4">
+          <div role="alert" className="border border-uyari rounded-lg p-4">
             <p className="font-mono text-xs uppercase tracking-widest text-uyari">
               MDX derleme hatası
               {hata.satir !== null && (

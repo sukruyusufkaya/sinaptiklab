@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { HudCerceve } from "@/components/layout/HudCerceve";
 
 /**
  * Panel başlığı — her admin sayfasının üst şeridi: milimetrik zemin, HUD köşe
@@ -20,8 +19,7 @@ interface Props {
 
 export function PanelBasligi({ indeks, baslik, aciklama, aksiyon, children }: Props) {
   return (
-    <section className="mm-zemin hud relative border-b border-doku">
-      <HudCerceve />
+    <section className="mm-zemin relative border-b border-doku">
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-8">
         <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
           <div className="min-w-0">

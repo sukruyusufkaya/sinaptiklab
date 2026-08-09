@@ -10,7 +10,7 @@ interface Props {
 
 export function Tablo({ ozet, basliklar, satirlar }: Props) {
   return (
-    <div className="mt-5 overflow-x-auto border border-doku">
+    <div className="mt-5 overflow-x-auto border border-doku rounded-md">
       <table className="w-full min-w-[34rem] border-collapse text-left text-sm">
         <caption className="sr-only">{ozet}</caption>
         <thead>

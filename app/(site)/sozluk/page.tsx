@@ -73,7 +73,7 @@ export default async function SozlukSayfasi() {
                   <li key={grup.harf}>
                     <a
                       href={`#${grup.cipa}`}
-                      className="flex size-8 items-center justify-center border border-transparent text-murekkep no-underline transition-colors hover:border-sinyal hover:text-sinyal"
+                      className="flex size-8 items-center justify-center border border-transparent rounded-md text-murekkep no-underline transition-colors hover:border-sinyal hover:text-sinyal"
                     >
                       {grup.harf}
                     </a>
@@ -99,7 +99,7 @@ export default async function SozlukSayfasi() {
                       <li key={terim.slug} className="min-w-0">
                         <Link
                           href={`/sozluk/${terim.slug}`}
-                          className="centik flex h-full flex-col border border-doku bg-kagit-alt no-underline transition-colors hover:border-sinyal"
+                          className="centik flex h-full flex-col border border-doku rounded-lg bg-kagit-alt no-underline transition-colors hover:border-doku-guclu"
                         >
                           <span className="flex items-baseline justify-between gap-3 border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.16em]">
                             <span className="truncate text-murekkep-2">{terim.en}</span>

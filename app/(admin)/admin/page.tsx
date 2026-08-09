@@ -186,16 +186,16 @@ export default async function AdminIcerikListesi({ searchParams }: Props) {
         </p>
 
         {icerikler.length === 0 ? (
-          <p className="mt-6 border border-doku bg-kagit-alt p-6 text-murekkep-2">
+          <p className="mt-6 border border-doku rounded-lg bg-kagit-alt p-6 text-murekkep-2">
             Henüz içerik yok — yukarıdan tür seçip ilk içeriği oluşturun.
           </p>
         ) : listelenen.length === 0 ? (
-          <p className="mt-6 border border-doku bg-kagit-alt p-6 text-murekkep-2">
+          <p className="mt-6 border border-doku rounded-lg bg-kagit-alt p-6 text-murekkep-2">
             Bu süzgeçle eşleşen kayıt yok. <Link href="/admin">Süzgeci temizleyin</Link> ya da başka
             bir durum seçin.
           </p>
         ) : (
-          <div className="mt-6 overflow-x-auto border border-doku">
+          <div className="mt-6 overflow-x-auto border border-doku rounded-md">
             <table className="w-full min-w-[52rem] border-collapse text-sm">
               <caption className="sr-only">
                 İçerik envanteri: başlık, tür, durum, güncelleme ve yayın tarihleri

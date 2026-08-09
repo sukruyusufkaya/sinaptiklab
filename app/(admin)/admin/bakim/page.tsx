@@ -63,9 +63,11 @@ function BakimListesi({
       </p>
 
       {satirlar.length === 0 ? (
-        <p className="mt-4 border border-onay p-4 font-mono text-xs text-onay">✓ {bosMesaj}</p>
+        <p className="mt-4 border border-onay rounded-lg p-4 font-mono text-xs text-onay">
+          ✓ {bosMesaj}
+        </p>
       ) : (
-        <div className="mt-4 overflow-x-auto border border-doku">
+        <div className="mt-4 overflow-x-auto border border-doku rounded-md">
           <table className="w-full min-w-[42rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-doku bg-kagit-alt text-left font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
@@ -111,7 +113,7 @@ function BakimListesi({
 
 function DagilimTablosu({ dagilim }: { dagilim: TurDagilimi[] }) {
   return (
-    <div className="mt-4 overflow-x-auto border border-doku">
+    <div className="mt-4 overflow-x-auto border border-doku rounded-md">
       <table className="w-full min-w-[42rem] border-collapse text-sm">
         <caption className="sr-only">İçerik türlerinin durum bazında dağılımı</caption>
         <thead>
@@ -250,7 +252,7 @@ export default async function BakimPaneli() {
             yığılma olduğunu gösterir.
           </p>
           {rapor.dagilim.length === 0 ? (
-            <p className="mt-4 border border-doku bg-kagit-alt p-4 text-murekkep-2">
+            <p className="mt-4 border border-doku rounded-lg bg-kagit-alt p-4 text-murekkep-2">
               Henüz içerik yok.
             </p>
           ) : (

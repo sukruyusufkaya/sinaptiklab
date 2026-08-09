@@ -14,7 +14,7 @@ export function SozlukVitrini({ terimler }: { terimler: TerimOzetDTO[] }) {
         <li key={terim.slug} className="kademe min-w-0" style={{ "--k": sira } as CSSProperties}>
           <Link
             href={`/sozluk/${terim.slug}`}
-            className="centik flex h-full flex-col border border-doku bg-kagit-alt p-4 no-underline transition-colors hover:border-sinyal"
+            className="centik flex h-full flex-col border border-doku rounded-lg bg-kagit-alt p-4 no-underline transition-colors hover:border-doku-guclu"
           >
             <span className="font-display text-base font-semibold text-murekkep">{terim.tr}</span>
             <span className="mt-0.5 font-mono text-[0.7rem] text-murekkep-2">{terim.en}</span>

@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 export function Karsilastirma({ baslik, children }: { baslik?: string; children: ReactNode }) {
   return (
-    <figure className="my-7 border border-doku">
+    <figure className="my-7 border border-doku rounded-md">
       {baslik !== undefined && (
         <figcaption className="border-b border-doku bg-kagit-alt px-4 py-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
           {baslik}

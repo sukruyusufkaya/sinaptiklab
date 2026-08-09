@@ -9,7 +9,7 @@ export function KisaCevap({ children }: { children: ReactNode }) {
     <aside
       data-kopyalanabilir
       aria-label="Kısa cevap"
-      className="my-7 border border-murekkep bg-kagit-alt"
+      className="my-7 border border-murekkep rounded-md bg-kagit-alt"
     >
       <div className="flex items-center justify-between gap-2 border-b border-murekkep/25 px-4 py-2">
         <span className="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">

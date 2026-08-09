@@ -36,7 +36,7 @@ export function KopyalaButonu({ metin }: { metin?: string }) {
       ref={dugmeRef}
       type="button"
       onClick={kopyala}
-      className="border border-doku bg-kagit px-2 py-0.5 font-mono text-xs text-murekkep-2 transition-colors hover:border-sinyal hover:text-sinyal"
+      className="border border-doku rounded-md bg-kagit px-2 py-0.5 font-mono text-xs text-murekkep-2 transition-colors hover:border-sinyal hover:text-sinyal"
     >
       <span aria-live="polite">{kopyalandi ? "Kopyalandı" : "Kopyala"}</span>
     </button>

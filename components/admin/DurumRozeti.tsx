@@ -23,7 +23,7 @@ const DURUM_NOKTASI: Record<Durum, string> = {
 export function DurumRozeti({ durum }: { durum: Durum }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap border border-doku px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] ${DURUM_RENGI[durum]}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap border border-doku rounded-md px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] ${DURUM_RENGI[durum]}`}
     >
       <span aria-hidden className={`inline-block size-1.5 shrink-0 ${DURUM_NOKTASI[durum]}`} />
       {DURUM_ETIKETLERI[durum]}
