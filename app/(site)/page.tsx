@@ -111,18 +111,6 @@ export default async function AnaSayfa() {
         <span aria-hidden className="supurme left-0" />
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-doku py-3 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
-              <span className="flex items-center gap-2 text-onay">
-                <span aria-hidden className="led inline-block size-1.5 bg-onay" />
-                çevrimiçi
-              </span>
-              <span aria-hidden>/</span>
-              <span>kanal 01 · yayın akışı</span>
-              <span aria-hidden>/</span>
-              <span>kalibrasyon v0.1</span>
-              <span className="ml-auto max-sm:hidden">tr · utf-8</span>
-            </div>
-
             <div className="grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(300px,520px)] lg:py-24">
               <div>
                 <h1 className="font-display text-4xl font-bold leading-[0.98] tracking-tight text-murekkep [font-stretch:88%]">

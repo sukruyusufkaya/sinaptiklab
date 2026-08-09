@@ -215,14 +215,21 @@ pre {
   font-family: var(--font-mono);
 }
 
-a {
-  color: var(--sinyal);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  transition: color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-a:hover {
-  color: var(--sinyal-dip);
+/* `@layer base`: katmansız yazıldığında bu kural Tailwind'in `utilities`
+   katmanını yeniyordu (katmansız stiller her katmanı geçer) — yani bir
+   bağlantıya `text-murekkep` vermek hiçbir işe yaramıyor, link yine mavi
+   kalıyordu (footer'da ölçüldü). Base katmanına alınca utility kazanır;
+   gövde metnindeki çıplak bağlantılar sinyal mavisi olmayı sürdürür. */
+@layer base {
+  a {
+    color: var(--sinyal);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  a:hover {
+    color: var(--sinyal-dip);
+  }
 }
 
 ::selection {

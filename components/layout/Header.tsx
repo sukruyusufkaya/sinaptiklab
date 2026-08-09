@@ -18,7 +18,11 @@ const NAV: readonly MenuMaddesi[] = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-30 border-b border-doku bg-kagit/85 backdrop-blur-sm">
+    // id="tepe": footer'daki "başa dön" çapası buraya döner
+    <header
+      id="tepe"
+      className="sticky top-0 z-30 border-b border-doku bg-kagit/85 backdrop-blur-sm"
+    >
       <div className="relative mx-auto flex max-w-[1280px] items-center gap-x-5 px-[var(--gutter)] py-3">
         <Link
           href="/"
@@ -39,8 +43,12 @@ export function Header() {
               key={madde.href}
               href={madde.href}
               prefetch={madde.hazir ? undefined : false}
+              // Hazır olmayan modüller SOLDURULARAK değil, bir kademe daha
+              // sönük TOKEN ile ayrışır. Opaklıkla soldurmak (eskiden /70)
+              // kontrastı 3.07:1'e düşürüyordu — AA sınırının altı. İki
+              // durum da erişilebilir kalmalı, hiyerarşi yine okunuyor.
               className={`font-mono text-sm no-underline transition-colors hover:text-sinyal ${
-                madde.hazir ? "text-murekkep-2" : "text-murekkep-2/70"
+                madde.hazir ? "text-murekkep" : "text-murekkep-2"
               }`}
             >
               {madde.etiket}
@@ -61,7 +69,7 @@ export function Header() {
           <Link
             href="/giris"
             prefetch={false}
-            className="font-mono text-sm text-murekkep-2/70 no-underline transition-colors hover:text-sinyal max-lg:hidden"
+            className="font-mono text-sm text-murekkep-2 no-underline transition-colors hover:text-sinyal max-lg:hidden"
           >
             Giriş
           </Link>
