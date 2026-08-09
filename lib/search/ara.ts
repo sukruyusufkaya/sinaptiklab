@@ -58,11 +58,7 @@ interface CozulmusParams extends AramaSuzgeci {
  * Uzun sorgu hem Atlas'ta hem regex'te maliyet üretir, faydası yok.
  */
 export function sorguTemizle(ham: string): string {
-  return ham
-    .replace(/\p{C}/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, SORGU_AZAMI);
+  return ham.replace(/\p{C}/gu, " ").replace(/\s+/g, " ").trim().slice(0, SORGU_AZAMI);
 }
 
 /** Regex yedeğinde kullanıcı girdisini literal hâle getirir (desen enjeksiyonu). */
@@ -157,7 +153,7 @@ export function highlightParcasi(ham: unknown): string | undefined {
   const metin = texts
     .map((p: unknown) =>
       typeof p === "object" && p !== null && typeof (p as { value?: unknown }).value === "string"
-        ? ((p as { value: string }).value)
+        ? (p as { value: string }).value
         : "",
     )
     .join("")
