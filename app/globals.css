@@ -314,6 +314,27 @@ a:hover {
     100% 11px;
 }
 
+/* Açılır bloklar (SSS, değişiklik günlüğü): +/− işareti döner, ok yok.
+   marker gizlenir ki iki farklı işaret görünmesin. */
+.acilir > summary::-webkit-details-marker,
+.acilir > summary::marker {
+  display: none;
+  content: "";
+}
+.acilir-ok {
+  display: inline-block;
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.acilir[open] > summary .acilir-ok {
+  transform: rotate(45deg);
+}
+
+/* Dipnottan gelinen kaynak kaydı vurgulanır (çapa hedefi) */
+.kaynak-kayit:target {
+  background: color-mix(in srgb, var(--sinyal) 7%, transparent);
+  box-shadow: inset 2px 0 0 0 var(--sinyal);
+}
+
 /* ── Bölüm başlığı için indeks damgası (§ numaralandırma) ── */
 .bolum-indeks {
   font-family: var(--font-mono);
@@ -451,7 +472,132 @@ a:hover {
   }
 }
 
-/* ── Hareket: yalnız üç yerde (BRIEF §5.6) — sayfa geçişi 180ms fade+lift ── */
+/* ════════════════════════════════════════════════════════════════════
+   HAREKET SİSTEMİ (ADR 0009) — §5.6'nın genişletilmiş hâli.
+   İlkeler: (1) her hareket bir ölçüm/kalibrasyon davranışını taklit eder,
+   (2) yalnız compositor özellikleri (transform/opacity) — layout/paint yok,
+   (3) `prefers-reduced-motion: reduce` altında TAMAMI kapalı,
+   (4) scroll animasyonları sıfır JS (CSS scroll-driven); desteklenmeyen
+       tarayıcıda içerik tam görünür kalır (@supports koruması).
+   ════════════════════════════════════════════════════════════════════ */
+
+@keyframes beliris {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Görüş alanına giren bölüm: kalibrasyon oturması gibi yerine yerleşir */
+    .beliren {
+      animation: beliris linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 48%;
+    }
+    /* Izgara öğeleri için kademeli giriş: --k indeksi kadar geciken aralık */
+    .kademe {
+      animation: beliris linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--k, 0) * 6%) entry calc(46% + var(--k, 0) * 6%);
+    }
+  }
+}
+
+/* İz çizimi: SVG yolu soldan sağa "kaydedilir" (osiloskop kaydı) */
+@keyframes iz-ciz {
+  from {
+    stroke-dashoffset: var(--iz-uzunluk, 1400);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .iz-ciz {
+    stroke-dasharray: var(--iz-uzunluk, 1400);
+    animation: iz-ciz 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+/* Bağlantı altı çizgisi: hover'da soldan sağa çizilir (renk geçişi değil,
+   solid çizginin genişlemesi) */
+.baglanti-iz {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-decoration: none;
+}
+.baglanti-iz:hover,
+.baglanti-iz:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Kalibrasyon nabzı: durum LED'i — %6 opaklık salınımı, dikkat çalmaz */
+@keyframes led-nabiz {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .led {
+    animation: led-nabiz 2.4s ease-in-out infinite;
+  }
+}
+
+/* Yükleniyor iskeleti: tarama bandı (renk gradyanı değil, aynı token'ın
+   opaklık maskesi) */
+@keyframes iskelet-tarama {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+.iskelet {
+  position: relative;
+  overflow: hidden;
+  background: var(--kagit-alt);
+  border: 1px solid var(--doku);
+}
+.iskelet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--doku) 55%, transparent),
+    transparent
+  );
+}
+@media (prefers-reduced-motion: no-preference) {
+  .iskelet::after {
+    animation: iskelet-tarama 1.6s ease-in-out infinite;
+  }
+}
+
+/* Tema geçişi: anahtar çevrildiğinde renkler sert atlamaz */
+body,
+.ekran {
+  transition:
+    background-color 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ── Hareket: sayfa geçişi 180ms fade+lift (BRIEF §5.6) ── */
 @view-transition {
   navigation: auto;
 }

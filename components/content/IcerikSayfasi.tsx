@@ -25,6 +25,16 @@ const DEGISIKLIK_TURU: Record<IcerikDetayDTO["changelog"][number]["kind"], strin
   correction: "düzeltme",
 };
 
+/** Kaynak türlerinin okunur Türkçe karşılığı (§4.1 sources.kind) */
+const KAYNAK_TURU: Record<string, string> = {
+  paper: "akademik makale",
+  docs: "resmi dokümantasyon",
+  vendor: "üretici kaynağı",
+  data: "veri kümesi",
+  news: "haber",
+  own_field_data: "kendi saha ölçümümüz",
+};
+
 /** Repro kutusunun tek satırı: font-mono etiket + değer. */
 function ReproSatiri({ etiket, children }: { etiket: string; children: ReactNode }) {
   return (
@@ -250,21 +260,44 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
           </section>
         )}
 
-        {/* 9 — Kaynaklar (li id'leri <Kaynak id=""> dipnot çapalarıyla eşleşir) */}
+        {/* 9 — Kaynaklar: numaralı kayıt defteri (li id'leri <Kaynak id="">
+            dipnot çapalarıyla eşleşir; :target ile vurgulanır) */}
         {icerik.sources.length > 0 && (
-          <section aria-labelledby="kaynaklar-baslik" className="mt-12 max-w-[var(--govde-olcu)]">
-            <h2 id="kaynaklar-baslik" className="font-display text-2xl font-bold">
-              Kaynaklar
-            </h2>
-            <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm">
+          <section
+            aria-labelledby="kaynaklar-baslik"
+            className="beliren mt-14 max-w-[var(--govde-olcu)]"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="kaynaklar-baslik" className="font-display text-2xl font-bold">
+                Kaynaklar
+              </h2>
+              <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
+                {icerik.sources.length} kayıt · erişim tarihli
+              </p>
+            </div>
+            <ol className="mt-5 border-t border-doku">
               {icerik.sources.map((kaynak, sira) => (
-                <li key={`kaynak-${sira + 1}`} id={`kaynak-${sira + 1}`} className="scroll-mt-24">
-                  <a href={kaynak.url} target="_blank" rel="noopener noreferrer">
-                    {kaynak.label}
-                  </a>
-                  <span className="text-murekkep-2"> — {kaynak.publisher}</span>
-                  <span className="ml-2 font-mono text-xs text-murekkep-2">
-                    erişim: {tarih(kaynak.accessedAt)}
+                <li
+                  key={`kaynak-${sira + 1}`}
+                  id={`kaynak-${sira + 1}`}
+                  className="kaynak-kayit flex scroll-mt-24 gap-4 border-b border-doku py-3"
+                >
+                  <span aria-hidden className="shrink-0 font-mono text-xs tabular-nums text-sinyal">
+                    [{sira + 1}]
+                  </span>
+                  <span className="min-w-0 flex-1 text-sm leading-relaxed">
+                    <a
+                      href={kaynak.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="baglanti-iz text-murekkep hover:text-sinyal"
+                    >
+                      {kaynak.label}
+                    </a>
+                    <span className="block font-mono text-[0.7rem] text-murekkep-2">
+                      {kaynak.publisher} · {KAYNAK_TURU[kaynak.kind] ?? kaynak.kind} · erişim:{" "}
+                      {tarih(kaynak.accessedAt)}
+                    </span>
                   </span>
                 </li>
               ))}
@@ -272,39 +305,62 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
           </section>
         )}
 
-        {/* 10 — değişiklik günlüğü */}
+        {/* 10 — değişiklik günlüğü: sürüm kayıt defteri */}
         {icerik.changelog.length > 0 && (
-          <section aria-label="Değişiklik günlüğü" className="mt-12 max-w-[var(--govde-olcu)]">
-            <details className="border border-doku">
-              <summary className="cursor-pointer p-3 font-mono text-sm">
-                Bu yazı {icerik.changelog.length} kez güncellendi
+          <section
+            aria-label="Değişiklik günlüğü"
+            className="beliren mt-12 max-w-[var(--govde-olcu)]"
+          >
+            <details className="acilir border border-doku bg-kagit-alt">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-mono text-xs uppercase tracking-[0.16em] text-murekkep-2 hover:text-sinyal">
+                <span>
+                  değişiklik günlüğü · {icerik.changelog.length} kayıt · v{icerik.version}
+                </span>
+                <span aria-hidden className="acilir-ok text-sinyal">
+                  +
+                </span>
               </summary>
-              <ul className="space-y-2 border-t border-doku p-3 text-sm">
+              <ol className="border-t border-doku">
                 {icerik.changelog.map((kayit, sira) => (
-                  <li key={`${kayit.at}-${sira}`} className="flex flex-wrap items-baseline gap-x-3">
-                    <span className="font-mono text-xs text-murekkep-2">{tarih(kayit.at)}</span>
-                    <span className="font-mono text-xs text-sinyal">
+                  <li
+                    key={`${kayit.at}-${sira}`}
+                    className="flex flex-wrap items-baseline gap-x-3 border-b border-doku px-4 py-2.5 text-sm last:border-b-0"
+                  >
+                    <span className="font-mono text-[0.7rem] tabular-nums text-murekkep-2">
+                      {tarih(kayit.at)}
+                    </span>
+                    <span className="border border-doku px-1.5 font-mono text-[0.65rem] uppercase tracking-wider text-sinyal">
                       {DEGISIKLIK_TURU[kayit.kind]}
                     </span>
-                    <span>{kayit.note}</span>
+                    <span className="min-w-0 flex-1 text-murekkep-2">{kayit.note}</span>
                   </li>
                 ))}
-              </ul>
+              </ol>
             </details>
           </section>
         )}
 
-        {/* 11 — SSS */}
+        {/* 11 — SSS (FAQPage şemasıyla aynı veriden) */}
         {icerik.faq.length > 0 && (
-          <section aria-labelledby="sss-baslik" className="mt-12 max-w-[var(--govde-olcu)]">
-            <h2 id="sss-baslik" className="font-display text-2xl font-bold">
-              Sık Sorulan Sorular
-            </h2>
-            <div className="mt-4 space-y-2">
+          <section aria-labelledby="sss-baslik" className="beliren mt-14 max-w-[var(--govde-olcu)]">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="sss-baslik" className="font-display text-2xl font-bold">
+                Sık sorulan sorular
+              </h2>
+              <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
+                {icerik.faq.length} soru
+              </p>
+            </div>
+            <div className="mt-5 border-t border-doku">
               {icerik.faq.map((madde) => (
-                <details key={madde.q} className="border border-doku">
-                  <summary className="cursor-pointer p-3 font-medium">{madde.q}</summary>
-                  <p className="border-t border-doku p-3 text-murekkep-2">{madde.a}</p>
+                <details key={madde.q} className="acilir border-b border-doku">
+                  <summary className="flex cursor-pointer list-none items-baseline justify-between gap-4 py-3.5 font-medium transition-colors hover:text-sinyal">
+                    <span className="min-w-0">{madde.q}</span>
+                    <span aria-hidden className="acilir-ok shrink-0 font-mono text-sinyal">
+                      +
+                    </span>
+                  </summary>
+                  <p className="pb-4 leading-relaxed text-murekkep-2">{madde.a}</p>
                 </details>
               ))}
             </div>

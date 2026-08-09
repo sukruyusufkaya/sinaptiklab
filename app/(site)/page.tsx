@@ -1,7 +1,9 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
 import { BultenCTA } from "@/components/layout/BultenCTA";
 import { HudCerceve } from "@/components/layout/HudCerceve";
+import { SayacDeger } from "@/components/layout/SayacDeger";
 import { sonYayinlar } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import {
@@ -11,10 +13,9 @@ import {
   type SiteIstatistikleriDTO,
 } from "@/lib/db/queries/topics";
 
-const SAYI_TR = new Intl.NumberFormat("tr-TR");
-
-/** Statik marka izi: hero'daki EKG motifi — animasyonsuz, aria-hidden.
- *  (Hareketli tek gösterişli öğe makale sayfasındaki sinyal izidir, §5.4.) */
+/** Marka izi: hero'daki EKG motifi. Sinyal parçası sayfa açılışında
+ *  soldan sağa "kaydedilir" (.iz-ciz, ADR 0009); reduced-motion altında
+ *  doğrudan çizili gelir. */
 function HeroIzi() {
   return (
     <svg
@@ -30,6 +31,8 @@ function HeroIzi() {
         strokeWidth="1.5"
       />
       <path
+        className="iz-ciz"
+        style={{ "--iz-uzunluk": "420" } as CSSProperties}
         d="M0 60 H120 L134 60 L142 18 L150 96 L158 60 H220"
         stroke="var(--sinyal)"
         strokeWidth="1.5"
@@ -64,7 +67,7 @@ function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
           className={`px-5 py-4 sm:px-6 ${sira > 0 ? "border-l border-doku" : ""} ${sira >= 2 ? "border-t border-doku sm:border-t-0" : ""} ${sira === 2 ? "border-l-0 sm:border-l" : ""}`}
         >
           <dd className="font-display text-2xl font-bold tabular-nums text-murekkep sm:text-3xl">
-            {SAYI_TR.format(hucre.deger)}
+            <SayacDeger deger={hucre.deger} />
           </dd>
           <dt className="mt-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2">
             {hucre.etiket}
@@ -103,7 +106,7 @@ export default async function AnaSayfa() {
             {/* cihaz üst çubuğu */}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-doku py-3 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
               <span className="flex items-center gap-2 text-onay">
-                <span aria-hidden className="inline-block size-1.5 bg-onay" />
+                <span aria-hidden className="led inline-block size-1.5 bg-onay" />
                 çevrimiçi
               </span>
               <span aria-hidden>/</span>
@@ -160,7 +163,7 @@ export default async function AnaSayfa() {
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
         {yayinlar.length > 0 && (
           <>
-            <section aria-labelledby="son-yayinlar" className="scroll-mt-16 py-16">
+            <section aria-labelledby="son-yayinlar" className="beliren scroll-mt-16 py-16">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 id="son-yayinlar" className="font-display text-2xl font-bold">
                   Son yayınlar
@@ -169,7 +172,11 @@ export default async function AnaSayfa() {
               </div>
               <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {yayinlar.map((yayin, sira) => (
-                  <li key={yayin.id} className="min-w-0">
+                  <li
+                    key={yayin.id}
+                    className="kademe min-w-0"
+                    style={{ "--k": sira } as CSSProperties}
+                  >
                     <IcerikKarti icerik={yayin} sira={sira + 1} />
                   </li>
                 ))}
@@ -182,7 +189,7 @@ export default async function AnaSayfa() {
 
         {konular.length > 0 && (
           <>
-            <section aria-labelledby="konu-haritasi" className="py-16">
+            <section aria-labelledby="konu-haritasi" className="beliren py-16">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 id="konu-haritasi" className="font-display text-2xl font-bold">
                   Konu haritası
@@ -193,7 +200,11 @@ export default async function AnaSayfa() {
               </div>
               <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {konular.map((pillar, sira) => (
-                  <li key={pillar.slug} className="min-w-0">
+                  <li
+                    key={pillar.slug}
+                    className="kademe min-w-0"
+                    style={{ "--k": sira } as CSSProperties}
+                  >
                     <Link
                       href={`/konu/${pillar.slug}`}
                       className="centik flex h-full items-baseline gap-3 border border-doku bg-kagit px-4 py-3 no-underline transition-colors hover:border-sinyal"
@@ -217,7 +228,7 @@ export default async function AnaSayfa() {
           </>
         )}
 
-        <section aria-labelledby="ne-geliyor" className="py-16">
+        <section aria-labelledby="ne-geliyor" className="beliren py-16">
           <h2 id="ne-geliyor" className="font-display text-2xl font-bold">
             Tezgâhta ne var?
           </h2>
@@ -241,8 +252,12 @@ export default async function AnaSayfa() {
                 metin:
                   "Türkçe yapay zeka terminolojisi tek sözlükte kanonikleşir; aynı kavram sitenin her yerinde aynı adla anılır.",
               },
-            ].map((madde) => (
-              <li key={madde.no} className="centik border border-doku bg-kagit-alt p-6">
+            ].map((madde, sira) => (
+              <li
+                key={madde.no}
+                className="kademe centik border border-doku bg-kagit-alt p-6"
+                style={{ "--k": sira } as CSSProperties}
+              >
                 <p className="font-mono text-xs text-sinyal">{madde.no}</p>
                 <h3 className="mt-3 font-display text-lg font-semibold">{madde.baslik}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-murekkep-2">{madde.metin}</p>
@@ -251,7 +266,7 @@ export default async function AnaSayfa() {
           </ul>
         </section>
 
-        <section className="pb-20">
+        <section className="beliren pb-20">
           <BultenCTA />
         </section>
       </div>

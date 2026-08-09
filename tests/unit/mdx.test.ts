@@ -62,7 +62,8 @@ describe("mdxDerle", { timeout: 60_000 }, () => {
     const kaynak = "<KisaCevap>RAG, üretimden önce ölçülür.</KisaCevap>";
     const { icerik } = await mdxDerle(kaynak);
     const html = renderToStaticMarkup(icerik);
-    expect(html).toContain("KISA CEVAP");
+    // metin DOM'da küçük harf; büyük görünüm CSS (uppercase) ile
+    expect(html).toContain("kısa cevap");
     expect(html).toContain("RAG, üretimden önce ölçülür.");
   });
 
