@@ -6,13 +6,14 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { IlgiliIcerikler } from "@/components/content/IlgiliIcerikler";
+import { MakaleAraclari } from "@/components/content/MakaleAraclari";
 import { SinyalIzi } from "@/components/content/SinyalIzi";
 import { BultenCTA } from "@/components/layout/BultenCTA";
 import { Kaynak } from "@/components/mdx/Kaynak";
 import { KisaCevap } from "@/components/mdx/KisaCevap";
 import type { IcerikDetayDTO } from "@/lib/db/queries/dto";
 import { mdxDerle } from "@/lib/mdx/derle";
-import { seviyeEtiketi, turEtiketi } from "@/lib/rotalar";
+import { icerikYolu, seviyeEtiketi, turEtiketi } from "@/lib/rotalar";
 import { turIndeksYolu } from "@/lib/tur-arsivi";
 
 const TARIH_TR = new Intl.DateTimeFormat("tr-TR", { dateStyle: "long" });
@@ -182,6 +183,9 @@ export async function IcerikSayfasi({ icerik }: { icerik: IcerikDetayDTO }) {
             güncelleme: {tarih(icerik.updatedAt)}
           </span>
         </div>
+
+        {/* 4b — makale araçları: .md kopyala / paylaş / yazdır (§8.1 görünür yüzü) */}
+        <MakaleAraclari yol={icerikYolu(icerik.type, icerik.slug)} baslik={icerik.title} />
 
         {/* 5 — Kısa cevap (answerFirst) */}
         <div className="mt-8 max-w-[var(--govde-olcu)]">

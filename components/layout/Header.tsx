@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { MobilMenu, type MenuMaddesi } from "./MobilMenu";
 import { TemaAnahtari } from "./TemaAnahtari";
 
 // Ana gezinme — BRIEF §2.2 URL şeması. `hazir: false` olanlar sonraki
-// fazlarda açılacak rotalardır; prefetch kapalı tutulur (404 prefetch'i
-// konsolu kirletir) ve görsel olarak sönük gösterilir.
-const NAV = [
+// fazlarda açılacak modüllerdir: rota vardır (plan sayfası döner) ama
+// prefetch kapalıdır ve görsel olarak sönük gösterilir.
+const NAV: readonly MenuMaddesi[] = [
   { href: "/konu", etiket: "Konular", hazir: true },
   { href: "/sozluk", etiket: "Sözlük", hazir: true },
   { href: "/makale", etiket: "Makaleler", hazir: true },
@@ -12,29 +13,33 @@ const NAV = [
   { href: "/uygulama", etiket: "Uygulamalar", hazir: true },
   { href: "/kurs", etiket: "Kurslar", hazir: false },
   { href: "/forum", etiket: "Forum", hazir: false },
-] as const;
+];
 
 export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-doku bg-kagit/85 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-5 gap-y-2 px-[var(--gutter)] py-3">
+      <div className="relative mx-auto flex max-w-[1280px] items-center gap-x-5 px-[var(--gutter)] py-3">
         <Link
           href="/"
           aria-label="Sinaptiklab ana sayfa"
-          className="flex items-baseline gap-1 font-display text-lg font-bold tracking-tight text-murekkep no-underline hover:text-murekkep"
+          className="flex shrink-0 items-baseline gap-1 font-display text-lg font-bold tracking-tight text-murekkep no-underline hover:text-murekkep"
         >
           SINAPTIKLAB
           <span aria-hidden className="inline-block size-2 bg-sinyal" />
         </Link>
 
-        <nav aria-label="Ana gezinme" className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        {/* Masaüstü gezinme (md+); mobilde çekmeceye düşer */}
+        <nav
+          aria-label="Ana gezinme"
+          className="hidden flex-wrap items-center gap-x-4 gap-y-1 md:flex"
+        >
           {NAV.map((madde) => (
             <Link
               key={madde.href}
               href={madde.href}
               prefetch={madde.hazir ? undefined : false}
               className={`font-mono text-sm no-underline transition-colors hover:text-sinyal ${
-                madde.hazir ? "text-murekkep-2" : "text-murekkep-2/55"
+                madde.hazir ? "text-murekkep-2" : "text-murekkep-2/70"
               }`}
             >
               {madde.etiket}
@@ -43,7 +48,6 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          {/* Arama: ikon + kısayol ipucu; /ara sayfası kendi form'unu taşır */}
           <Link
             href="/ara"
             aria-label="Sitede ara"
@@ -59,10 +63,11 @@ export function Header() {
           <Link
             href="/giris"
             prefetch={false}
-            className="font-mono text-sm text-murekkep-2/55 no-underline transition-colors hover:text-sinyal max-sm:hidden"
+            className="font-mono text-sm text-murekkep-2/70 no-underline transition-colors hover:text-sinyal max-lg:hidden"
           >
             Giriş
           </Link>
+          <MobilMenu maddeler={NAV} />
         </div>
       </div>
     </header>

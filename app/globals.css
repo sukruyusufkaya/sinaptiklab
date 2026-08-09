@@ -625,6 +625,65 @@ body {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   YAZDIRMA — teknik içerik basılır ve arşivlenir. Kâğıtta enstrüman
+   süsü değil, okunur belge hedeflenir: kabuk gizlenir, bağlantı adresleri
+   metne yazılır, sayfa sonları bölüm ortasında kırılmaz.
+   ════════════════════════════════════════════════════════════════════ */
+@media print {
+  header,
+  footer,
+  nav[aria-label="Bölüm haritası"],
+  nav[aria-label="İçindekiler"],
+  .supurme,
+  .hud-kose,
+  [data-yazdirma-gizle] {
+    display: none !important;
+  }
+  .ekran {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+  /* Gövde içi dış bağlantıların adresi kâğıtta görünür olsun */
+  #icerik-govde a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    word-break: break-all;
+  }
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  .shiki,
+  figure,
+  aside {
+    break-inside: avoid;
+  }
+  .kenar-notu {
+    display: none;
+  }
+  details {
+    open: true;
+  }
+  details > summary {
+    list-style: none;
+  }
+  article {
+    display: block !important;
+    max-width: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root) {

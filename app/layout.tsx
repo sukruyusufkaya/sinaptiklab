@@ -13,6 +13,30 @@ export const metadata: Metadata = {
   },
   description:
     "Yapay zeka sistemlerini gerçekten üretenler için Türkçe teknik yayın: her iddia kaynaklı, her tutorial çalışan repo ile. Saha verisi, uydurma yok.",
+  applicationName: "Sinaptiklab",
+  authors: [
+    { name: "Şükrü Yusuf Kaya", url: `${env.NEXT_PUBLIC_SITE_URL}/yazar/sukru-yusuf-kaya` },
+  ],
+  creator: "Şükrü Yusuf Kaya",
+  publisher: "Sinaptiklab",
+  formatDetection: { telephone: false },
+  // Feed keşfi: okuyucular ve toplayıcılar akışları <head>'den bulur (§7.1)
+  alternates: {
+    canonical: env.NEXT_PUBLIC_SITE_URL,
+    types: {
+      "application/rss+xml": [{ url: "/feed.xml", title: "Sinaptiklab — RSS" }],
+      "application/atom+xml": [{ url: "/atom.xml", title: "Sinaptiklab — Atom" }],
+      "application/feed+json": [{ url: "/feed.json", title: "Sinaptiklab — JSON Feed" }],
+      "text/markdown": [{ url: "/llms.txt", title: "Sinaptiklab — llms.txt" }],
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    siteName: "Sinaptiklab",
+    url: env.NEXT_PUBLIC_SITE_URL,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
