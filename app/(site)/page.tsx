@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
 import { BultenCTA } from "@/components/layout/BultenCTA";
+import { HudCerceve } from "@/components/layout/HudCerceve";
 import { sonYayinlar } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import {
@@ -47,6 +48,7 @@ function HeroIzi() {
   );
 }
 
+/** Ekran içi okuma şeridi: gerçek verimizden ölçümler (§14/7 uyumlu). */
 function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
   const hucreler = [
     { deger: veri.yayindaIcerik, etiket: "yayında içerik" },
@@ -55,23 +57,21 @@ function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
     { deger: veri.toplamKaynak, etiket: "doğrulanmış kaynak" },
   ];
   return (
-    <section aria-label="Site ölçümleri" className="border-y border-doku">
-      <dl className="mx-auto grid max-w-[1280px] grid-cols-2 sm:grid-cols-4">
-        {hucreler.map((hucre, sira) => (
-          <div
-            key={hucre.etiket}
-            className={`px-[var(--gutter)] py-5 ${sira > 0 ? "border-l border-doku" : ""} ${sira >= 2 ? "max-sm:border-t max-sm:border-doku" : ""} ${sira === 2 ? "max-sm:border-l-0" : ""}`}
-          >
-            <dd className="font-display text-3xl font-bold text-murekkep">
-              {SAYI_TR.format(hucre.deger)}
-            </dd>
-            <dt className="mt-1 font-mono text-xs tracking-wider text-murekkep-2">
-              {hucre.etiket}
-            </dt>
-          </div>
-        ))}
-      </dl>
-    </section>
+    <dl className="grid grid-cols-2 border-t border-doku sm:grid-cols-4">
+      {hucreler.map((hucre, sira) => (
+        <div
+          key={hucre.etiket}
+          className={`px-5 py-4 sm:px-6 ${sira > 0 ? "border-l border-doku" : ""} ${sira >= 2 ? "border-t border-doku sm:border-t-0" : ""} ${sira === 2 ? "border-l-0 sm:border-l" : ""}`}
+        >
+          <dd className="font-display text-2xl font-bold tabular-nums text-murekkep sm:text-3xl">
+            {SAYI_TR.format(hucre.deger)}
+          </dd>
+          <dt className="mt-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2">
+            {hucre.etiket}
+          </dt>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -94,45 +94,68 @@ export default async function AnaSayfa() {
 
   return (
     <>
-      {/* ── Hero: milimetrik tezgâh zemini üzerinde kompozisyon ── */}
-      <section className="mm-zemin border-b border-doku">
-        <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-[var(--gutter)] py-20 sm:py-24 lg:grid-cols-[minmax(0,1fr)_minmax(280px,480px)] lg:py-28">
-          <div>
-            <p className="inline-flex items-center gap-2 border border-doku bg-kagit px-3 py-1 font-mono text-xs uppercase tracking-widest text-murekkep-2">
-              <span aria-hidden className="inline-block size-1.5 bg-onay" />
-              kalibrasyon aşaması · v0.1
-            </p>
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.02] tracking-tight text-murekkep [font-stretch:92%]">
-              Saha verisi,
-              <br />
-              <span className="text-sinyal">uydurma yok.</span>
-            </h1>
-            <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-murekkep-2">
-              Yapay zeka sistemlerini <em>gerçekten üretenler</em> için Türkçe teknik yayın: her
-              iddia kaynaklı, her ölçüm yeniden üretilebilir, her içerik sürümlü.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link href="/konu" className="dugme-birincil">
-                Konu haritası <span aria-hidden>→</span>
-              </Link>
-              <a href="#son-yayinlar" className="dugme-cerceve">
-                Son yayınlar <span aria-hidden>↓</span>
-              </a>
+      {/* ── Hero: sayfaya gömülü koyu enstrüman ekranı (ADR 0008) ── */}
+      <section className="ekran hud relative overflow-hidden border-b border-doku">
+        <HudCerceve />
+        <span aria-hidden className="supurme left-0" />
+        <div className="ekran-izgara">
+          <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
+            {/* cihaz üst çubuğu */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-doku py-3 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
+              <span className="flex items-center gap-2 text-onay">
+                <span aria-hidden className="inline-block size-1.5 bg-onay" />
+                çevrimiçi
+              </span>
+              <span aria-hidden>/</span>
+              <span>kanal 01 · yayın akışı</span>
+              <span aria-hidden>/</span>
+              <span>kalibrasyon v0.1</span>
+              <span className="ml-auto max-sm:hidden">tr · utf-8</span>
+            </div>
+
+            <div className="grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(300px,520px)] lg:py-24">
+              <div>
+                <h1 className="font-display text-4xl font-bold leading-[0.98] tracking-tight text-murekkep [font-stretch:88%]">
+                  Saha verisi,
+                  <br />
+                  <span className="text-sinyal">uydurma yok.</span>
+                </h1>
+                <p className="mt-7 max-w-[50ch] text-lg leading-relaxed text-murekkep-2">
+                  Yapay zeka sistemlerini <em>gerçekten üretenler</em> için Türkçe teknik yayın: her
+                  iddia kaynaklı, her ölçüm yeniden üretilebilir, her içerik sürümlü.
+                </p>
+                <div className="mt-9 flex flex-wrap items-center gap-3">
+                  <Link href="/konu" className="dugme-birincil">
+                    Konu haritası <span aria-hidden>→</span>
+                  </Link>
+                  <a href="#son-yayinlar" className="dugme-cerceve">
+                    Son yayınlar <span aria-hidden>↓</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="hud relative hidden border border-doku bg-kagit-alt/70 p-6 lg:block">
+                <HudCerceve />
+                <p className="mb-4 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
+                  iz 01 · aksiyon potansiyeli
+                </p>
+                <HeroIzi />
+                <div className="mt-4 flex justify-between font-mono text-[0.65rem] tracking-wider text-murekkep-2">
+                  <span>64 px/s</span>
+                  <span>eşik −55 mV</span>
+                  <span className="text-sinyal">kayıt açık</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="hidden bg-kagit/60 p-6 lg:block">
-            <p className="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-murekkep-2">
-              iz 01 · aksiyon potansiyeli
-            </p>
-            <HeroIzi />
-            <p className="mt-3 text-right font-mono text-[0.65rem] tracking-wider text-murekkep-2">
-              64 px/s · eşik −55 mV
-            </p>
-          </div>
+
+          {istatistik !== null && (
+            <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
+              <OlcumSeridi veri={istatistik} />
+            </div>
+          )}
         </div>
       </section>
-
-      {istatistik !== null && <OlcumSeridi veri={istatistik} />}
 
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
         {yayinlar.length > 0 && (
