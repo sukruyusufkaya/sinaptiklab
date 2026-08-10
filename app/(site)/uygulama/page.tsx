@@ -1,6 +1,7 @@
 // /uygulama — uygulama (type: "tutorial") arşivi (BRIEF §2.2). Desen: app/(site)/makale/page.tsx.
 import type { Metadata } from "next";
 import { TurArsivi } from "@/components/content/TurArsivi";
+import { turSayisi } from "@/lib/db/queries/arsiv";
 import { sayfaNoOku } from "@/lib/search/ara";
 import { turArsiviUstVerisi } from "@/lib/tur-arsivi";
 
@@ -14,7 +15,15 @@ function sayfaOku(ham: string | string[] | undefined): number {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const ham = await searchParams;
-  return turArsiviUstVerisi("tutorial", sayfaOku(ham["sayfa"]));
+  // Hiç yayın yoksa arşiv ince sayfadır → noindex, follow. DB'ye
+  // ulaşılamazsa da aynı davranış: uydurma bir sayı indeksleme kararı vermez.
+  let bos = true;
+  try {
+    bos = (await turSayisi("tutorial")) === 0;
+  } catch {
+    bos = true;
+  }
+  return turArsiviUstVerisi("tutorial", sayfaOku(ham["sayfa"]), { bos });
 }
 
 export default async function UygulamaArsivi({ searchParams }: Props) {

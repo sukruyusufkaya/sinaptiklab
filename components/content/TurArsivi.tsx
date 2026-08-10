@@ -1,18 +1,21 @@
-// Tür indeks görünümü (/makale, /rehber, /uygulama) — üç rota da bu tek
-// bileşeni kurar; aralarındaki fark yalnız lib/tur-arsivi.ts'teki metinlerdir.
+// Tür indeks görünümü — SEKİZ rota da (makale, rehber, uygulama,
+// laboratuvar, araç, ölçüm, vaka, uyum) bu tek bileşeni kurar; aralarındaki
+// fark yalnız lib/tur-arsivi.ts'teki metinlerdir.
 // RSC: veriyi kendisi çeker, DB hatasında boş duruma düşer (sayfa kırılmaz).
 //
-// Görsel dil: sayfaya gömülü koyu enstrüman ekranı (.ekran + .ekran-izgara +
-// HudCerceve) — tür indeksleri sitenin ana gezinme cepheleridir; ikincil
-// arşivler (etiket, cluster) .mm-zemin kağıt zemininde kalır.
+// Görsel dil: yükseltilmiş vurgu yüzeyi (.ekran + .ekran-izgara) — tür
+// indeksleri sitenin ana gezinme cepheleridir; ikincil arşivler (etiket,
+// cluster) .mm-zemin kağıt zemininde kalır.
 import Link from "next/link";
 import { IcerikKarti } from "@/components/content/IcerikKarti";
+import { ArsivBosGorseli, TurIkon } from "@/components/gorsel";
 import { ARSIV_SAYFA_ADEDI, turListesi, turSayisi } from "@/lib/db/queries/arsiv";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import { env } from "@/lib/env";
 import { jsonLdScript, koleksiyonSayfasiJsonLd } from "@/lib/seo/jsonld";
 import { icerikYolu } from "@/lib/rotalar";
 import {
+  ARSIVLI_TURLER,
   TUR_ARSIV_METNI,
   turArsivSayfaYolu,
   turIndeksYolu,
@@ -81,6 +84,32 @@ export async function TurArsivi({ tur, sayfa }: { tur: ArsivliTur; sayfa: number
                 <span className="deger">zorunlu</span>
               </div>
             </div>
+
+            {/* Kardeş arşivler: sekiz tür başlıkta yer kaplamadan birbirine
+                bağlanır. Aktif olan aria-current ile işaretlenir. */}
+            <nav aria-label="İçerik türleri" className="mt-7">
+              <ul className="flex flex-wrap gap-2">
+                {ARSIVLI_TURLER.map((kardes) => {
+                  const aktif = kardes === tur;
+                  return (
+                    <li key={kardes}>
+                      <Link
+                        href={turIndeksYolu(kardes) ?? "/"}
+                        aria-current={aktif ? "page" : undefined}
+                        className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-xs no-underline transition-colors ${
+                          aktif
+                            ? "border-sinyal bg-sinyal-yumusak text-sinyal"
+                            : "border-doku bg-kagit-alt text-murekkep-2 hover:border-doku-guclu hover:text-murekkep"
+                        }`}
+                      >
+                        <TurIkon tur={kardes} className="size-[15px]" />
+                        {TUR_ARSIV_METNI[kardes].baslik}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
           </div>
         </div>
       </section>
@@ -136,22 +165,25 @@ export async function TurArsivi({ tur, sayfa }: { tur: ArsivliTur; sayfa: number
             )}
           </>
         ) : (
-          <div className="max-w-[var(--govde-olcu)] border border-doku rounded-lg bg-kagit-alt p-6">
-            <p className="font-display text-lg font-semibold">
-              {araligiAsti ? "Bu sayfada kayıt yok." : "Kayıt yok."}
-            </p>
-            <p className="mt-3 text-murekkep-2">
-              {araligiAsti
-                ? `Arşivde ${SAYI_TR.format(toplam)} kayıt var ve son sayfa ${sayfaSayisi}.`
-                : metin.bosMesaj}
-            </p>
-            <p className="mt-4 font-mono text-sm">
-              <Link href={yol}>← {metin.baslik.toLocaleLowerCase("tr-TR")} listesi</Link>
-              <span aria-hidden className="mx-2 text-murekkep-2">
-                ·
-              </span>
-              <Link href="/konu">konu haritası</Link>
-            </p>
+          <div className="flex max-w-[var(--govde-olcu)] flex-col gap-5 rounded-lg border border-doku bg-kagit-alt p-6 sm:flex-row sm:items-start">
+            <ArsivBosGorseli className="h-auto w-40 shrink-0 text-murekkep-2" />
+            <div>
+              <p className="font-display text-lg font-semibold">
+                {araligiAsti ? "Bu sayfada kayıt yok." : "Kayıt yok."}
+              </p>
+              <p className="mt-3 text-murekkep-2">
+                {araligiAsti
+                  ? `Arşivde ${SAYI_TR.format(toplam)} kayıt var ve son sayfa ${sayfaSayisi}.`
+                  : metin.bosMesaj}
+              </p>
+              <p className="mt-4 font-mono text-sm">
+                <Link href={yol}>← {metin.baslik.toLocaleLowerCase("tr-TR")} listesi</Link>
+                <span aria-hidden className="mx-2 text-murekkep-2">
+                  ·
+                </span>
+                <Link href="/konu">konu haritası</Link>
+              </p>
+            </div>
           </div>
         )}
       </div>

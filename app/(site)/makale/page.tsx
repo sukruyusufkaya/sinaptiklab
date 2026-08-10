@@ -4,6 +4,7 @@
 // (unstable_cache + ICERIK_LISTE_TAG), yani DB'ye istek başına gidilmez.
 import type { Metadata } from "next";
 import { TurArsivi } from "@/components/content/TurArsivi";
+import { turSayisi } from "@/lib/db/queries/arsiv";
 import { sayfaNoOku } from "@/lib/search/ara";
 import { turArsiviUstVerisi } from "@/lib/tur-arsivi";
 
@@ -17,7 +18,15 @@ function sayfaOku(ham: string | string[] | undefined): number {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const ham = await searchParams;
-  return turArsiviUstVerisi("article", sayfaOku(ham["sayfa"]));
+  // Hiç yayın yoksa arşiv ince sayfadır → noindex, follow. DB'ye
+  // ulaşılamazsa da aynı davranış: uydurma bir sayı indeksleme kararı vermez.
+  let bos = true;
+  try {
+    bos = (await turSayisi("article")) === 0;
+  } catch {
+    bos = true;
+  }
+  return turArsiviUstVerisi("article", sayfaOku(ham["sayfa"]), { bos });
 }
 
 export default async function MakaleArsivi({ searchParams }: Props) {

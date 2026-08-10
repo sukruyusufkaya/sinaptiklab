@@ -21,19 +21,22 @@ import {
   type AramaCiktisi,
   type TerimEslesmesiDTO,
 } from "@/lib/search/ara";
+import { ARSIVLI_TURLER } from "@/lib/tur-arsivi";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Ara — Sinaptiklab",
   description:
-    "Sinaptiklab korpusunda tam metin arama: makaleler, rehberler ve uygulamalar; tür, seviye ve konu filtreleriyle.",
+    "Sinaptiklab korpusunda tam metin arama: makale, rehber, uygulama, laboratuvar, araç kartı, ölçüm, vaka ve uyum dosyaları; tür, seviye ve konu filtreleriyle.",
   // §7.1 — arama sonuç sayfaları indekslenmez; linkler izlenir.
   robots: { index: false, follow: true },
   alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/ara` },
 };
 
-const TUR_CIPLERI: Content["type"][] = ["article", "guide", "tutorial"];
+// Tür çipleri arşivli türlerden TÜRETİLİR: yeni bir tür indeksi açıldığında
+// arama süzgeci kendiliğinden takip eder, iki liste ayrışmaz.
+const TUR_CIPLERI: Content["type"][] = [...ARSIVLI_TURLER];
 const SEVIYE_CIPLERI: Content["level"][] = ["giris", "orta", "ileri", "uzman"];
 
 interface Props {

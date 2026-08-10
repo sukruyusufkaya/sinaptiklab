@@ -10,6 +10,7 @@ export const SITEMAP_PARCALARI = [
   "makaleler",
   "rehberler",
   "uygulamalar",
+  "diger",
   "konular",
   "sozluk",
 ] as const;
@@ -26,6 +27,19 @@ export const PARCA_ICERIK_TURU: Partial<Record<SitemapParcasi, IcerikTuru>> = {
   rehberler: "guide",
   uygulamalar: "tutorial",
 };
+
+/**
+ * Kalan türler tek parçada toplanır. Beşi için beş ayrı dosya açmak,
+ * hepsi boşken sitemap indeksini boş dosyalarla doldururdu; tek parça
+ * hem indeksi temiz tutar hem içerik geldiğinde kendiliğinden dolar.
+ */
+export const DIGER_TURLER: readonly IcerikTuru[] = [
+  "lab",
+  "tool",
+  "benchmark",
+  "case",
+  "compliance",
+];
 
 /** Parçanın mutlak URL'i — Next kalıbı: /sitemap/<id>.xml */
 export function parcaUrl(siteUrl: string, id: SitemapParcasi): string {

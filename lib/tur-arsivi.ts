@@ -1,4 +1,4 @@
-// Tür indeks rotalarının (/makale, /rehber, /uygulama) tek doğruluk kaynağı:
+// Tür indeks rotalarının tek doğruluk kaynağı:
 // hangi türlerin arşiv sayfası VAR, o sayfanın yolu, sayfalı adresi, ekran
 // metni ve <head> üst verisi. Rota önekleri lib/rotalar'dan türetilir — URL
 // şeması değişirse (BRIEF §2.2) burası kendiliğinden takip eder.
@@ -10,7 +10,16 @@ import { env } from "@/lib/env";
 import { icerikYolu, type IcerikTuru } from "@/lib/rotalar";
 
 /** Arşiv (indeks) sayfası olan içerik türleri. Yeni tür yayına çıkınca eklenir. */
-export const ARSIVLI_TURLER = ["article", "guide", "tutorial"] as const;
+export const ARSIVLI_TURLER = [
+  "article",
+  "guide",
+  "tutorial",
+  "lab",
+  "tool",
+  "benchmark",
+  "case",
+  "compliance",
+] as const;
 
 export type ArsivliTur = (typeof ARSIVLI_TURLER)[number];
 
@@ -75,6 +84,56 @@ export const TUR_ARSIV_METNI: Record<ArsivliTur, TurArsivMetni> = {
     bosMesaj:
       "Henüz yayında uygulama yok. Uygulamalar çalışan repo ve yeniden üretim bilgisi olmadan yayına çıkamadığı için bu tür kasıtlı olarak yavaş dolar.",
   },
+  lab: {
+    baslik: "Laboratuvarlar",
+    indeks: "§ laboratuvar",
+    giris:
+      "Kontrollü koşulda kurulmuş deney kayıtları. Bir laboratuvar hipotezini, kurulumunu, ölçüm yöntemini ve ham sonucunu birlikte yayınlar — sonuç beklentiyi doğrulamadığında da.",
+    aciklama:
+      "Türkçe yapay zeka deney kayıtları: hipotez, kurulum, ölçüm yöntemi ve ham sonuç bir arada. Olumsuz sonuçlar da yayınlanır.",
+    bosMesaj:
+      "Henüz yayında laboratuvar kaydı yok. Bir deney ancak kurulumu ve ham verisi yeniden üretilebilir biçimde yazıldığında yayına çıkar.",
+  },
+  tool: {
+    baslik: "Araç ve model kartları",
+    indeks: "§ araç",
+    giris:
+      "Bir modeli ya da aracı üretimde kullanmadan önce bilmeniz gerekenler: sürüm, lisans, bağlam sınırları, maliyet, bilinen zayıflıklar. Pazarlama metni değil, karar kartı.",
+    aciklama:
+      "Yapay zeka model ve araç kartları: sürüm, lisans, bağlam sınırı, maliyet ve bilinen zayıflıklar. Pazarlama değil, üretim kararı için kart.",
+    bosMesaj:
+      "Henüz yayında araç kartı yok. Kart, üreticinin iddiası değil kendi ölçümümüz ve doğrulanmış kaynaklarla dolduğunda açılır.",
+  },
+  benchmark: {
+    baslik: "Ölçümler",
+    indeks: "§ ölçüm",
+    giris:
+      "Karşılaştırmalı ölçüm sonuçları. Her ölçüm donanımını, sürümlerini, veri kümesini ve yöntemini açıklar; başkası aynı kurulumu kurup aynı sayıya varabilmelidir.",
+    aciklama:
+      "Türkçe yapay zeka ölçüm ve kıyaslama sonuçları: donanım, sürüm, veri kümesi ve yöntem açık; her sayı yeniden üretilebilir.",
+    bosMesaj:
+      "Henüz yayında ölçüm yok. Bir kıyaslama, yöntemi ve donanımı eksiksiz yazılmadan sayı yayınlamaz.",
+  },
+  case: {
+    baslik: "Vaka çalışmaları",
+    indeks: "§ vaka",
+    giris:
+      "Sahada gerçekten kurulmuş sistemlerin hikâyesi: problem, seçilen mimari, karşılaşılan duvar ve ölçülen sonuç. Başarı anlatısı değil, karar günlüğü.",
+    aciklama:
+      "Türkçe yapay zeka vaka çalışmaları: gerçek kurulumlar, seçilen mimariler, karşılaşılan duvarlar ve ölçülen sonuçlar.",
+    bosMesaj:
+      "Henüz yayında vaka çalışması yok. Vakalar veri paylaşım izni ve doğrulanabilir ölçüm gerektirdiği için en yavaş dolan türdür.",
+  },
+  compliance: {
+    baslik: "Uyum dosyaları",
+    indeks: "§ uyum",
+    giris:
+      "KVKK, sektör düzenlemeleri ve veri yerleşimi gibi konuların yapay zeka sistemlerine pratik yansıması. Hukuki görüş değil; mühendisin karar verirken bakacağı çerçeve.",
+    aciklama:
+      "Yapay zeka sistemleri için Türkçe uyum dosyaları: KVKK, veri yerleşimi ve sektör düzenlemelerinin mühendislik karşılığı.",
+    bosMesaj:
+      "Henüz yayında uyum dosyası yok. Bu tür, birincil mevzuat kaynağına bağlanmadan yayına çıkamaz.",
+  },
 };
 
 /**
@@ -82,7 +141,11 @@ export const TUR_ARSIV_METNI: Record<ArsivliTur, TurArsivMetni> = {
  * ve canonical KENDİNE bakar (BRIEF §7.1: sayfalamada benzersiz title +
  * kendi kanoniği; birinci sayfaya işaret eden rel=canonical kullanılmaz).
  */
-export function turArsiviUstVerisi(tur: ArsivliTur, sayfa: number): Metadata {
+export function turArsiviUstVerisi(
+  tur: ArsivliTur,
+  sayfa: number,
+  secenekler: { bos?: boolean } = {},
+): Metadata {
   const metin = TUR_ARSIV_METNI[tur];
   const baslik = sayfa > 1 ? `${metin.baslik} · Sayfa ${sayfa}` : metin.baslik;
   const mutlakUrl = `${env.NEXT_PUBLIC_SITE_URL}${turArsivSayfaYolu(tur, sayfa)}`;
@@ -90,6 +153,9 @@ export function turArsiviUstVerisi(tur: ArsivliTur, sayfa: number): Metadata {
     title: baslik,
     description: metin.aciklama,
     alternates: { canonical: mutlakUrl },
+    // Hiç içeriği olmayan arşiv ince sayfadır: dizine girmez ama taranır
+    // (follow) — yayın açıldığı anda kendiliğinden indekslenebilir hâle gelir.
+    ...(secenekler.bos === true ? { robots: { index: false, follow: true } } : {}),
     openGraph: {
       type: "website",
       title: baslik,

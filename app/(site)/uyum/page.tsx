@@ -1,4 +1,4 @@
-// /rehber — rehber (type: "guide") arşivi (BRIEF §2.2). Desen: app/(site)/makale/page.tsx.
+// /uyum — uyum dosyası (type: "compliance") arşivi (BRIEF §2.2). Desen: app/(site)/makale/page.tsx.
 import type { Metadata } from "next";
 import { TurArsivi } from "@/components/content/TurArsivi";
 import { turSayisi } from "@/lib/db/queries/arsiv";
@@ -19,14 +19,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   // ulaşılamazsa da aynı davranış: uydurma bir sayı indeksleme kararı vermez.
   let bos = true;
   try {
-    bos = (await turSayisi("guide")) === 0;
+    bos = (await turSayisi("compliance")) === 0;
   } catch {
     bos = true;
   }
-  return turArsiviUstVerisi("guide", sayfaOku(ham["sayfa"]), { bos });
+  return turArsiviUstVerisi("compliance", sayfaOku(ham["sayfa"]), { bos });
 }
 
-export default async function RehberArsivi({ searchParams }: Props) {
+export default async function UyumArsivi({ searchParams }: Props) {
   const ham = await searchParams;
-  return <TurArsivi tur="guide" sayfa={sayfaOku(ham["sayfa"])} />;
+  return <TurArsivi tur="compliance" sayfa={sayfaOku(ham["sayfa"])} />;
 }

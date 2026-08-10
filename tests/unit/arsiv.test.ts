@@ -54,17 +54,43 @@ const ICERIK: IcerikDetayDTO = {
 };
 
 describe("tür arşivi rotaları (BRIEF §2.2 / §7.1)", () => {
-  it("yalnız indeksi olan türler arşivli sayılır", () => {
-    expect(ARSIVLI_TURLER).toEqual(["article", "guide", "tutorial"]);
+  it("BRIEF §2.2'deki sekiz içerik türünün de arşivi vardır", () => {
+    expect(ARSIVLI_TURLER).toEqual([
+      "article",
+      "guide",
+      "tutorial",
+      "lab",
+      "tool",
+      "benchmark",
+      "case",
+      "compliance",
+    ]);
     expect(arsivliTurMu("article")).toBe(true);
-    expect(arsivliTurMu("tool")).toBe(false);
+    expect(arsivliTurMu("tool")).toBe(true);
+    // Bülten kendi rotasında (/bulten) yaşar, tür arşivi yoktur
+    expect(arsivliTurMu("issue")).toBe(false);
   });
 
-  it("indeks yolu lib/rotalar önekinden türetilir; indekssiz türde null", () => {
+  it("indeks yolu lib/rotalar önekinden türetilir; arşivsiz türde null", () => {
     expect(turIndeksYolu("article")).toBe("/makale");
     expect(turIndeksYolu("guide")).toBe("/rehber");
     expect(turIndeksYolu("tutorial")).toBe("/uygulama");
-    expect(turIndeksYolu("benchmark")).toBeNull();
+    expect(turIndeksYolu("lab")).toBe("/laboratuvar");
+    expect(turIndeksYolu("tool")).toBe("/arac");
+    expect(turIndeksYolu("benchmark")).toBe("/olcum");
+    expect(turIndeksYolu("case")).toBe("/vaka");
+    expect(turIndeksYolu("compliance")).toBe("/uyum");
+    expect(turIndeksYolu("issue")).toBeNull();
+  });
+
+  it("boş arşiv noindex+follow, dolu arşiv robots yazmaz", () => {
+    const bos = turArsiviUstVerisi("lab", 1, { bos: true });
+    expect(bos.robots).toEqual({ index: false, follow: true });
+
+    const dolu = turArsiviUstVerisi("article", 1, { bos: false });
+    expect(dolu.robots).toBeUndefined();
+    // Seçenek verilmediğinde de dizine kapatma kararı verilmez
+    expect(turArsiviUstVerisi("article", 1).robots).toBeUndefined();
   });
 
   it("1. sayfa parametresiz kalır, 2+ sayfa ?sayfa=N taşır", () => {

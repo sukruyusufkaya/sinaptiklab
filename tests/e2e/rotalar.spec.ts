@@ -18,6 +18,11 @@ const HER_ZAMAN = [
   "/makale",
   "/rehber",
   "/uygulama",
+  "/laboratuvar",
+  "/arac",
+  "/olcum",
+  "/vaka",
+  "/uyum",
   "/hakkinda",
   "/iletisim",
   "/editoryal-politika",
@@ -68,6 +73,8 @@ test.describe("erişilebilirlik taraması (tüm sayfa tipleri)", () => {
     "/sozluk",
     "/bulten",
     "/makale",
+    // Boş arşiv: kardeş tür gezinmesi ve boş durum illüstrasyonu da taranır
+    "/laboratuvar",
     "/hakkinda",
     "/kvkk-aydinlatma",
   ] as const;
@@ -84,7 +91,7 @@ test.describe("erişilebilirlik taraması (tüm sayfa tipleri)", () => {
 });
 
 test.describe("mobil taşma kontrolü", () => {
-  const MOBIL_YOLLAR = ["/", "/konu", "/sozluk", "/hakkinda", "/bulten"] as const;
+  const MOBIL_YOLLAR = ["/", "/konu", "/sozluk", "/hakkinda", "/bulten", "/laboratuvar"] as const;
 
   for (const yol of MOBIL_YOLLAR) {
     test(`${yol} 375px'te yatay taşma yok`, async ({ page }) => {

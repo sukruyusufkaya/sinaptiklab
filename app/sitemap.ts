@@ -11,7 +11,14 @@ import { terimListesi } from "@/lib/db/queries/terms";
 import { pillarlar, tumClusterlar } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
 import { icerikYolu, type IcerikTuru } from "@/lib/rotalar";
-import { PARCA_ICERIK_TURU, SITEMAP_PARCALARI, sitemapParcasiMi } from "@/lib/sitemap-parcalari";
+import {
+  DIGER_TURLER,
+  PARCA_ICERIK_TURU,
+  SITEMAP_PARCALARI,
+  sitemapParcasiMi,
+} from "@/lib/sitemap-parcalari";
+import { turSayisi } from "@/lib/db/queries/arsiv";
+import { ARSIVLI_TURLER, turIndeksYolu } from "@/lib/tur-arsivi";
 
 export function generateSitemaps(): { id: string }[] {
   return SITEMAP_PARCALARI.map((id) => ({ id }));
@@ -60,7 +67,23 @@ export default async function sitemap(props: {
   if (!sitemapParcasiMi(id)) return [];
 
   switch (id) {
-    case "sayfalar":
+    case "sayfalar": {
+      // Tür indeksleri ARSIVLI_TURLER'den türetilir ve YALNIZ yayını olanlar
+      // girer: boş arşiv sayfaları noindex olduğu için sitemap'e de girmemeli
+      // (iki yüzeyin aynı şeyi söylemesi gerekir). İçerik açıldığı an
+      // kendiliğinden listeye dahil olurlar.
+      const turIndeksleri = (
+        await Promise.all(
+          ARSIVLI_TURLER.map(async (tur) => {
+            try {
+              return (await turSayisi(tur)) > 0 ? turIndeksYolu(tur) : null;
+            } catch {
+              return null;
+            }
+          }),
+        )
+      ).filter((yol): yol is string => yol !== null);
+
       // Açık statik rotalar. /ara noindex olduğu için YOK; sonraki fazlara
       // ait modül sayfaları (forum/kurs/patika/giris) bilinçli olarak var —
       // gerçek içerik taşıyorlar ve plan şeffaflığı sağlıyorlar.
@@ -69,9 +92,7 @@ export default async function sitemap(props: {
         "/konu",
         "/sozluk",
         "/bulten",
-        "/makale",
-        "/rehber",
-        "/uygulama",
+        ...turIndeksleri,
         "/hakkinda",
         "/editoryal-politika",
         "/kunye",
@@ -84,11 +105,16 @@ export default async function sitemap(props: {
         "/kurs",
         "/patika",
       ].map((yol) => ({ url: mutlak(yol) }));
+    }
     case "makaleler":
     case "rehberler":
     case "uygulamalar": {
       const tur = PARCA_ICERIK_TURU[id];
       return tur ? icerikParcasi(tur) : [];
+    }
+    case "diger": {
+      const parcalar = await Promise.all(DIGER_TURLER.map((tur) => icerikParcasi(tur)));
+      return parcalar.flat();
     }
     case "konular":
       return konuParcasi();
