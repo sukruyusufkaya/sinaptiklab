@@ -26,6 +26,29 @@ export function generateSitemaps(): { id: string }[] {
 
 const mutlak = (yol: string) => `${env.NEXT_PUBLIC_SITE_URL}${yol}`;
 
+/** Build anı — sabit metinli sayfaların lastmod'u. */
+const BUILD_TARIHI = new Date();
+
+/** İçerik akışıyla tazelenen listeler; lastmod'ları son yayına bağlanır. */
+const AKAN_SAYFALAR = new Set([
+  "/",
+  "/konu",
+  "/sozluk",
+  "/bulten",
+  ...ARSIVLI_TURLER.map((tur) => turIndeksYolu(tur)).filter((y): y is string => y !== null),
+]);
+
+/** Yayındaki en son güncellemenin tarihi; liste sayfalarının lastmod'u. */
+async function sonGuncelleme(): Promise<Date> {
+  try {
+    const liste = await yayindakiIcerikListesi({ adet: 1 });
+    const ilk = liste[0];
+    return ilk === undefined ? BUILD_TARIHI : new Date(ilk.updatedAt);
+  } catch {
+    return BUILD_TARIHI;
+  }
+}
+
 async function icerikParcasi(type: IcerikTuru): Promise<MetadataRoute.Sitemap> {
   try {
     const liste = await yayindakiIcerikListesi({ type, adet: 5000 });
@@ -68,6 +91,7 @@ export default async function sitemap(props: {
 
   switch (id) {
     case "sayfalar": {
+      const sonYayinTarihi = await sonGuncelleme();
       // Tür indeksleri ARSIVLI_TURLER'den türetilir ve YALNIZ yayını olanlar
       // girer: boş arşiv sayfaları noindex olduğu için sitemap'e de girmemeli
       // (iki yüzeyin aynı şeyi söylemesi gerekir). İçerik açıldığı an
@@ -85,8 +109,9 @@ export default async function sitemap(props: {
       ).filter((yol): yol is string => yol !== null);
 
       // Açık statik rotalar. /ara noindex olduğu için YOK; sonraki fazlara
-      // ait modül sayfaları (forum/kurs/patika/giris) bilinçli olarak var —
-      // gerçek içerik taşıyorlar ve plan şeffaflığı sağlıyorlar.
+      // ait modül sayfaları (patika, giriş) bilinçli olarak var — gerçek
+      // içerik taşıyorlar ve plan şeffaflığı sağlıyorlar. Kurs ve forum
+      // modülleri kapsamdan çıkarıldı (ürün sahibi kararı, 2026-08-10).
       return [
         "/",
         "/konu",
@@ -101,10 +126,15 @@ export default async function sitemap(props: {
         "/gizlilik",
         "/cerez-politikasi",
         "/kullanim-sartlari",
-        "/forum",
-        "/kurs",
         "/patika",
-      ].map((yol) => ({ url: mutlak(yol) }));
+      ].map((yol) => ({
+        url: mutlak(yol),
+        // İçerik akışıyla değişen listeler (ana sayfa, arşivler, konu haritası,
+        // sözlük, bülten) son yayına bağlanır; sabit metinler (kurumsal, yasal)
+        // build tarihini taşır. Uydurma "bugün" damgası basılmaz — sürekli
+        // güncellenmiş görünmek tarayıcıda güven kaybettirir.
+        lastModified: AKAN_SAYFALAR.has(yol) ? sonYayinTarihi : BUILD_TARIHI,
+      }));
     }
     case "makaleler":
     case "rehberler":

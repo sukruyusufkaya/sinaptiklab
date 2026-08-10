@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { terimListesi } from "@/lib/db/queries/terms";
 import { env } from "@/lib/env";
+import { breadcrumbJsonLd, jsonLdScript, tanimliTerimKumesiJsonLd } from "@/lib/seo/jsonld";
 import { harfleGrupla } from "@/lib/sozluk";
 
 export const metadata: Metadata = {
@@ -26,6 +27,15 @@ export default async function SozlukSayfasi() {
 
   return (
     <>
+      {/* Sözlüğün kendi şeması: tek tek terim sayfaları DefinedTerm basıyordu,
+          indeks yalnız WebSite taşıyordu. Küme + kırıntı yolu eklendi. */}
+      {terimler.length > 0 && jsonLdScript(tanimliTerimKumesiJsonLd(terimler))}
+      {jsonLdScript(
+        breadcrumbJsonLd([
+          { ad: "Ana sayfa", url: env.NEXT_PUBLIC_SITE_URL },
+          { ad: "Sözlük", url: `${env.NEXT_PUBLIC_SITE_URL}/sozluk` },
+        ]),
+      )}
       <section className="mm-zemin border-b border-doku">
         <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">
           <p className="bolum-indeks uppercase">§ sözlük</p>

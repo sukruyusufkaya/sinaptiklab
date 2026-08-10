@@ -182,6 +182,23 @@ export interface KoleksiyonSayfasiJsonLd extends SemaKoku {
   };
 }
 
+interface TanimliTerimKumesiJsonLd {
+  "@context": string;
+  "@type": "DefinedTermSet";
+  name: string;
+  description: string;
+  url: string;
+  inLanguage: string;
+  hasDefinedTerm: {
+    "@type": "DefinedTerm";
+    name: string;
+    description: string;
+    url: string;
+    termCode: string;
+    alternateName?: string[];
+  }[];
+}
+
 export type JsonLdVerisi =
   | OrganizasyonJsonLd
   | WebSitesiJsonLd
@@ -191,6 +208,7 @@ export type JsonLdVerisi =
   | FaqPageJsonLd
   | KisiJsonLd
   | TanimliTerimJsonLd
+  | TanimliTerimKumesiJsonLd
   | YazilimUygulamasiJsonLd
   | VeriKumesiJsonLd
   | KoleksiyonSayfasiJsonLd;
@@ -349,6 +367,36 @@ export function tanimliTerimJsonLd(
       name: "Sinaptiklab Türkçe Yapay Zeka Sözlüğü",
       url: `${env.NEXT_PUBLIC_SITE_URL}/sozluk`,
     },
+  };
+}
+
+/**
+ * Sözlük İNDEKSİNİN şeması (BRIEF §7.2). Tek tek terim sayfaları DefinedTerm
+ * basıyordu ama indeks yalnız WebSite taşıyordu; oysa kanonik terminoloji
+ * sitenin en ayırt edici varlığı ve zengin sonuç adayı. Kümenin üyeleri
+ * gömülü verilir: tarayıcı tek istekte tüm sözlüğü görür.
+ */
+export function tanimliTerimKumesiJsonLd(
+  terimler: { tr: string; en: string; shortDef: string; slug: string }[],
+): TanimliTerimKumesiJsonLd {
+  const site = env.NEXT_PUBLIC_SITE_URL;
+  return {
+    "@context": SCHEMA_BAGLAMI,
+    "@type": "DefinedTermSet",
+    name: "Sinaptiklab Türkçe Yapay Zeka Sözlüğü",
+    description:
+      "Yapay zeka terimlerinin kanonik Türkçe karşılıkları: her terimin İngilizce " +
+      "aslı, tanımı ve kaynağı ile.",
+    url: `${site}/sozluk`,
+    inLanguage: "tr",
+    hasDefinedTerm: terimler.map((t) => ({
+      "@type": "DefinedTerm" as const,
+      name: t.tr,
+      description: t.shortDef,
+      url: `${site}/sozluk/${t.slug}`,
+      termCode: t.slug,
+      ...(t.en.trim() !== "" ? { alternateName: [t.en] } : {}),
+    })),
   };
 }
 

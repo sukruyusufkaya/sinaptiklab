@@ -53,3 +53,90 @@ test.describe("açık içerik API'si (DB gerekli)", () => {
     expect(bozukTur.status()).toBe(400);
   });
 });
+
+test.describe("llms.txt kapsamı (§8.1)", () => {
+  test("konu, sözlük, arşiv ve makine uç noktalarını duyurur", async ({ request }) => {
+    const yanit = await request.get("/llms.txt");
+    expect(yanit.status()).toBe(200);
+    expect(yanit.headers()["content-type"]).toContain("text/plain");
+    const metin = await yanit.text();
+
+    // llmstxt.org iskeleti
+    expect(metin.startsWith("# Sinaptiklab")).toBe(true);
+    expect(metin).toContain("\n> ");
+
+    // Ajanın site yapısını çıkarabilmesi için gereken bölümler
+    for (const bolum of ["## Konular", "## Sözlük", "## Arşivler", "## İçerik", "## Diğer"]) {
+      expect(metin, bolum).toContain(bolum);
+    }
+
+    // Makine yüzeyleri: bir ajan MCP'yi llms.txt'ten keşfedebilmeli
+    expect(metin).toContain("/api/mcp");
+    expect(metin).toContain("/api/content");
+    expect(metin).toContain("/llms-full.txt");
+    expect(metin).toContain("/sitemap.xml");
+
+    // Boş arşivler duyurulmaz (noindex + sitemap kararıyla tutarlı)
+    expect(metin).not.toContain("(0 yayın)");
+  });
+});
+
+test.describe("sözlüğün makine yüzeyleri (DB gerekli)", () => {
+  let terimSlug: string | null = null;
+  test.beforeEach(async ({ request }) => {
+    if (terimSlug === null) {
+      const yanit = await request.get("/llms.txt");
+      const es = /\/sozluk\/([a-z0-9-]+)\)/.exec(await yanit.text());
+      terimSlug = es?.[1] ?? "";
+    }
+    test.skip(terimSlug === "", "sözlük tohumlanmamış — DB erişimi olmayan ortam");
+  });
+
+  test("terimin .md yüzeyi ham Markdown döner", async ({ request }) => {
+    const yanit = await request.get(`/sozluk/${terimSlug}.md`);
+    expect(yanit.status()).toBe(200);
+    expect(yanit.headers()["content-type"]).toContain("text/markdown");
+    const metin = await yanit.text();
+    expect(metin.startsWith("# ")).toBe(true);
+    expect(metin).toContain("İngilizce:");
+    expect(metin).toContain("Kanonik URL:");
+    // HTML kabuğu sızmamalı
+    expect(metin).not.toContain("<!DOCTYPE");
+  });
+
+  test("olmayan terim 404", async ({ request }) => {
+    const yanit = await request.get("/sozluk/boyle-bir-terim-yok-12345.md");
+    expect(yanit.status()).toBe(404);
+  });
+
+  test("sözlük indeksi DefinedTermSet basar", async ({ request }) => {
+    const govde = await (await request.get("/sozluk")).text();
+    expect(govde).toContain('"@type":"DefinedTermSet"');
+    expect(govde).toContain('"@type":"BreadcrumbList"');
+  });
+});
+
+test.describe("MCP araç yüzeyi (§8.1)", () => {
+  const MCP_BASLIKLARI = {
+    "Content-Type": "application/json",
+    Accept: "application/json, text/event-stream",
+  };
+
+  test("beş araç duyurulur ve sözlük araçları yanıt verir", async ({ request }) => {
+    const liste = await request.post("/api/mcp", {
+      headers: MCP_BASLIKLARI,
+      data: { jsonrpc: "2.0", id: 1, method: "tools/list" },
+    });
+    expect(liste.status()).toBe(200);
+    const govde = await liste.text();
+    for (const arac of [
+      "icerik_ara",
+      "icerik_oku",
+      "konulari_listele",
+      "sozluk_ara",
+      "terim_oku",
+    ]) {
+      expect(govde, arac).toContain(`"name":"${arac}"`);
+    }
+  });
+});

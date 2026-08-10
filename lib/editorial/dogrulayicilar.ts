@@ -52,7 +52,6 @@ const IC_LINK_ONEKLERI = [
   "/olcum/",
   "/vaka/",
   "/uyum/",
-  "/kurs/",
   "/patika/",
   "/konu/",
 ] as const;

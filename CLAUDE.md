@@ -29,6 +29,7 @@ Next.js 16 App Router + React 19 · TS `strict` + `noUncheckedIndexedAccess` (`a
 
 - **Ev dizini git tuzağı:** `C:/Users/sukruyusuf` bir git deposu. Bu projenin deposu proje kökünde (`git init -b main` yapıldı). Her git işleminde `git rev-parse --show-toplevel` çıktısının proje kökü olduğundan emin ol.
 - Windows + PowerShell 5.1; dosya yazarken UTF-8 dikkati.
+- **Bayat `.next` tuzağı:** çok sayıda artımlı build'den sonra `.next` hem eski rota tiplerini tutup `tsc`'yi kırıyor hem de Lighthouse'u 0.97'den 0.73'e düşürebiliyor (iki kez ölçüldü). Şüpheli bir performans düşüşünde ÖNCE `rm -rf .next` ile temiz build al, sonra sebep ara.
 
 ## Faz durumu
 
@@ -45,6 +46,8 @@ Next.js 16 App Router + React 19 · TS `strict` + `noUncheckedIndexedAccess` (`a
 - **İçerik: 27 yayın + 1 bilinçli taslak; 12 pillar'ın hepsi dolu.** 30 sözlük terimi, 136 topic. Beş yeni tür (lab/tool/benchmark/case/compliance) henüz boş — arşivleri hazır, bekliyorlar.
 - **Hareket sistemi (2026-08-10):** hero SVG hareketi + compositor tabanlı site katmanı (giriş sahnesi, okuma ilerleme şeridi, dolan yoğunluk çubukları, kayan oklar). **Ölçülmüş kural: maliyet kaydırma güdümlü zaman çizelgesi SAYISINDAN gelir, SVG hareketinden değil.** Çok öğeli dolum efektlerinde `view-timeline-name` ile TEK çizelge paylaştır (12 ayrı `view()` → Style&Layout +570ms).
 - **Ölçüm (yerel üretim build'i, lhci medyan/3 koşu):** Lighthouse 0.96-0.97/1/1/1, CLS 0, LCP 2.0-2.2s, TBT 38-113ms. 148 birim + 60 E2E (axe dahil, çift tema) yeşil.
-- **Faz 7 — sıradaki:** kimlik, yorumlar, forum, bülten (çift opt-in), KVKK akışları, rate limiting.
+- **Kapsam kararı (2026-08-10):** **kurs ve forum modülleri kapsamdan ÇIKARILDI** (ürün sahibi kararı). Rotalar, gezinme maddeleri, sitemap girdileri ve iç link doğrulayıcısındaki `/kurs/` öneki silindi. BRIEF §2.2'deki `/kurs/*` ve `/forum/*` satırları artık geçerli değil; `/patika` ve `/giris` plan sayfaları duruyor.
+- **SEO+GEO tamamlama (2026-08-10):** llms.txt'e **Sözlük** (30 terim, kanonik TR terminoloji) ve **Arşivler** bölümleri + `/api/mcp` ile `/api/content` duyurusu eklendi. Sözlük terimlerinin `.md` ham yüzeyi açıldı (`/sozluk/<slug>.md`; middleware matcher'ına `/sozluk/:slug*` eklenmesi gerekti). **MCP 3 → 5 araç:** `sozluk_ara` + `terim_oku`. `/sozluk` indeksine DefinedTermSet (30 gömülü DefinedTerm) + BreadcrumbList, tür arşivlerine BreadcrumbList, sitemap statik sayfalarına `lastmod` (akan listeler son yayına, sabit metinler build tarihine bağlı).
+- **Faz 7 — sıradaki:** kimlik, yorumlar, bülten (çift opt-in), KVKK akışları, rate limiting.
 - Bekleyen kullanıcı aksiyonları: **domain** (GSC+RRT bunu bekliyor), Vercel env: ADMIN_USER/ADMIN_PASS + INDEXNOW_KEY; GitHub secret: MONGODB_URI; BLOB_READ_WRITE_TOKEN; tutorial örnek repo'su.
 - Anahtar kelime hacimleri doğrulanamadı: Semrush API kredisi 0, Ahrefs planı API'siz — biri açılırsa tek toplu sorguyla doğrula.

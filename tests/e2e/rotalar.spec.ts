@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 /**
  * Kapsam testi: BRIEF §2.2 URL şemasında AÇIK olması gereken her rota
  * gerçekten 200 dönüyor mu, ve her sayfa tipinde axe temiz mi.
- * Sonraki fazlara ait rotalar (forum, kurs, patika, giriş) bilinçli olarak
+ * Sonraki fazlara ait rotalar (patika, giriş) bilinçli olarak
  * listede değildir — açıldıklarında buraya eklenir.
  */
 

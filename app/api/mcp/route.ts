@@ -1,9 +1,11 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 import { yayindakiIcerik } from "@/lib/db/queries/contents";
+import { terimBySlug, terimListesi } from "@/lib/db/queries/terms";
 import { pillarlar } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
 import { icerikYolu, turEtiketi } from "@/lib/rotalar";
+import { terimMarkdown } from "@/lib/geo/markdown-disa-aktar";
 import { icerikAra } from "@/lib/search/ara";
 
 /**
@@ -144,13 +146,95 @@ const handler = createMcpHandler(
         );
       },
     );
+
+    /**
+     * Sözlük araçları. Sitenin en ayırt edici varlığı kanonik Türkçe YZ
+     * terminolojisi; ajanların bir kavramın Türkçe karşılığını, tanımını ve
+     * kaynağını doğrudan sorabilmesi gerekiyor. Bu araçlar gelmeden önce
+     * korpustaki en değerli yapı yalnız insan gözüne açıktı.
+     *
+     * Arama Atlas Search'e değil bellekteki listeye bakar: sözlük 30 terim
+     * ölçeğinde ve `terimListesi` zaten önbellekli — ayrı bir arama indeksi
+     * kurmak bu boyutta karmaşıklıktan başka bir şey getirmezdi.
+     */
+    server.registerTool(
+      "sozluk_ara",
+      {
+        title: "Sözlükte ara",
+        description:
+          "Kanonik Türkçe yapay zeka sözlüğünde terim arar. Türkçe ad, İngilizce karşılık " +
+          "ve tanım üzerinde eşleşir; her sonuçta slug, kısa tanım ve sayfa URL'si döner. " +
+          "Tam tanım ve kaynaklar için terim_oku çağrılır.",
+        inputSchema: z.object({
+          sorgu: z
+            .string()
+            .min(1)
+            .describe("Aranacak terim (Türkçe ya da İngilizce, ör. 'gömme vektörü' / 'embedding')"),
+          adet: z.number().int().min(1).max(30).default(10).describe("Sonuç sayısı (maks 30)"),
+        }),
+      },
+      async ({ sorgu, adet }) => {
+        const liste = await terimListesi();
+        const kucuk = sorgu.toLocaleLowerCase("tr-TR");
+        const eslesen = liste
+          .filter(
+            (t) =>
+              t.tr.toLocaleLowerCase("tr-TR").includes(kucuk) ||
+              t.en.toLowerCase().includes(sorgu.toLowerCase()) ||
+              t.shortDef.toLocaleLowerCase("tr-TR").includes(kucuk),
+          )
+          .slice(0, adet);
+
+        if (eslesen.length === 0) {
+          return metinYaniti(
+            `"${sorgu}" sözlükte bulunamadı. Sözlükte ${liste.length} terim var; daha genel ` +
+              "bir sözcük deneyin ya da icerik_ara ile korpusun tamamına bakın.",
+          );
+        }
+        const satirlar = eslesen.map(
+          (t) =>
+            `- ${t.tr} (${t.en})\n  ${t.shortDef}\n  slug: ${t.slug}\n  url: ${SITE}/sozluk/${t.slug}`,
+        );
+        return metinYaniti(
+          `"${sorgu}" için ${eslesen.length} terim (sözlükte toplam ${liste.length}):\n\n` +
+            satirlar.join("\n\n"),
+        );
+      },
+    );
+
+    server.registerTool(
+      "terim_oku",
+      {
+        title: "Terimi oku",
+        description:
+          "Slug ile bir sözlük teriminin tamamını döner: kanonik Türkçe ad, İngilizce " +
+          "karşılık, eşanlamlılar, kısa ve uzun tanım, ilgili terimler ve kaynaklar. " +
+          "Slug'ları sozluk_ara sağlar.",
+        inputSchema: z.object({
+          slug: z.string().min(1).describe("Terim slug'ı (sozluk_ara sonuçlarından)"),
+        }),
+      },
+      async ({ slug }) => {
+        const terim = await terimBySlug(slug);
+        if (!terim) {
+          return hataYaniti(
+            `"${slug}" slug'ıyla sözlük terimi bulunamadı. Slug'ı sozluk_ara ile doğrulayın.`,
+          );
+        }
+        // Terim belgesi zaten LLM-dostu Markdown olarak üretiliyor (.md
+        // yüzeyiyle aynı üretici) — ajan iki yüzeyde aynı metni görür.
+        return metinYaniti(terimMarkdown(terim));
+      },
+    );
   },
   {
     serverInfo: { name: "sinaptiklab", version: "0.1.0" },
     instructions:
-      "Sinaptiklab Türkçe yapay zeka içerik korpusu: arama (icerik_ara), okuma (icerik_oku), " +
-      "konu listesi (konulari_listele). Tüm içerik kaynaklıdır; her içeriğin url'sine .md " +
-      "eklenerek ham Markdown alınabilir.",
+      "Sinaptiklab Türkçe yapay zeka korpusu. İçerik: arama (icerik_ara), okuma " +
+      "(icerik_oku), konu haritası (konulari_listele). Kanonik Türkçe YZ sözlüğü: " +
+      "sozluk_ara ve terim_oku — bir kavramın Türkçe karşılığını, tanımını ve kaynağını " +
+      "buradan doğrulayın. Tüm içerik kaynaklıdır; her içerik ve terim URL'sinin sonuna " +
+      ".md eklenerek ham Markdown alınabilir.",
   },
 );
 

@@ -3,17 +3,16 @@ import { MobilMenu, type MenuMaddesi } from "./MobilMenu";
 import { AraIkon } from "@/components/gorsel";
 import { TemaAnahtari } from "./TemaAnahtari";
 
-// Ana gezinme — BRIEF §2.2 URL şeması. `hazir: false` olanlar sonraki
-// fazlarda açılacak modüllerdir: rota vardır (plan sayfası döner) ama
-// prefetch kapalıdır ve görsel olarak sönük gösterilir.
+// Ana gezinme — BRIEF §2.2 URL şeması. `hazir: false` mekanizması sonraki
+// fazlarda açılacak modüller içindir: rota vardır (plan sayfası döner) ama
+// prefetch kapalıdır ve bir kademe sönük gösterilir. Şu an tüm maddeler
+// hazır; kurs ve forum modülleri kapsamdan çıkarıldı (2026-08-10).
 const NAV: readonly MenuMaddesi[] = [
   { href: "/konu", etiket: "Konular", hazir: true },
   { href: "/sozluk", etiket: "Sözlük", hazir: true },
   { href: "/makale", etiket: "Makaleler", hazir: true },
   { href: "/rehber", etiket: "Rehberler", hazir: true },
   { href: "/uygulama", etiket: "Uygulamalar", hazir: true },
-  { href: "/kurs", etiket: "Kurslar", hazir: false },
-  { href: "/forum", etiket: "Forum", hazir: false },
 ];
 
 export function Header() {

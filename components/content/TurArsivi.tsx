@@ -12,7 +12,7 @@ import { ArsivBosGorseli, TurIkon } from "@/components/gorsel";
 import { ARSIV_SAYFA_ADEDI, turListesi, turSayisi } from "@/lib/db/queries/arsiv";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
 import { env } from "@/lib/env";
-import { jsonLdScript, koleksiyonSayfasiJsonLd } from "@/lib/seo/jsonld";
+import { breadcrumbJsonLd, jsonLdScript, koleksiyonSayfasiJsonLd } from "@/lib/seo/jsonld";
 import { icerikYolu } from "@/lib/rotalar";
 import {
   ARSIVLI_TURLER,
@@ -50,6 +50,14 @@ export async function TurArsivi({ tur, sayfa }: { tur: ArsivliTur; sayfa: number
 
   return (
     <>
+      {/* Kırıntı yolu: içerik sayfaları basıyordu, arşiv indeksleri basmıyordu.
+          İki kademe (Ana sayfa → tür) yeterli; sayfalamada da aynı kalır. */}
+      {jsonLdScript(
+        breadcrumbJsonLd([
+          { ad: "Ana sayfa", url: env.NEXT_PUBLIC_SITE_URL },
+          { ad: metin.baslik, url: `${env.NEXT_PUBLIC_SITE_URL}${yol}` },
+        ]),
+      )}
       <section className="ekran relative overflow-hidden border-b border-doku">
         <div className="ekran-izgara">
           <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-14">

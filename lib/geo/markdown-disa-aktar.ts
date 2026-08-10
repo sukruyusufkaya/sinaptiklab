@@ -4,6 +4,7 @@
 // da artakalan JSX etiketleri silinir ama içerikleri kalır. `.md` route'u ve
 // /llms-full yüzeyleri aynı dönüştürücüden beslenir.
 import type { IcerikDetayDTO } from "@/lib/db/queries/dto";
+import type { TerimDetayDTO } from "@/lib/db/queries/terms";
 import { env } from "@/lib/env";
 import { icerikYolu, seviyeEtiketi, turEtiketi } from "@/lib/rotalar";
 
@@ -175,4 +176,50 @@ export function icerikMarkdown(icerik: IcerikDetayDTO): string {
   );
 
   return `${bolumler.join("\n\n")}\n`;
+}
+
+/**
+ * Sözlük teriminin LLM-dostu Markdown belgesi: kanonik Türkçe ad, İngilizce
+ * karşılık, eşanlamlılar, kısa ve uzun tanım, ilgili terimler ve numaralı
+ * kaynak listesi. `/sozluk/<slug>.md` bunu döndürür.
+ *
+ * Ayrı bir üretici olmasının nedeni terimin içerikten farklı bir belge
+ * olması: gövdesi yok, karşılığı ve eşanlamlıları var — kanonik terminoloji
+ * iddiasının makine tarafındaki karşılığı budur.
+ */
+export function terimMarkdown(terim: TerimDetayDTO): string {
+  const mutlakUrl = `${env.NEXT_PUBLIC_SITE_URL}/sozluk/${terim.slug}`;
+  const bolumler: string[] = [`# ${terim.tr}`];
+
+  const ustSatir = [`İngilizce: ${terim.en}`];
+  if (terim.aliases.length > 0) ustSatir.push(`Eşanlamlı: ${terim.aliases.join(", ")}`);
+  ustSatir.push(`Konu: ${terim.pillar}`);
+  bolumler.push(ustSatir.join(" · "));
+
+  bolumler.push(`> ${terim.shortDef}`);
+  if (terim.longDef.trim().length > 0) bolumler.push(terim.longDef.trim());
+
+  if (terim.ilgili.length > 0) {
+    bolumler.push(
+      "## İlgili terimler",
+      terim.ilgili
+        .map((t) => `- [${t.tr}](${env.NEXT_PUBLIC_SITE_URL}/sozluk/${t.slug})`)
+        .join("\n"),
+    );
+  }
+
+  if (terim.sources.length > 0) {
+    bolumler.push(
+      "## Kaynaklar",
+      terim.sources
+        .map((k, sira) => `${sira + 1}. [${k.label}](${k.url}) — ${k.publisher}`)
+        .join("\n"),
+    );
+  }
+
+  bolumler.push(`---\n\nKanonik URL: ${mutlakUrl}`);
+  return `${bolumler
+    .join("\n\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()}\n`;
 }
