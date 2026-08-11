@@ -402,10 +402,23 @@ async function yontemleDene(url: string, method: "HEAD" | "GET"): Promise<boolea
   }
 }
 
+const bekle = (ms: number) => new Promise((coz) => setTimeout(coz, ms));
+
+/**
+ * Bir denemeyle "kırık" kararı VERİLMEZ. Kapı, tek koşuda onlarca belgedeki
+ * bağlantıyı arka arkaya yokluyor; aynı hosta hızlı ardışık istek atınca
+ * (ör. huggingface.co) sunucu oran sınırı uygular ve CANLI bağlantı kırık
+ * görünür — ölçüldü: gate reddettiği URL curl ile 3/3 kez 200 döndü.
+ * Yanlış pozitif, kaçırılan kırık linkten daha pahalıdır: sağlam içeriği
+ * yayından alıkoyar. Bu yüzden başarısız denemeden sonra kısa bir bekleme
+ * ile bir kez daha denenir.
+ */
 async function varsayilanLinkDenetleyici(url: string): Promise<boolean> {
   // Bazı sunucular (ör. kvkk.gov.tr) HEAD'e farklı/yanlış cevap verir;
   // HEAD geçemezse GET ile ikinci şans tanınır.
-  return (await yontemleDene(url, "HEAD")) || yontemleDene(url, "GET");
+  if ((await yontemleDene(url, "HEAD")) || (await yontemleDene(url, "GET"))) return true;
+  await bekle(1_500);
+  return yontemleDene(url, "GET");
 }
 
 async function kirikLinkKurali(kodsuz: string, baglam: DogrulamaBaglami): Promise<KontrolSonucu> {
