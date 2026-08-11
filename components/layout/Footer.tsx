@@ -1,9 +1,25 @@
 import Link from "next/link";
 import { OkSagIkon } from "@/components/gorsel";
-import { env } from "@/lib/env";
+import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
 
-// Statik prerender'da hesaplanır → build tarihi (enstrüman kalibrasyon satırı)
-const BUILD_TARIHI = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium" }).format(new Date());
+const TARIH_TR = new Intl.DateTimeFormat("tr-TR", { dateStyle: "long" });
+
+/**
+ * Alt şeritte eskiden `kalibrasyon: <commit sha> · <build tarihi>` yazıyordu.
+ * Commit özeti ve build damgası GELİŞTİRİCİ bilgisidir; canlı sitede okura
+ * hiçbir şey söylemez, "burası hâlâ bir test ortamı" izlenimi verir. Yerine
+ * okurun umursadığı ve markanın iddiasıyla örtüşen tek tarih konuldu:
+ * arşivin en son ne zaman güncellendiği.
+ */
+async function sonGuncellemeMetni(): Promise<string | null> {
+  try {
+    const liste = await yayindakiIcerikListesi({ adet: 1 });
+    const ilk = liste[0];
+    return ilk === undefined ? null : TARIH_TR.format(new Date(ilk.updatedAt));
+  } catch {
+    return null;
+  }
+}
 
 const KESIF = [
   { href: "/konu", etiket: "Konular" },
@@ -54,7 +70,9 @@ function Sutun({
   );
 }
 
-export function Footer() {
+export async function Footer() {
+  const sonGuncelleme = await sonGuncellemeMetni();
+
   return (
     <footer className="mt-[var(--bolum-bosluk)] border-t border-doku">
       {/* ── Gezinme ── */}
@@ -96,9 +114,11 @@ export function Footer() {
         >
           başa dön ↑
         </a>
-        <p className="ml-auto font-mono text-[0.65rem] tracking-wider text-murekkep-2">
-          kalibrasyon: {env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "yerel"} · {BUILD_TARIHI} · tr
-        </p>
+        {sonGuncelleme !== null && (
+          <p className="ml-auto font-mono text-[0.65rem] tracking-wider text-murekkep-2">
+            arşiv son güncelleme: {sonGuncelleme}
+          </p>
+        )}
       </div>
     </footer>
   );

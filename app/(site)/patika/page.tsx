@@ -15,7 +15,6 @@ export default function Sayfa() {
       indeks="patika"
       baslik="Öğrenme patikaları"
       ozet="Belirli bir hedefe götüren 6-20 adımlık sıralı rotalar: her adım bir içerik ya da ders, ilerleme çubuğuyla."
-      faz="Faz 8"
       kapsam={[
         "Rol bazlı patikalar (uygulayıcı mühendis, teknik lider, kariyer değiştiren)",
         "Her adımda ön koşul ve tahmini süre",

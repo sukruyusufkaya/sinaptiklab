@@ -23,30 +23,46 @@ import {
   type SiteIstatistikleriDTO,
 } from "@/lib/db/queries/topics";
 
-/** Ekran içi okuma şeridi: gerçek verimizden ölçümler (§14/7 uyumlu). */
+/**
+ * Kanıt şeridi: hero'nun hemen altında, iddianın SAYIYLA karşılığı.
+ * Sayılar gerçek veriden gelir (§14/7 — uydurma metrik yasak); her hücre
+ * sayının ne kanıtladığını da söyler, yoksa çıplak rakam bir şey anlatmaz.
+ */
 function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
   const hucreler = [
-    { deger: veri.yayindaIcerik, etiket: "yayında içerik" },
-    { deger: veri.pillarSayisi, etiket: "ana konu" },
-    { deger: veri.clusterSayisi, etiket: "alt küme" },
-    { deger: veri.toplamKaynak, etiket: "doğrulanmış kaynak" },
+    { deger: veri.yayindaIcerik, etiket: "yayında içerik", not: "hepsi sürümlü" },
+    { deger: veri.toplamKaynak, etiket: "doğrulanmış kaynak", not: "her iddia bağlı", vurgu: true },
+    { deger: veri.pillarSayisi, etiket: "ana konu", not: "sabit taksonomi" },
+    { deger: veri.clusterSayisi, etiket: "alt küme", not: "otomatik iç link" },
   ];
   return (
-    <dl className="grid grid-cols-2 border-t border-doku sm:grid-cols-4">
-      {hucreler.map((hucre, sira) => (
-        <div
-          key={hucre.etiket}
-          className={`px-5 py-4 sm:px-6 ${sira > 0 ? "border-l border-doku" : ""} ${sira >= 2 ? "border-t border-doku sm:border-t-0" : ""} ${sira === 2 ? "border-l-0 sm:border-l" : ""}`}
-        >
-          <dd className="font-display text-2xl font-bold tabular-nums text-murekkep sm:text-3xl">
-            <SayacDeger deger={hucre.deger} />
-          </dd>
-          <dt className="mt-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep-2">
-            {hucre.etiket}
-          </dt>
-        </div>
-      ))}
-    </dl>
+    <section aria-label="Arşivin bugünkü durumu" className="border-t border-doku pt-6">
+      <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
+        arşivin bugünkü durumu
+      </p>
+      <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4">
+        {hucreler.map((hucre) => (
+          <div key={hucre.etiket} className="min-w-0">
+            <dd
+              className={`font-display text-3xl font-bold tabular-nums sm:text-4xl ${
+                hucre.vurgu === true ? "text-sinyal" : "text-murekkep"
+              }`}
+            >
+              <SayacDeger deger={hucre.deger} />
+            </dd>
+            {/* Niteleyici not `dt` İÇİNDE: `dl > div` yalnız `dt`/`dd`
+                kabul eder, araya `p` koymak axe'ta definition-list ihlali
+                (ölçüldü). `dt` akış içeriği alır, nested span geçerlidir. */}
+            <dt className="mt-2 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-murekkep">
+              {hucre.etiket}
+              <span className="mt-1 block normal-case tracking-normal text-murekkep-2">
+                {hucre.not}
+              </span>
+            </dt>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
 
@@ -167,7 +183,7 @@ export default async function AnaSayfa() {
           </div>
 
           {istatistik !== null && (
-            <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
+            <div className="mx-auto max-w-[1280px] px-[var(--gutter)] pb-12">
               <OlcumSeridi veri={istatistik} />
             </div>
           )}

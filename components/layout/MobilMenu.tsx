@@ -6,7 +6,6 @@ import { useEffect, useId, useRef, useState } from "react";
 export interface MenuMaddesi {
   href: string;
   etiket: string;
-  hazir: boolean;
 }
 
 /**
@@ -72,18 +71,10 @@ export function MobilMenu({ maddeler }: { maddeler: readonly MenuMaddesi[] }) {
                 <li key={madde.href} className="border-b border-doku last:border-b-0">
                   <Link
                     href={madde.href}
-                    prefetch={madde.hazir ? undefined : false}
                     onClick={() => setAcik(false)}
-                    className={`flex items-center justify-between py-3 font-mono text-sm no-underline ${
-                      madde.hazir ? "text-murekkep" : "text-murekkep-2"
-                    }`}
+                    className="flex items-center justify-between py-3 font-mono text-sm text-murekkep no-underline"
                   >
                     {madde.etiket}
-                    {!madde.hazir && (
-                      <span className="font-mono text-[0.6rem] uppercase tracking-wider text-murekkep-2">
-                        yakında
-                      </span>
-                    )}
                   </Link>
                 </li>
               ))}

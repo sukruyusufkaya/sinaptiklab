@@ -1,22 +1,25 @@
 import Link from "next/link";
 
 /**
- * Sonraki fazda açılacak modüller için gerçek sayfa (404 yerine): ne
- * geleceğini, hangi fazda planlandığını ve şimdilik nereye bakılacağını
- * dürüstçe söyler. Uydurma "çok yakında" pazarlaması yok — plan açık.
+ * Henüz açılmamış modüller için gerçek sayfa (404 yerine): ne geleceğini ve
+ * bugün nereye bakılacağını dürüstçe söyler. Uydurma "çok yakında"
+ * pazarlaması yok.
+ *
+ * İç faz numaralandırması (Faz 7/8…) BİLİNÇLİ olarak dışarı verilmez:
+ * okuyucunun proje planımızdaki sıra numarasıyla işi yok, tarih sözü
+ * veremediğimiz için de tarih yazmıyoruz. Sayfanın işi beklentiyi doğru
+ * kurmak ve bugün işe yarayan alternatifi göstermek.
  */
 export function FazBekleyenSayfa({
   indeks,
   baslik,
   ozet,
-  faz,
   kapsam,
   simdilik,
 }: {
   indeks: string;
   baslik: string;
   ozet: string;
-  faz: string;
   kapsam: string[];
   simdilik: { metin: string; href: string; etiket: string };
 }) {
@@ -30,23 +33,10 @@ export function FazBekleyenSayfa({
               {baslik}
             </h1>
             <p className="mt-4 max-w-[var(--govde-olcu)] leading-relaxed text-murekkep-2">{ozet}</p>
-            <div className="veri-rayi mt-7 max-w-md">
-              <div>
-                durum
-                <br />
-                <span className="deger">planlandı</span>
-              </div>
-              <div>
-                faz
-                <br />
-                <span className="deger">{faz}</span>
-              </div>
-              <div>
-                modül
-                <br />
-                <span className="deger">kapalı</span>
-              </div>
-            </div>
+            <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-doku bg-kagit-alt px-3 py-1.5 font-mono text-xs text-murekkep-2">
+              <span aria-hidden className="inline-block size-1.5 rounded-full bg-olcum" />
+              bu bölüm henüz açık değil
+            </p>
           </div>
         </div>
       </section>

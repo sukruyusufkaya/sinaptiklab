@@ -47,9 +47,9 @@ export default async function BultenArsiviSayfasi() {
                 <span className="deger">ayda iki</span>
               </div>
               <div>
-                kayıt
+                abonelik
                 <br />
-                <span className="deger">yakında</span>
+                <span className="deger">RSS · Atom · JSON</span>
               </div>
             </div>
           </div>

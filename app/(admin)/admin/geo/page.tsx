@@ -115,7 +115,7 @@ export default async function GeoPaneli() {
           <Tablo baslik="YZ trafiği alan sayfalar (ilk 15)" satirlar={veri.yzSayfalar} />
         </div>
         <p className="mt-6 font-mono text-xs text-murekkep-2">
-          Kaynak: events koleksiyonu (90 gün TTL) · haftalık manuel prompt seti denetimi Faz 10
+          Kaynak: events koleksiyonu (90 gün TTL) · haftalık manuel prompt seti denetimi planlanıyor
           operasyonunda (BRIEF §8.5)
         </p>
       </div>

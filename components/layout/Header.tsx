@@ -2,20 +2,52 @@ import Link from "next/link";
 import { MobilMenu, type MenuMaddesi } from "./MobilMenu";
 import { AraIkon } from "@/components/gorsel";
 import { TemaAnahtari } from "./TemaAnahtari";
+import { turSayisi } from "@/lib/db/queries/arsiv";
+import { ARSIVLI_TURLER, TUR_ARSIV_METNI, turIndeksYolu } from "@/lib/tur-arsivi";
 
-// Ana gezinme — BRIEF §2.2 URL şeması. `hazir: false` mekanizması sonraki
-// fazlarda açılacak modüller içindir: rota vardır (plan sayfası döner) ama
-// prefetch kapalıdır ve bir kademe sönük gösterilir. Şu an tüm maddeler
-// hazır; kurs ve forum modülleri kapsamdan çıkarıldı (2026-08-10).
-const NAV: readonly MenuMaddesi[] = [
-  { href: "/konu", etiket: "Konular", hazir: true },
-  { href: "/sozluk", etiket: "Sözlük", hazir: true },
-  { href: "/makale", etiket: "Makaleler", hazir: true },
-  { href: "/rehber", etiket: "Rehberler", hazir: true },
-  { href: "/uygulama", etiket: "Uygulamalar", hazir: true },
+/**
+ * Ana gezinme — BRIEF §2.2 URL şeması.
+ *
+ * Tür bağlantıları YAYINDAKİ İÇERİKTEN türetilir: menüdeki hiçbir madde
+ * "Kayıt yok." diyen boş bir arşive gitmez. Boş arşiv zaten `noindex` ve
+ * sitemap dışı; gezinmenin de aynı şeyi söylemesi gerekir. İçerik açıldığı
+ * an madde kendiliğinden menüye girer, elle iş yok.
+ */
+const SABIT_NAV: readonly MenuMaddesi[] = [
+  { href: "/konu", etiket: "Konular" },
+  { href: "/sozluk", etiket: "Sözlük" },
 ];
 
-export function Header() {
+/** Menüde görünecek tür arşivleri; en çok üç tanesi (menü şişmesin). */
+const MENUDEKI_TUR_ADEDI = 3;
+
+async function gezinmeMaddeleri(): Promise<MenuMaddesi[]> {
+  const dolu = (
+    await Promise.all(
+      ARSIVLI_TURLER.map(async (tur) => {
+        try {
+          const adet = await turSayisi(tur);
+          const yol = turIndeksYolu(tur);
+          return adet > 0 && yol !== null
+            ? { href: yol, etiket: TUR_ARSIV_METNI[tur].baslik, adet }
+            : null;
+        } catch {
+          return null;
+        }
+      }),
+    )
+  )
+    .filter((m): m is { href: string; etiket: string; adet: number } => m !== null)
+    .sort((a, b) => b.adet - a.adet)
+    .slice(0, MENUDEKI_TUR_ADEDI)
+    .map(({ href, etiket }) => ({ href, etiket }));
+
+  return [...SABIT_NAV, ...dolu];
+}
+
+export async function Header() {
+  const nav = await gezinmeMaddeleri();
+
   return (
     // id="tepe": footer'daki "başa dön" çapası buraya döner
     <header
@@ -38,7 +70,7 @@ export function Header() {
           className="flex shrink-0 items-baseline gap-1 font-display text-lg font-bold tracking-tight text-murekkep no-underline hover:text-murekkep"
         >
           SINAPTIKLAB
-          <span aria-hidden className="inline-block size-2 bg-sinyal" />
+          <span aria-hidden className="inline-block size-2 rounded-[2px] bg-sinyal" />
         </Link>
 
         {/* Masaüstü gezinme (md+); mobilde çekmeceye düşer */}
@@ -46,18 +78,11 @@ export function Header() {
           aria-label="Ana gezinme"
           className="hidden flex-wrap items-center gap-x-4 gap-y-1 md:flex"
         >
-          {NAV.map((madde) => (
+          {nav.map((madde) => (
             <Link
               key={madde.href}
               href={madde.href}
-              prefetch={madde.hazir ? undefined : false}
-              // Hazır olmayan modüller SOLDURULARAK değil, bir kademe daha
-              // sönük TOKEN ile ayrışır. Opaklıkla soldurmak (eskiden /70)
-              // kontrastı 3.07:1'e düşürüyordu — AA sınırının altı. İki
-              // durum da erişilebilir kalmalı, hiyerarşi yine okunuyor.
-              className={`font-mono text-sm no-underline transition-colors hover:text-sinyal ${
-                madde.hazir ? "text-murekkep" : "text-murekkep-2"
-              }`}
+              className="font-mono text-sm text-murekkep no-underline transition-colors hover:text-sinyal"
             >
               {madde.etiket}
             </Link>
@@ -74,14 +99,7 @@ export function Header() {
             <span className="max-sm:hidden">ara</span>
           </Link>
           <TemaAnahtari />
-          <Link
-            href="/giris"
-            prefetch={false}
-            className="font-mono text-sm text-murekkep-2 no-underline transition-colors hover:text-sinyal max-lg:hidden"
-          >
-            Giriş
-          </Link>
-          <MobilMenu maddeler={NAV} />
+          <MobilMenu maddeler={nav} />
         </div>
       </div>
     </header>
