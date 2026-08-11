@@ -5,6 +5,7 @@
 // DB hatasında 500 ATILMAZ; statik iskelet yine döner (lib/feeds.ts deseni).
 import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
 import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
+import { testListesi, type TestOzetDTO } from "@/lib/db/queries/quizzes";
 import { terimListesi, type TerimOzetDTO } from "@/lib/db/queries/terms";
 import { pillarlar, type PillarOzetDTO } from "@/lib/db/queries/topics";
 import { env } from "@/lib/env";
@@ -34,6 +35,12 @@ export async function GET(): Promise<Response> {
     terimler = await terimListesi();
   } catch {
     terimler = [];
+  }
+  let testler: TestOzetDTO[] = [];
+  try {
+    testler = await testListesi();
+  } catch {
+    testler = [];
   }
   // Yalnız yayını olan arşivler duyurulur: boş bir indekse ajan yollamak,
   // sayfayı noindex tutup sitemap'ten çıkarma kararıyla çelişirdi.
@@ -87,6 +94,19 @@ export async function GET(): Promise<Response> {
             `- [${terim.tr} (${terim.en})](${site}/sozluk/${terim.slug}): ${terim.shortDef}`,
         )
         .join("\n"),
+    );
+  }
+
+  if (testler.length > 0) {
+    const soruSayisi = testler.reduce((toplam, t) => toplam + t.soruSayisi, 0);
+    bolumler.push(
+      "## Testler",
+      `Kendini sınama setleri — ${testler.length} test, ${soruSayisi} çoktan seçmeli soru. ` +
+        `Her sorunun gerekçesi vardır ve mümkün olduğunca sitedeki kaynaklı yayına bağlanır. ` +
+        `Liste: ${site}/testler`,
+      testler
+        .map((t) => `- [${t.title}](${site}/testler/${t.slug}): ${t.dek} (${t.soruSayisi} soru)`)
+        .join(String.fromCharCode(10)),
     );
   }
 

@@ -14,6 +14,7 @@ const HER_ZAMAN = [
   "/konu",
   "/ara",
   "/sozluk",
+  "/testler",
   "/bulten",
   "/makale",
   "/rehber",
@@ -71,6 +72,7 @@ test.describe("erişilebilirlik taraması (tüm sayfa tipleri)", () => {
     "/konu",
     "/ara",
     "/sozluk",
+    "/testler",
     "/bulten",
     "/makale",
     // Boş arşiv: kardeş tür gezinmesi ve boş durum illüstrasyonu da taranır

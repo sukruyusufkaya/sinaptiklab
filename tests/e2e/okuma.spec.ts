@@ -133,3 +133,61 @@ test.describe("konu haritası (DB gerekli)", () => {
     expect(sonuc.violations).toEqual([]);
   });
 });
+
+test.describe("testler modülü (DB gerekli)", () => {
+  let testSlug: string | null = null;
+  test.beforeEach(async ({ request }) => {
+    if (testSlug === null) {
+      const govde = await (await request.get("/testler")).text();
+      testSlug = /href="\/testler\/([a-z0-9-]+)"/.exec(govde)?.[1] ?? "";
+    }
+    test.skip(testSlug === "", "test tohumlanmamış — DB erişimi olmayan ortam");
+  });
+
+  test("soru, şık ve gerekçe JS'siz de HTML'de gelir", async ({ page }) => {
+    await page.goto(`/testler/${testSlug}`);
+    // Sunucu render'ı: soru metni ve açıklama kaynakta olmalı (SEO + JS'siz okuma)
+    const govde = await page.content();
+    expect(govde).toContain("Açıklama");
+    await expect(page.getByRole("radio").first()).toBeVisible();
+    // Quiz şeması zengin sonuç adayı
+    expect(govde).toContain('"@type":"Quiz"');
+    expect(govde).toContain('"@type":"Question"');
+  });
+
+  test("şık işaretlenince soru kilitlenir ve gerekçe açılır", async ({ page }) => {
+    await page.goto(`/testler/${testSlug}`);
+    const ilkSik = page.getByRole("radio").first();
+    await ilkSik.check();
+    // Aynı sorunun tüm şıkları kilitlenir — tahmin sonrası düzeltme olmaz
+    await expect(ilkSik).toBeDisabled();
+    await expect(page.getByText(/^(Doğru\.|Yanlış\.)$/).first()).toBeVisible();
+  });
+
+  test("tüm sorular cevaplanınca sonuç görünür", async ({ page }) => {
+    await page.goto(`/testler/${testSlug}`);
+    const gruplar = page.locator("fieldset");
+    const adet = await gruplar.count();
+    for (let i = 0; i < adet; i++) {
+      await gruplar.nth(i).getByRole("radio").first().check();
+    }
+    // Sonuç bloğu yalnız tüm sorular cevaplanınca basılır; kendi
+    // düğmesiyle hedefle ("sonuç" kelimesi sayfada birden çok yerde geçiyor).
+    await expect(page.getByRole("button", { name: /Baştan dene/ })).toBeVisible();
+    // Skor satırı: N / M biçiminde, M soru sayısı
+    await expect(
+      page
+        .locator("p")
+        .filter({ hasText: `/ ${adet}` })
+        .first(),
+    ).toBeVisible();
+  });
+
+  test("erişilebilirlik: test sayfasında axe ihlali yok", async ({ page }) => {
+    await page.goto(`/testler/${testSlug}`);
+    const sonuc = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+      .analyze();
+    expect(sonuc.violations).toEqual([]);
+  });
+});

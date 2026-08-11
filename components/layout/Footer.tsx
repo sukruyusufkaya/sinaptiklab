@@ -24,6 +24,7 @@ async function sonGuncellemeMetni(): Promise<string | null> {
 const KESIF = [
   { href: "/konu", etiket: "Konular" },
   { href: "/sozluk", etiket: "Sözlük" },
+  { href: "/testler", etiket: "Testler" },
   { href: "/ara", etiket: "Arama" },
   { href: "/bulten", etiket: "Bülten arşivi" },
 ] as const;

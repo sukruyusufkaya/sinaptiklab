@@ -1,14 +1,8 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import {
-  CalisanKodGorseli,
-  HeroGorseli,
-  KanonikTurkceGorseli,
-  KaynakliDerinlikGorseli,
-} from "@/components/gorsel";
+import { HeroGorseli } from "@/components/gorsel";
 import { BolumBasligi } from "@/components/home/BolumBasligi";
 import { KonuYogunlugu } from "@/components/home/KonuYogunlugu";
-import { MakineYuzeyleri } from "@/components/home/MakineYuzeyleri";
 import { SozlukVitrini } from "@/components/home/SozlukVitrini";
 import { YayinAkisi } from "@/components/home/YayinAkisi";
 import { BultenCTA } from "@/components/layout/BultenCTA";
@@ -65,33 +59,6 @@ function OlcumSeridi({ veri }: { veri: SiteIstatistikleriDTO }) {
     </section>
   );
 }
-
-const ILKELER = [
-  {
-    no: "01",
-    Gorsel: KaynakliDerinlikGorseli,
-    baslik: "Kaynaklı derinlik",
-    metin:
-      "Her sayı, tarih ve iddia kaynağına bağlanır. Kaynağı olmayan içerik yayına teknik olarak çıkamaz — bu bir editoryal niyet değil, yayın hattındaki bir kapı.",
-    olcut: "yayın kapısı: 10 kontrol",
-  },
-  {
-    no: "02",
-    Gorsel: CalisanKodGorseli,
-    baslik: "Çalışan kod",
-    metin:
-      "Uygulamalar ve laboratuvarlar çalışan repo, model sürümü, donanım ve maliyet bilgisiyle gelir; yeniden üretilebilirlik varsayılandır.",
-    olcut: "repro kutusu zorunlu",
-  },
-  {
-    no: "03",
-    Gorsel: KanonikTurkceGorseli,
-    baslik: "Kanonik Türkçe",
-    metin:
-      "Türkçe yapay zeka terminolojisi tek sözlükte kanonikleşir; aynı kavram sitenin her yerinde aynı adla anılır ve terim sayfasına bağlanır.",
-    olcut: "sözlük: tek doğruluk kaynağı",
-  },
-] as const;
 
 export default async function AnaSayfa() {
   // DB yoksa/erişilemiyorsa bölümler sessizce atlanır — build DB'siz de geçmeli
@@ -240,43 +207,7 @@ export default async function AnaSayfa() {
         )}
       </div>
 
-      {/* § 04 — makine okunabilir yüzeyler (tam genişlik koyu panel) */}
-      <MakineYuzeyleri />
-
       <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
-        {/* § 05 — editoryal ilkeler */}
-        <section aria-labelledby="ilkeler" className="beliren gec-boya py-[var(--bolum-bosluk)]">
-          <BolumBasligi
-            no="05"
-            id="ilkeler"
-            baslik="Tezgâhta ne var?"
-            not="üç ilke · üçü de kodla zorunlu"
-          />
-          <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-            {ILKELER.map((madde, sira) => (
-              <li
-                key={madde.no}
-                className="kademe centik flex flex-col border border-doku rounded-lg bg-kagit-alt"
-                style={{ "--k": sira } as CSSProperties}
-              >
-                <span className="flex items-center justify-between border-b border-doku px-5 py-2.5 font-mono text-[0.65rem] tracking-[0.18em] text-sinyal">
-                  {madde.no}
-                  <madde.Gorsel className="size-14 text-murekkep-2" />
-                </span>
-                <span className="flex flex-1 flex-col p-5">
-                  <span className="font-display text-lg font-semibold">{madde.baslik}</span>
-                  <span className="mt-2.5 text-sm leading-relaxed text-murekkep-2">
-                    {madde.metin}
-                  </span>
-                  <span className="mt-auto pt-5 font-mono text-[0.65rem] uppercase tracking-wider text-murekkep-2">
-                    {madde.olcut}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
         <section className="beliren gec-boya pb-[var(--bolum-bosluk)]">
           <BultenCTA />
         </section>

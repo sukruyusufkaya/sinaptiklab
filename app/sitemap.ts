@@ -18,6 +18,7 @@ import {
   sitemapParcasiMi,
 } from "@/lib/sitemap-parcalari";
 import { turSayisi } from "@/lib/db/queries/arsiv";
+import { testListesi } from "@/lib/db/queries/quizzes";
 import { ARSIVLI_TURLER, turIndeksYolu } from "@/lib/tur-arsivi";
 
 export function generateSitemaps(): { id: string }[] {
@@ -34,6 +35,7 @@ const AKAN_SAYFALAR = new Set([
   "/",
   "/konu",
   "/sozluk",
+  "/testler",
   "/bulten",
   ...ARSIVLI_TURLER.map((tur) => turIndeksYolu(tur)).filter((y): y is string => y !== null),
 ]);
@@ -55,6 +57,18 @@ async function icerikParcasi(type: IcerikTuru): Promise<MetadataRoute.Sitemap> {
     return liste.map((icerik) => ({
       url: mutlak(icerikYolu(icerik.type, icerik.slug)),
       lastModified: icerik.updatedAt,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+async function testParcasi(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const liste = await testListesi();
+    return liste.map((test) => ({
+      url: mutlak(`/testler/${test.slug}`),
+      lastModified: new Date(test.updatedAt),
     }));
   } catch {
     return [];
@@ -116,6 +130,7 @@ export default async function sitemap(props: {
         "/",
         "/konu",
         "/sozluk",
+        "/testler",
         "/bulten",
         ...turIndeksleri,
         "/hakkinda",
@@ -150,5 +165,7 @@ export default async function sitemap(props: {
       return konuParcasi();
     case "sozluk":
       return sozlukParcasi();
+    case "testler":
+      return testParcasi();
   }
 }

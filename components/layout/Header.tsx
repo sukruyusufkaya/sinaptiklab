@@ -16,6 +16,7 @@ import { ARSIVLI_TURLER, TUR_ARSIV_METNI, turIndeksYolu } from "@/lib/tur-arsivi
 const SABIT_NAV: readonly MenuMaddesi[] = [
   { href: "/konu", etiket: "Konular" },
   { href: "/sozluk", etiket: "Sözlük" },
+  { href: "/testler", etiket: "Testler" },
 ];
 
 /** Menüde görünecek tür arşivleri; en çok üç tanesi (menü şişmesin). */

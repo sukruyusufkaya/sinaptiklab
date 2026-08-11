@@ -199,6 +199,26 @@ interface TanimliTerimKumesiJsonLd {
   }[];
 }
 
+interface TestJsonLd {
+  "@context": string;
+  "@type": "Quiz";
+  name: string;
+  description: string;
+  url: string;
+  inLanguage: string;
+  educationalLevel: string;
+  assesses: string;
+  dateModified: string;
+  numberOfQuestions: number;
+  hasPart: {
+    "@type": "Question";
+    eduQuestionType: "Multiple choice";
+    name: string;
+    suggestedAnswer: { "@type": "Answer"; text: string; position: number }[];
+    acceptedAnswer: { "@type": "Answer"; text: string; explanation: string };
+  }[];
+}
+
 export type JsonLdVerisi =
   | OrganizasyonJsonLd
   | WebSitesiJsonLd
@@ -209,6 +229,7 @@ export type JsonLdVerisi =
   | KisiJsonLd
   | TanimliTerimJsonLd
   | TanimliTerimKumesiJsonLd
+  | TestJsonLd
   | YazilimUygulamasiJsonLd
   | VeriKumesiJsonLd
   | KoleksiyonSayfasiJsonLd;
@@ -532,4 +553,63 @@ export function jsonLdScript(veri: JsonLdVerisi): ReactElement {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(veri).replace(/</g, "\\u003c") }}
     />
   );
+}
+
+/**
+ * Test sayfasının şeması (schema.org `Quiz` + `Question`). Google'ın
+ * "practice problems" zengin sonucu bu kalıbı okur: doğru şık
+ * `acceptedAnswer`, diğerleri `suggestedAnswer` olur ve gerekçe
+ * `explanation` alanına girer.
+ *
+ * Gerekçenin şemaya girmesi bilinçli: testin asıl değeri "hangi şık doğru"
+ * değil "neden doğru" bilgisidir; hem okuyucu hem tarayıcı onu görmeli.
+ */
+export function testJsonLd(
+  test: {
+    title: string;
+    dek: string;
+    level: string;
+    pillar: string;
+    updatedAt: string;
+    sorular: {
+      soru: string;
+      secenekler: { id: string; metin: string }[];
+      dogru: string;
+      aciklama: string;
+    }[];
+  },
+  mutlakUrl: string,
+): TestJsonLd {
+  return {
+    "@context": SCHEMA_BAGLAMI,
+    "@type": "Quiz",
+    name: test.title,
+    description: test.dek,
+    url: mutlakUrl,
+    inLanguage: "tr",
+    educationalLevel: test.level,
+    assesses: test.pillar,
+    dateModified: test.updatedAt,
+    numberOfQuestions: test.sorular.length,
+    hasPart: test.sorular.map((soru) => {
+      const dogruSecenek = soru.secenekler.find((s) => s.id === soru.dogru);
+      return {
+        "@type": "Question" as const,
+        eduQuestionType: "Multiple choice" as const,
+        name: soru.soru,
+        suggestedAnswer: soru.secenekler
+          .filter((s) => s.id !== soru.dogru)
+          .map((s, sira) => ({
+            "@type": "Answer" as const,
+            text: s.metin,
+            position: sira,
+          })),
+        acceptedAnswer: {
+          "@type": "Answer" as const,
+          text: dogruSecenek?.metin ?? "",
+          explanation: soru.aciklama,
+        },
+      };
+    }),
+  };
 }
