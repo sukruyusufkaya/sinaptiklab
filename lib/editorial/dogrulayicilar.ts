@@ -375,11 +375,24 @@ function slugKurali(aday: Content, baglam: DogrulamaBaglami): KontrolSonucu {
 
 const URL_DESENI = /https?:\/\/[^\s)"'<>\]]+/g;
 
+/**
+ * Tarayıcı benzeri User-Agent. UA göndermeyen isteği engelleyen sunucular
+ * (ör. aws.amazon.com) canlı bağlantıyı "kırık" gösteriyordu — yayın kapısı
+ * yanlış pozitifle içerik reddediyordu. Kimliğimizi açıkça bildiriyoruz.
+ */
+const TARAYICI_UA =
+  "Mozilla/5.0 (compatible; SinaptiklabLinkCheck/1.0; +https://sinaptiklab.com/robots.txt)";
+
 async function yontemleDene(url: string, method: "HEAD" | "GET"): Promise<boolean> {
   const denetim = new AbortController();
   const zamanlayici = setTimeout(() => denetim.abort(), 5_000);
   try {
-    const yanit = await fetch(url, { method, redirect: "follow", signal: denetim.signal });
+    const yanit = await fetch(url, {
+      method,
+      redirect: "follow",
+      signal: denetim.signal,
+      headers: { "User-Agent": TARAYICI_UA, Accept: "*/*" },
+    });
     if (method === "GET") void yanit.body?.cancel(); // gövdeyi indirme, başlıklar yeter
     return yanit.status >= 200 && yanit.status < 400;
   } catch {

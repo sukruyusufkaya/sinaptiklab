@@ -1,0 +1,71 @@
+{
+  "type": "tool",
+  "slug": "ollama-yerel-llm-arac-karti",
+  "title": "Ollama: Yerel LLM Çalıştırma Aracı Kartı",
+  "dek": "Ollama'yı üretim kararı gözüyle inceleyen kart: lisans, donanım gereksinimi, API yüzeyi, model kütüphanesi, veri yerleşimi avantajı ve bilinen sınırlar — pazarlama değil karar bilgisi.",
+  "answerFirst": "Ollama, dil modellerini kendi makinenizde çalıştırmayı tek komuta indiren, MIT lisanslı açık kaynak bir araçtır. Modeli indirir, yerel bir HTTP sunucusu açar ve OpenAI benzeri bir arayüz sunar. Asıl değeri hız değil veri yerleşimidir: istem ve yanıt makineden çıkmaz, bu da KVKK açısından yurt dışına aktarım tartışmasını baştan kaldırır.",
+  "level": "orta",
+  "pillar": "mlops-altyapi",
+  "clusters": ["yerel-llm-calistirma"],
+  "tags": ["ollama", "yerel llm", "on-prem", "kvkk", "açık ağırlık", "mlops"],
+  "faq": [
+    {
+      "q": "Ollama ticari projede kullanılabilir mi?",
+      "a": "Ollama'nın kendisi MIT lisanslıdır ve ticari kullanıma açıktır. Ancak asıl kısıt araç değil MODELDİR: indirdiğiniz her modelin kendi lisansı vardır ve bazıları kullanıcı eşiği, alan kısıtı ya da türev model kuralları getirir. Karar vermeden önce aracın lisansına değil, çalıştıracağınız modelin lisans metnine bakın."
+    },
+    {
+      "q": "Hangi donanım gerekir?",
+      "a": "Belirleyici olan model boyutu ve nicemleme seviyesidir. Kabaca kural: modelin disk üzerindeki boyutu kadar boş belleğe ihtiyaç duyarsınız, üstüne bağlam için pay eklenir. GPU zorunlu değildir — CPU'da da çalışır ama üretim hızı belirgin düşer. Küçük modeller dizüstünde makul çalışır; büyük modeller ayrı bir sunucu ister."
+    },
+    {
+      "q": "Ollama bir üretim servisi midir?",
+      "a": "Tek başına hayır. Kimlik doğrulama, oran sınırlama, çok kiracılılık ve gözlemlenebilirlik gibi üretim ihtiyaçlarını kendisi çözmez; bunları önüne koyacağınız katman sağlar. Ollama'yı bir çalışma zamanı olarak görün, hazır bir API ürünü olarak değil."
+    },
+    {
+      "q": "Yerelde çalıştırmak KVKK uyumunu tek başına sağlar mı?",
+      "a": "Hayır, ama en zor başlığı kaldırır. Veri makineden çıkmadığı için yurt dışına aktarım tartışması ortadan kalkar. Aydınlatma, hukuki dayanak, saklama süresi, log yönetimi ve erişim yetkileri gibi yükümlülükler aynen durur."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Ollama — kaynak kod deposu ve README",
+      "url": "https://github.com/ollama/ollama",
+      "publisher": "Ollama (GitHub)",
+      "accessedAt": "2026-08-10",
+      "kind": "vendor"
+    },
+    {
+      "label": "Ollama LICENSE (MIT)",
+      "url": "https://github.com/ollama/ollama/blob/main/LICENSE",
+      "publisher": "Ollama (GitHub)",
+      "accessedAt": "2026-08-10",
+      "kind": "vendor"
+    },
+    {
+      "label": "Ollama API dokümantasyonu",
+      "url": "https://github.com/ollama/ollama/blob/main/docs/api.md",
+      "publisher": "Ollama (GitHub)",
+      "accessedAt": "2026-08-10",
+      "kind": "docs"
+    },
+    {
+      "label": "Ollama model kütüphanesi",
+      "url": "https://ollama.com/library",
+      "publisher": "Ollama",
+      "accessedAt": "2026-08-10",
+      "kind": "vendor"
+    },
+    {
+      "label": "Yapay Zeka Alanında Kişisel Verilerin Korunmasına Dair Tavsiyeler",
+      "url": "https://www.kvkk.gov.tr/Icerik/7472/Yapay-Zeka-Alaninda-Kisisel-Verilerin-Korunmasina-Dair-Tavsiyeler",
+      "publisher": "Kişisel Verileri Koruma Kurumu",
+      "accessedAt": "2026-08-10",
+      "kind": "docs"
+    }
+  ],
+  "seo": {
+    "description": "Ollama araç kartı: MIT lisansı, donanım gereksinimi, API yüzeyi, model lisans tuzağı ve KVKK açısından veri yerleşimi avantajı."
+  },
+  "onerilenDurum": "published",
+  "notlar": "Araç kartı; 90 günlük yeniden doğrulama kuralına tabi (tür: tool)."
+}

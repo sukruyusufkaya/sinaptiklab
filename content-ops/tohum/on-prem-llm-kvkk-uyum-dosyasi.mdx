@@ -1,0 +1,76 @@
+## Bu dosya ne yapar, ne yapmaz
+
+Bu bir hukuki görüş değildir. Bir mühendislik karar çerçevesidir: modeli kendi altyapınızda çalıştırma kararının KVKK yükümlülüklerinden hangisini gerçekten değiştirdiğini, hangisini olduğu gibi bıraktığını ayırır. Kurumsal projelerde en sık görülen hata, on-prem kararını bir uyum sertifikası sanmaktır.
+
+Genel çerçeve için [KVKK ve yapay zeka uyum rehberine](/makale/kvkk-yapay-zeka-uyum-rehberi) bakın; buradaki dosya o rehberin tek bir mimari senaryoya indirgenmiş hâlidir.
+
+## Önce veri akışı haritası
+
+Uyum tartışması teknoloji seçimiyle değil, tek bir soruyla başlar: hangi kişisel veri, hangi amaçla, nereye gidiyor?
+
+Bu haritayı çıkarmadan yapılan her mimari tercih sonradan bozulur. Kurumun kendi kılavuzu da işe aynı yerden başlar: <Kaynak id="1">KVKK'nın yapay zeka alanına dair tavsiyeleri, kişisel veri işlemenin gerçekten gerekli olup olmadığının baştan sorgulanmasını, veri minimizasyonunu ve mahremiyetin tasarım aşamasında gözetilmesini öne çıkarır</Kaynak>.
+
+Pratikte harita dört sütundan oluşur: veri kategorisi (ad, iletişim, sağlık, finansal), işleme amacı, verinin geçtiği bileşenler (uygulama, gömme servisi, vektör deposu, model), ve her bileşenin fiziksel konumu.
+
+<Uyari tip="tuzak">
+Haritayı çıkarırken en sık atlanan bileşen vektör veritabanıdır. Gömme vektörü ham metin değildir ama ondan üretilmiştir ve serbest metin gömüldüğünde kişisel veriyle ilişkilendirilebilir kalır. Vektör deposunu "teknik bir indeks" sayıp haritanın dışında bırakmak yaygın ve maliyetli bir hatadır. Bu deponun seçim kriterlerini [vektör veritabanı rehberinde](/makale/vektor-veritabani-nedir-secim-rehberi) ele aldık.
+</Uyari>
+
+## On-prem kararının gerçekten kaldırdığı yük
+
+Tek ve büyük bir kazanç var: yurt dışına aktarım tartışması masadan kalkar.
+
+Bulut tabanlı bir model API'si kullandığınızda istem, işlenmek üzere başka bir tüzel kişiye ve çoğu zaman başka bir ülkeye ulaşır. Bu bir aktarımdır ve kendi hukuki dayanağını gerektirir. Modeli kendi altyapınızda çalıştırdığınızda bu adım hiç oluşmaz — veri kurumun sınırları içinde kalır.
+
+Bu kararın teknik tarafını, hangi araçla nasıl kurulacağını [Ollama araç kartında](/arac/ollama-yerel-llm-arac-karti) ayrıntılandırdık.
+
+<Olcum>
+Kazancın niteliği önemli: on-prem, aktarım yükümlülüğünü hafifletmez — o yükümlülüğü doğuran olguyu ortadan kaldırır. Uyum literatüründe bu, riski azaltmak değil kapsam dışına çıkarmak sayılır.
+</Olcum>
+
+## Olduğu gibi duran yükümlülükler
+
+Burası dosyanın asıl işi. Aşağıdaki kalemlerin hiçbiri modelin nerede çalıştığına bağlı değildir.
+
+<Karsilastirma>
+
+| Yükümlülük | On-prem'de değişir mi? | Mühendislik karşılığı |
+|---|---|---|
+| Hukuki dayanak | Hayır | İşlemenin dayanağı kayıt altına alınır; rıza gerekiyorsa ayrı ve geri alınabilir olmalı |
+| Aydınlatma | Hayır | Kullanıcı, yapay zeka ile etkileştiğini ve verisinin nasıl işlendiğini bilmeli |
+| Veri minimizasyonu | Hayır | İsteme yalnız amaç için gereken alanlar konur; gereksiz alanlar maskelenir |
+| Saklama süresi | Hayır | İstem/yanıt logları için süre tanımlanır ve süre dolunca fiilen silinir |
+| Erişim yetkilendirmesi | Hayır | Logları ve vektör deposunu kimin görebildiği rol bazlı sınırlanır |
+| Doğruluk ve düzeltme | Hayır | Model çıktısı bir kayda dönüşüyorsa düzeltme yolu tanımlanmalı |
+| Yurt dışına aktarım | **Evet, ortadan kalkar** | Veri altyapıdan çıkmaz |
+
+</Karsilastirma>
+
+## En sık kaçırılan üç kalem
+
+**Loglar.** On-prem kurulumdan sonra ekipler rahatlar ve hata ayıklama gerekçesiyle tüm istemleri süresiz loglamaya başlar. İstem logu, içinde kişisel veri taşıyan bir veri deposudur; saklama süresi, erişim yetkisi ve silme yordamı olmadan tutulduğunda on-prem kararının kazancını geri verir.
+
+**Gömme ve indeks.** Ham metin silinse bile ondan üretilmiş vektörler indekste kalmaya devam eder. Silme talebi geldiğinde yalnız kaynak belgeyi silmek yetmez; indeksten de düşürülmesi gerekir. Bu, [gömme boru hattı tasarımında](/makale/gomme-boru-hatti-chunking-tazeleme-maliyet) baştan planlanması gereken bir gereksinimdir.
+
+**Model çıktısı.** Model bir kişi hakkında çıkarım üretip bu çıkarım bir karara ya da kayda dönüşüyorsa, üretilen veri de işlenen veridir. Yanlış bir çıkarımın düzeltilebilir olması gerekir.
+
+## AB tarafına bakmak gerekir mi?
+
+AB pazarına ürün veriyorsanız evet, ve bu KVKK'dan ayrı bir eksendir. <Kaynak id="3">AB Yapay Zeka Yasası (Regulation (EU) 2024/1689) sistemleri kullanımın yarattığı riske göre sınıflandırır ve yükümlülükleri bu sınıfa göre belirler</Kaynak>. Belirleyici olan modelin kendisi değil kullanım bağlamıdır — aynı model, işe alım elemesinde kullanıldığında farklı, iç dokümantasyon aramasında kullanıldığında farklı bir sınıfa düşer.
+
+Komisyonun çerçeve özetinde de aynı mantık kurulur: <Kaynak id="4">düzenleyici çerçeve, yapay zeka sistemlerini risk seviyelerine göre kademelendirir ve yükümlülükleri buna göre ölçekler</Kaynak>. Ayrıntılı takvim ve yükümlülük haritası için [AI Act rehberimize](/makale/ab-yapay-zeka-yasasi-ai-act-rehberi) bakabilirsiniz.
+
+## Kurulum kontrol listesi
+
+Bir on-prem LLM özelliğini yayına almadan önce şu altı maddenin cevabı yazılı olmalıdır:
+
+1. Hangi kişisel veri kategorileri isteme giriyor ve hepsi gerçekten gerekli mi?
+2. İşlemenin hukuki dayanağı ne ve nerede kayıtlı?
+3. Kullanıcı yapay zeka ile etkileştiğini nasıl öğreniyor?
+4. İstem ve yanıt logları ne kadar tutuluyor, kim erişebiliyor, nasıl siliniyor?
+5. Silme talebi geldiğinde vektör indeksinden düşürme yordamı ne?
+6. Model çıktısı bir karara giriyorsa itiraz ve düzeltme yolu ne?
+
+Bu listeyi kurumsal bir risk çerçevesine oturtmak isterseniz, [NIST'in yapay zeka risk yönetimi çerçevesi](https://www.nist.gov/itl/ai-risk-management-framework) yaygın kullanılan bir referanstır; KVKK yükümlülüklerinin yerini almaz ama yönetişim tarafını sistemleştirir.
+
+Bu altı sorunun cevabı yoksa sorun modelin nerede çalıştığı değildir. Kurumun kendi yayınları ve güncel kararları [KVKK'nın sitesinden](https://www.kvkk.gov.tr/) izlenebilir; <Kaynak id="2">Kurum, rehber ve karar özetlerini kendi yayın bölümünden duyurur</Kaynak>.
