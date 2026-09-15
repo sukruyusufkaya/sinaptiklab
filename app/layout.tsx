@@ -1,73 +1,66 @@
-import type { Metadata, Viewport } from "next";
-import type { CSSProperties, ReactNode } from "react";
-import { env } from "@/lib/env";
-import { fontDegiskenleri } from "@/lib/fonts";
-import { jsonLdScript, organizasyonJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { SITE } from '@/lib/site';
+import { yaziSinifi } from '@/lib/yazi-tipleri';
+import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+  metadataBase: new URL(SITE.url),
   title: {
-    default: "Sinaptiklab — Türkçe teknik yapay zeka yayını",
-    template: "%s · Sinaptiklab",
+    default: `${SITE.ad} — Yapay Zekâ Bilgi Platformu`,
+    template: `%s · ${SITE.ad}`,
   },
-  description:
-    "Yapay zeka sistemlerini gerçekten üretenler için Türkçe teknik yayın: her iddia kaynaklı, her tutorial çalışan repo ile. Saha verisi, uydurma yok.",
-  applicationName: "Sinaptiklab",
-  authors: [
-    { name: "Şükrü Yusuf Kaya", url: `${env.NEXT_PUBLIC_SITE_URL}/yazar/sukru-yusuf-kaya` },
-  ],
-  creator: "Şükrü Yusuf Kaya",
-  publisher: "Sinaptiklab",
-  formatDetection: { telephone: false },
-  // Feed keşfi: okuyucular ve toplayıcılar akışları <head>'den bulur (§7.1)
-  alternates: {
-    canonical: env.NEXT_PUBLIC_SITE_URL,
-    types: {
-      "application/rss+xml": [{ url: "/feed.xml", title: "Sinaptiklab — RSS" }],
-      "application/atom+xml": [{ url: "/atom.xml", title: "Sinaptiklab — Atom" }],
-      "application/feed+json": [{ url: "/feed.json", title: "Sinaptiklab — JSON Feed" }],
-      "text/markdown": [{ url: "/llms.txt", title: "Sinaptiklab — llms.txt" }],
-    },
-  },
+  description: SITE.aciklama,
+  applicationName: SITE.ad,
+  authors: [{ name: SITE.ad, url: SITE.url }],
   openGraph: {
-    type: "website",
-    locale: "tr_TR",
-    siteName: "Sinaptiklab",
-    url: env.NEXT_PUBLIC_SITE_URL,
+    type: 'website',
+    locale: 'tr_TR',
+    siteName: SITE.ad,
+    url: SITE.url,
+    title: `${SITE.ad} — Yapay Zekâ Bilgi Platformu`,
+    description: SITE.aciklama,
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: 'summary_large_image' },
+  robots: { index: true, follow: true },
+  manifest: '/manifest.webmanifest',
 };
 
 export const viewport: Viewport = {
-  // ADR 0010: koyu varsayılan; açık tema sistem tercihine bağlı
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfbf9" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e1117" },
+    { media: '(prefers-color-scheme: light)', color: '#fbfbfd' },
+    { media: '(prefers-color-scheme: dark)', color: '#111219' },
   ],
 };
 
-/**
- * FOUC'suz tema: boyamadan önce localStorage'daki açık tercihi (varsa) html'e
- * yazar; tercih yoksa attribute bırakılmaz ve CSS prefers-color-scheme yönetir.
- * (Tema tercihi kritik durum değildir; BRIEF §14/9 kapsamı dışında.)
- */
-const TEMA_SCRIPT = `try{var t=localStorage.getItem("tema");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}`;
+/** Tema tercihini ilk boyamadan önce uygular; renk sıçraması olmaz. */
+const TEMA_BETIGI = `(function(){try{var t=localStorage.getItem('sinaptik-tema');if(t==='aydinlik'||t==='karanlik'){document.documentElement.setAttribute('data-tema',t)}}catch(e){}})()`;
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function KokDuzen({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" style={fontDegiskenleri as CSSProperties} suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: TEMA_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: TEMA_BETIGI }} />
+        {/*
+          Akış keşfi doğrudan `<head>` içine yazılır, `metadata.alternates`
+          ÜZERİNDEN DEĞİL: Next üstveriyi alan alan birleştirirken bir sayfanın
+          kendi `alternates` nesnesi kökün `alternates`'ini BÜTÜN OLARAK ezer.
+          Ana sayfa `alternates: { canonical: '/' }` yazdığı için akış
+          bağlantıları sessizce düşüyordu. Buradaki etiketler her sayfada durur.
+        */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={`${SITE.ad} — RSS`}
+          href="/rss.xml"
+        />
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          title={`${SITE.ad} — Atom`}
+          href="/atom.xml"
+        />
       </head>
-      {/* Site kabuğu (skip-link + Header + main + Footer) app/(site)/layout.tsx'te;
-          admin kendi minimal kabuğunu app/(admin)/layout.tsx'te kurar. */}
-      <body className="flex min-h-dvh flex-col antialiased">
-        {children}
-        {/* Global JSON-LD (BRIEF §7.2) — body sonunda; crawler'lar konumdan bağımsız okur */}
-        {jsonLdScript(organizasyonJsonLd())}
-        {jsonLdScript(webSiteJsonLd())}
-      </body>
+      <body className={yaziSinifi}>{children}</body>
     </html>
   );
 }

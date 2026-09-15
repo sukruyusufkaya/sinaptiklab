@@ -1,38 +1,12 @@
-# bağımlılıklar
-node_modules/
-.pnp
-.pnp.*
-
-# next.js
-.next/
-out/
-next-env.d.ts
-
-# claude yerel ayarları
-.claude/settings.local.json
-
-# üretim
-build/
-dist/
-
-# ortam — sırlar asla commit edilmez (.env.example hariç)
-.env
-.env.*
+node_modules
+.next
+out
+build
+.env*
 !.env.example
-
-# test / kapsam
-coverage/
-playwright-report/
-test-results/
-
-# çeşitli
 .DS_Store
-*.pem
-*.log
-.vercel
-.turbo
 *.tsbuildinfo
-
-# lighthouse ci artefaktlari
-.lighthouseci/
-coverage/
+next-env.d.ts
+.vercel
+# Ajanların/geçici betiklerin depo kökünde bıraktığı çalışma dosyaları
+_*

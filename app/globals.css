@@ -1,906 +1,383 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-/* ════════════════════════════════════════════════════════════════════
-   Sinaptiklab tasarım token'ları — BRIEF §5 "ölçüm laboratuvarı"
-   Kural: bileşenlerde hex yazmak yasak; yalnızca bu token'lar.
-   ════════════════════════════════════════════════════════════════════ */
+/* ==========================================================================
+   SINAPTIK LAB — TASARIM TOKENLARI
+   Yön: Editorial × Scientific × Futuristic (MASTER-PLAN §107–§110)
+   Koyu öncelikli. Bileşenlerde token dışı hex/px kullanılmaz.
+   ========================================================================== */
 
-/* ════════════════════════════════════════════════════════════════════
-   ADR 0010 — KOYU ÖNCELİKLİ PALET.
-   `:root` artık koyu temayı taşır; açık tema hem sistem tercihiyle hem
-   kullanıcı seçimiyle tam desteklidir (aşağıdaki iki blok).
-   Nötrler sıcak tarafa çekildi (mavi-siyah değil, hafif kahve-gri) —
-   Notion/Stripe'ın sıcak koyu hissi.
-   ════════════════════════════════════════════════════════════════════ */
+/* --- KOYU TEMA (varsayılan) ---------------------------------------------- */
 :root {
-  --kagit: #0e1117; /* sayfa zemini — sıcak koyu */
-  --kagit-alt: #161b23; /* kart / yükseltilmiş yüzey */
-  --kagit-ust: #1e242e; /* ikinci kademe yükselti (hover, popover) */
-  --murekkep: #e9edf3; /* ana metin */
-  --murekkep-2: #a2adbc; /* ikincil metin */
-  --doku: #2b3240; /* kenar çizgisi, ayraç */
-  --doku-guclu: #3b4454; /* vurgulu kenar */
-  --sinyal: #6f95ff; /* birincil — link, odak, aktif */
-  --sinyal-dip: #a3bcff; /* hover / basılı */
-  --sinyal-yumusak: #1b2740; /* sinyalin zemin tonu (rozet, seçili) */
-  --olcum: #ffcf5c; /* kehribar — işaretleme */
-  --uyari: #ff8a70; /* mercan — hata/uyarı */
-  --onay: #4fd6ac; /* teal — başarı/çevrimiçi */
-  --vurgu: #7fd88f; /* yumuşak yeşil — ikinci destek tonu */
+  color-scheme: dark;
 
-  /* Tip ölçeği — 1.25 majör üçlü, büyük kademeler akışkan (BRIEF §5.3) */
-  --fs-xs: 0.75rem;
-  --fs-sm: 0.875rem;
-  --fs-base: 1.0625rem;
-  --fs-lg: 1.25rem;
-  --fs-xl: 1.5rem;
-  --fs-2xl: clamp(1.65rem, 1.42rem + 1.1vw, 1.953rem);
-  --fs-3xl: clamp(1.95rem, 1.55rem + 1.9vw, 2.441rem);
-  --fs-4xl: clamp(2.3rem, 1.78rem + 2.7vw, 3.052rem);
+  /* Zemin katmanları — saf siyah değil, soğuk mürekkep */
+  --zemin: oklch(0.165 0.016 268);
+  --zemin-derin: oklch(0.128 0.015 268);
+  --yuzey: oklch(0.205 0.017 268);
+  --yuzey-2: oklch(0.245 0.018 268);
+  --yuzey-3: oklch(0.295 0.019 268);
 
-  --gutter: clamp(1.15rem, 4vw, 2.75rem);
-  --icerik-genislik: 1280px;
-  --govde-olcu: 68ch; /* 62-72 karakter satır uzunluğu */
+  /* Kenarlar — kıl payı çizgiler */
+  --kenar: oklch(0.305 0.016 268);
+  --kenar-soluk: oklch(0.255 0.014 268);
+  --kenar-guclu: oklch(0.42 0.02 268);
 
-  /* Yumuşak geometri (ADR 0010) — 4px kilidi kalktı, kademeli ölçek */
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 16px;
-  --r-xl: 24px;
+  /* Metin */
+  --metin: oklch(0.965 0.004 268);
+  --metin-ikincil: oklch(0.78 0.012 268);
+  --metin-soluk: oklch(0.615 0.014 268);
+  --metin-zit: oklch(0.16 0.016 268);
 
-  /* Yükselti: koyu arayüzde gölge yerine yüzey + ince ışık kenarı.
-     Gölgeler yumuşak ve renksiz — glow YASAK (§14/1). */
-  --yukselti-1: 0 1px 2px rgb(0 0 0 / 0.28);
-  --yukselti-2: 0 4px 14px rgb(0 0 0 / 0.3);
-  --yukselti-3: 0 12px 32px rgb(0 0 0 / 0.34);
-  --ic-isik: inset 0 1px 0 rgb(255 255 255 / 0.045);
+  /* Marka — electric indigo/violet */
+  --vurgu: oklch(0.635 0.192 287);
+  --vurgu-parlak: oklch(0.715 0.175 287);
+  --vurgu-sonuk: oklch(0.48 0.16 287);
+  --vurgu-zemin: oklch(0.255 0.075 287);
 
-  /* Bölüm ritmi — ferahlık (Stripe/Notion hissi) */
-  --bolum-bosluk: clamp(4rem, 8vw, 7rem);
+  /* İkincil — cyan/teal */
+  --ikincil: oklch(0.755 0.128 205);
+  --ikincil-sonuk: oklch(0.56 0.11 205);
+  --ikincil-zemin: oklch(0.26 0.055 205);
+
+  /* Sinyal — momentum, canlı veri. Çok kontrollü kullanılır. */
+  --sinyal: oklch(0.855 0.185 128);
+  --sinyal-zemin: oklch(0.28 0.08 128);
+
+  /* Anlamsal */
+  --basari: oklch(0.755 0.16 152);
+  --uyari: oklch(0.815 0.155 78);
+  --tehlike: oklch(0.665 0.19 22);
+
+  /* Odak halkası */
+  --odak: oklch(0.755 0.15 287);
+
+  /* Gölgeler — koyu temada yumuşak ve düşük kontrast */
+  --golge-1: 0 1px 2px oklch(0 0 0 / 0.4);
+  --golge-2: 0 4px 16px -4px oklch(0 0 0 / 0.5);
+  --golge-3: 0 16px 48px -12px oklch(0 0 0 / 0.6);
+
+  /* Ölçüler */
+  --kap-genislik: 88rem; /* 1408px — 1440 grid, 16px nefes */
+  --kap-dar: 46rem; /* uzun metin ölçüsü */
+  --baslik-yukseklik: 4rem;
 }
 
-/* ── Açık tema: kullanıcı seçimi ── */
-[data-theme="light"] {
-  --kagit: #fbfbf9;
-  --kagit-alt: #f2f3ef;
-  --kagit-ust: #ffffff;
-  --murekkep: #171b22;
-  --murekkep-2: #5a6472;
-  --doku: #e2e4de;
-  --doku-guclu: #cdd0c8;
-  --sinyal: #2f55e6;
-  --sinyal-dip: #1c37a8;
-  --sinyal-yumusak: #e8edff;
-  --olcum: #b07800;
-  --uyari: #c0392b;
-  --onay: #0e7a63;
-  --vurgu: #2f7d4a;
-  --yukselti-1: 0 1px 2px rgb(23 27 34 / 0.06);
-  --yukselti-2: 0 4px 14px rgb(23 27 34 / 0.07);
-  --yukselti-3: 0 12px 32px rgb(23 27 34 / 0.09);
-  --ic-isik: inset 0 1px 0 rgb(255 255 255 / 0.7);
-}
-
-/* ── Açık tema: sistem tercihi (kullanıcı açıkça "dark" demediyse) ── */
+/* --- AÇIK TEMA ------------------------------------------------------------ */
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --kagit: #fbfbf9;
-    --kagit-alt: #f2f3ef;
-    --kagit-ust: #ffffff;
-    --murekkep: #171b22;
-    --murekkep-2: #5a6472;
-    --doku: #e2e4de;
-    --doku-guclu: #cdd0c8;
-    --sinyal: #2f55e6;
-    --sinyal-dip: #1c37a8;
-    --sinyal-yumusak: #e8edff;
-    --olcum: #b07800;
-    --uyari: #c0392b;
-    --onay: #0e7a63;
-    --vurgu: #2f7d4a;
-    --yukselti-1: 0 1px 2px rgb(23 27 34 / 0.06);
-    --yukselti-2: 0 4px 14px rgb(23 27 34 / 0.07);
-    --yukselti-3: 0 12px 32px rgb(23 27 34 / 0.09);
-    --ic-isik: inset 0 1px 0 rgb(255 255 255 / 0.7);
-  }
-}
-
-/* Token'ları Tailwind utility'lerine bağla (bg-kagit, text-murekkep, border-doku…) */
-@theme inline {
-  --color-*: initial;
-  --color-kagit: var(--kagit);
-  --color-kagit-alt: var(--kagit-alt);
-  --color-kagit-ust: var(--kagit-ust);
-  --color-murekkep: var(--murekkep);
-  --color-murekkep-2: var(--murekkep-2);
-  --color-doku: var(--doku);
-  --color-doku-guclu: var(--doku-guclu);
-  --color-sinyal: var(--sinyal);
-  --color-sinyal-dip: var(--sinyal-dip);
-  --color-sinyal-yumusak: var(--sinyal-yumusak);
-  --color-olcum: var(--olcum);
-  --color-uyari: var(--uyari);
-  --color-onay: var(--onay);
-  --color-vurgu: var(--vurgu);
-
-  --shadow-y1: var(--yukselti-1);
-  --shadow-y2: var(--yukselti-2);
-  --shadow-y3: var(--yukselti-3);
-
-  --font-display: var(--font-display);
-  --font-govde: var(--font-govde);
-  --font-mono: var(--font-mono);
-
-  --text-xs: var(--fs-xs);
-  --text-sm: var(--fs-sm);
-  --text-base: var(--fs-base);
-  --text-lg: var(--fs-lg);
-  --text-xl: var(--fs-xl);
-  --text-2xl: var(--fs-2xl);
-  --text-3xl: var(--fs-3xl);
-  --text-4xl: var(--fs-4xl);
-
-  /* Yumuşak geometri (ADR 0010) — 4px kilidi kalktı */
-  --radius-*: initial;
-  --radius-none: 0px;
-  --radius-sm: var(--r-sm);
-  --radius: var(--r-md);
-  --radius-md: var(--r-md);
-  --radius-lg: var(--r-lg);
-  --radius-xl: var(--r-xl);
-  --radius-full: 9999px;
-}
-
-/* ── Taban stiller ── */
-
-html {
-  color-scheme: dark; /* ADR 0010: koyu varsayılan */
-  scroll-behavior: smooth; /* çapa gezinmesi; reduced-motion altında kapatılır */
-}
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-[data-theme="light"] {
-  color-scheme: light;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
+  :root:not([data-tema='karanlik']) {
     color-scheme: light;
+
+    --zemin: oklch(0.988 0.003 268);
+    --zemin-derin: oklch(0.955 0.005 268);
+    --yuzey: oklch(1 0 0);
+    --yuzey-2: oklch(0.975 0.004 268);
+    --yuzey-3: oklch(0.945 0.006 268);
+
+    --kenar: oklch(0.905 0.007 268);
+    --kenar-soluk: oklch(0.94 0.005 268);
+    --kenar-guclu: oklch(0.815 0.012 268);
+
+    --metin: oklch(0.205 0.018 268);
+    --metin-ikincil: oklch(0.415 0.018 268);
+    --metin-soluk: oklch(0.565 0.016 268);
+    --metin-zit: oklch(0.99 0.002 268);
+
+    --vurgu: oklch(0.505 0.215 287);
+    --vurgu-parlak: oklch(0.575 0.205 287);
+    --vurgu-sonuk: oklch(0.665 0.16 287);
+    --vurgu-zemin: oklch(0.955 0.03 287);
+
+    --ikincil: oklch(0.545 0.115 205);
+    --ikincil-sonuk: oklch(0.665 0.095 205);
+    --ikincil-zemin: oklch(0.955 0.028 205);
+
+    --sinyal: oklch(0.585 0.155 128);
+    --sinyal-zemin: oklch(0.945 0.055 128);
+
+    --basari: oklch(0.545 0.145 152);
+    --uyari: oklch(0.605 0.145 68);
+    --tehlike: oklch(0.545 0.205 22);
+
+    --odak: oklch(0.505 0.215 287);
+
+    --golge-1: 0 1px 2px oklch(0.2 0.02 268 / 0.06);
+    --golge-2: 0 4px 16px -4px oklch(0.2 0.02 268 / 0.1);
+    --golge-3: 0 16px 48px -12px oklch(0.2 0.02 268 / 0.14);
   }
 }
 
-/* Tema değişimi anlık olsun: anahtar bu sınıfı tek kare boyunca ekler,
-   böylece sayfadaki bütün renk geçişleri o an için susar (bkz.
-   components/layout/TemaAnahtari.tsx). */
-.tema-degisiyor,
-.tema-degisiyor *,
-.tema-degisiyor *::before,
-.tema-degisiyor *::after {
-  transition: none !important;
-}
-/* `content-visibility: auto` ile atlanan bölümler tema değişimini kaçırıyor:
-   kendi `color`'ını token'dan alan öğeler eski temanın rengiyle donup
-   kalıyor (ölçüldü: koyu zemin üstünde açık tema metni, 1.09:1). Anahtar
-   basıldığında tüm bölümler bir kare boyunca render edilmeye zorlanır. */
-.tema-degisiyor .gec-boya {
-  content-visibility: visible !important;
+:root[data-tema='aydinlik'] {
+  color-scheme: light;
+
+  --zemin: oklch(0.988 0.003 268);
+  --zemin-derin: oklch(0.955 0.005 268);
+  --yuzey: oklch(1 0 0);
+  --yuzey-2: oklch(0.975 0.004 268);
+  --yuzey-3: oklch(0.945 0.006 268);
+
+  --kenar: oklch(0.905 0.007 268);
+  --kenar-soluk: oklch(0.94 0.005 268);
+  --kenar-guclu: oklch(0.815 0.012 268);
+
+  --metin: oklch(0.205 0.018 268);
+  --metin-ikincil: oklch(0.415 0.018 268);
+  --metin-soluk: oklch(0.565 0.016 268);
+  --metin-zit: oklch(0.99 0.002 268);
+
+  --vurgu: oklch(0.505 0.215 287);
+  --vurgu-parlak: oklch(0.575 0.205 287);
+  --vurgu-sonuk: oklch(0.665 0.16 287);
+  --vurgu-zemin: oklch(0.955 0.03 287);
+
+  --ikincil: oklch(0.545 0.115 205);
+  --ikincil-sonuk: oklch(0.665 0.095 205);
+  --ikincil-zemin: oklch(0.955 0.028 205);
+
+  --sinyal: oklch(0.585 0.155 128);
+  --sinyal-zemin: oklch(0.945 0.055 128);
+
+  --basari: oklch(0.545 0.145 152);
+  --uyari: oklch(0.605 0.145 68);
+  --tehlike: oklch(0.545 0.205 22);
+
+  --odak: oklch(0.505 0.215 287);
+
+  --golge-1: 0 1px 2px oklch(0.2 0.02 268 / 0.06);
+  --golge-2: 0 4px 16px -4px oklch(0.2 0.02 268 / 0.1);
+  --golge-3: 0 16px 48px -12px oklch(0.2 0.02 268 / 0.14);
 }
 
-body {
-  background: var(--kagit);
-  color: var(--murekkep);
-  font-family: var(--font-govde);
-  font-size: var(--fs-base);
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
+/* --- TAILWIND TEMA EŞLEMESİ ---------------------------------------------- */
+@theme inline {
+  --color-zemin: var(--zemin);
+  --color-zemin-derin: var(--zemin-derin);
+  --color-yuzey: var(--yuzey);
+  --color-yuzey-2: var(--yuzey-2);
+  --color-yuzey-3: var(--yuzey-3);
+
+  --color-kenar: var(--kenar);
+  --color-kenar-soluk: var(--kenar-soluk);
+  --color-kenar-guclu: var(--kenar-guclu);
+
+  --color-metin: var(--metin);
+  --color-metin-ikincil: var(--metin-ikincil);
+  --color-metin-soluk: var(--metin-soluk);
+  --color-metin-zit: var(--metin-zit);
+
+  --color-vurgu: var(--vurgu);
+  --color-vurgu-parlak: var(--vurgu-parlak);
+  --color-vurgu-sonuk: var(--vurgu-sonuk);
+  --color-vurgu-zemin: var(--vurgu-zemin);
+
+  --color-ikincil: var(--ikincil);
+  --color-ikincil-sonuk: var(--ikincil-sonuk);
+  --color-ikincil-zemin: var(--ikincil-zemin);
+
+  --color-sinyal: var(--sinyal);
+  --color-sinyal-zemin: var(--sinyal-zemin);
+
+  --color-basari: var(--basari);
+  --color-uyari: var(--uyari);
+  --color-tehlike: var(--tehlike);
+
+  --font-display: var(--yazi-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--yazi-display), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--yazi-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--yazi-mono), ui-monospace, 'SFMono-Regular', monospace;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+
+  --shadow-yumusak: var(--golge-1);
+  --shadow-kart: var(--golge-2);
+  --shadow-yukseltilmis: var(--golge-3);
+
+  --ease-sinaptik: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-
-code,
-kbd,
-samp,
-pre {
-  font-family: var(--font-mono);
-}
-
-/* `@layer base`: katmansız yazıldığında bu kural Tailwind'in `utilities`
-   katmanını yeniyordu (katmansız stiller her katmanı geçer) — yani bir
-   bağlantıya `text-murekkep` vermek hiçbir işe yaramıyor, link yine mavi
-   kalıyordu (footer'da ölçüldü). Base katmanına alınca utility kazanır;
-   gövde metnindeki çıplak bağlantılar sinyal mavisi olmayı sürdürür. */
+/* --- TEMEL --------------------------------------------------------------- */
 @layer base {
-  a {
-    color: var(--sinyal);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
-    transition: color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  * {
+    border-color: var(--kenar);
   }
-  a:hover {
-    color: var(--sinyal-dip);
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--baslik-yukseklik) + 2rem);
+  }
+
+  body {
+    background-color: var(--zemin);
+    color: var(--metin);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--vurgu-zemin);
+    color: var(--metin);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--odak);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Klavye dışı tıklamada halka gösterme */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--zemin-derin);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--kenar-guclu);
+    border-radius: 99px;
+    border: 2px solid var(--zemin-derin);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--metin-soluk);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-::selection {
-  background: var(--sinyal);
-  color: var(--kagit);
+/* --- YARDIMCI SINIFLAR --------------------------------------------------- */
+@utility kap {
+  width: 100%;
+  max-width: var(--kap-genislik);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 2.5rem;
+  }
 }
 
-/* Görünür odak halkası: --sinyal, 2px offset (BRIEF §9.2) */
-:focus-visible {
-  outline: 2px solid var(--sinyal);
-  outline-offset: 3px;
-  border-radius: var(--r-sm);
+/**
+ * Bölüm etiketleri: küçük, mono, harf aralıklı.
+ *
+ * `text-transform: uppercase` BİLEREK kullanılmaz. Belge dili `tr` olduğu için
+ * tarayıcı "i" harfini "İ"ye çevirir; bu Türkçe için doğru, ancak "Discover",
+ * "Brief", "Anthropic" gibi yabancı özel adlarda "DİSCOVER" hatası üretir.
+ * Büyük harf isteniyorsa metin kaynakta büyük yazılır.
+ */
+@utility etiket-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: 0.07em;
 }
 
-/* ── Milimetrik tezgâh zemini: hairline kareli mühendislik kağıdı dokusu.
-   NOT: repeating-linear-gradient burada RENK geçişi değil, çizgi ızgarasıdır —
-   §14/1 yasağı (mor/camgöbeği renk gradyanı) kapsamına girmez; doku,
-   "ölçüm laboratuvarı" konseptinin (§5.1) kendisidir. ── */
-.mm-zemin {
+/* Kıl payı ızgara zemini — bilimsel doku */
+@utility izgara-zemin {
   background-image:
-    repeating-linear-gradient(
-      to right,
-      color-mix(in srgb, var(--doku) 45%, transparent) 0 1px,
-      transparent 1px 28px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--doku) 45%, transparent) 0 1px,
-      transparent 1px 28px
-    );
+    linear-gradient(to right, var(--kenar-soluk) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--kenar-soluk) 1px, transparent 1px);
+  background-size: 64px 64px;
 }
 
-/* ════════════════════════════════════════════════════════════════════
-   VURGU PANELİ (.ekran) — ADR 0008'den ADR 0010'a devredildi.
-   Site artık koyu olduğu için "gömülü koyu panel" ayrımı anlamını yitirdi;
-   sınıf korundu ama işlevi değişti: yükseltilmiş, yumuşak köşeli vurgu
-   yüzeyi. Açık temada da doğru çalışır (token'lara dayanır, sabit renk yok).
-   ════════════════════════════════════════════════════════════════════ */
-.ekran {
-  background-color: var(--kagit-alt);
-  /* Işıklılık perdesi: üstten aşağı bir kademe aydınlık. Bu bir RENK
-     gradyanı değil, aynı nötr ailenin yüzey katmanı — §14/1 yasağı
-     (mor–camgöbeği klişesi) kapsamına girmez. */
-  background-image: radial-gradient(
-    130% 100% at 50% -12%,
-    color-mix(in srgb, var(--kagit-ust) 92%, transparent) 0%,
-    transparent 62%
-  );
-  color: var(--murekkep);
-  box-shadow: var(--ic-isik);
+/* Nokta matrisi zemini */
+@utility nokta-zemin {
+  background-image: radial-gradient(var(--kenar) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
-/* Panel içindeki çok ince hizalama ızgarası — dokuyu hissettirir, okumayı
-   bozmaz (opaklık düşük tutuldu). */
-.ekran-izgara {
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      color-mix(in srgb, var(--doku) 55%, transparent) 0 1px,
-      transparent 1px 56px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--doku) 55%, transparent) 0 1px,
-      transparent 1px 56px
-    );
-}
-
-/* Tarama çizgisi — osiloskop süpürmesi. ADR 0008 sapma kaydı: §5.6 üç
-   hareket kuralına dördüncü olarak eklendi. Yalnız transform (compositor),
-   tek öğe, hero'ya sınırlı; reduced-motion altında tamamen kapalı. */
-@keyframes ekran-supurme {
-  from {
-    transform: translateX(-6%);
-  }
-  to {
-    transform: translateX(106%);
-  }
-}
-.supurme {
-  position: absolute;
-  inset-block: 0;
-  inline-size: 2px;
+/* Metni üst üste binen gradyanla boyar */
+@utility gradyan-metin {
   background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in srgb, var(--sinyal) 65%, transparent),
-    transparent
+    100deg,
+    var(--metin) 0%,
+    var(--vurgu-parlak) 55%,
+    var(--ikincil) 100%
   );
-  animation: ekran-supurme 9s linear infinite;
-  pointer-events: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .supurme {
-    display: none;
-  }
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* ── Artı işaretli hizalama ızgarası: teknik çizim tescil işaretleri.
-   mm-zemin'in üstüne binen daha seyrek, daha "enstrüman" katman. ── */
-.arti-izgara {
-  background-image: radial-gradient(
-    circle at center,
-    color-mix(in srgb, var(--doku) 70%, transparent) 0 1px,
-    transparent 1.2px
-  );
-  background-size: 56px 56px;
+/* Uzun metin ölçüsü */
+@utility olcu {
+  max-width: var(--kap-dar);
 }
 
-/* ── Veri rayı: mono etiket + hairline ayraç + değer.
-   Ölçüm cihazı okuma satırı; makale/konu/yazar başlıklarında kullanılır. ── */
-.veri-rayi {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  /* ADR 0010: tam genişlik hairline şerit yerine yumuşak kapsül */
-  border: 1px solid var(--doku);
-  border-radius: var(--r-lg);
-  background: var(--kagit-alt);
-  box-shadow: var(--ic-isik);
+/* Ekran okuyucuya özel */
+@utility yalniz-ekran-okuyucu {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
-}
-.veri-rayi > * {
-  padding: 0.55rem 0.95rem;
-  border-inline-start: 1px solid var(--doku);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  line-height: 1.4;
-  color: var(--murekkep-2);
-}
-.veri-rayi > *:first-child {
-  border-inline-start: 0;
-}
-.veri-rayi .deger {
-  color: var(--murekkep);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
 }
 
-/* ── Spektrum ayırıcı: değişken yükseklikli çentik dizisi (cetvelin
-   "ölçekli" hâli). Bölüm sınırlarında derinlik/konum bildirir. ── */
-.spektrum {
-  height: 14px;
-  border-bottom: 1px solid var(--doku);
-  background-repeat: repeat-x;
-  background-position: bottom;
-  background-image:
-    repeating-linear-gradient(to right, var(--doku) 0 1px, transparent 1px 8px),
-    repeating-linear-gradient(
-      to right,
-      color-mix(in srgb, var(--sinyal) 55%, transparent) 0 1px,
-      transparent 1px 80px
-    );
-  background-size:
-    100% 5px,
-    100% 11px;
-}
-
-/* Açılır bloklar (SSS, değişiklik günlüğü): +/− işareti döner, ok yok.
-   marker gizlenir ki iki farklı işaret görünmesin. */
-.acilir > summary::-webkit-details-marker,
-.acilir > summary::marker {
-  display: none;
-  content: "";
-}
-.acilir-ok {
-  display: inline-block;
-  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.acilir[open] > summary .acilir-ok {
-  transform: rotate(45deg);
-}
-
-/* Dipnottan gelinen kaynak kaydı vurgulanır (çapa hedefi) */
-.kaynak-kayit:target {
-  background: color-mix(in srgb, var(--sinyal) 7%, transparent);
-  box-shadow: inset 2px 0 0 0 var(--sinyal);
-}
-
-/* Ekran dışı bölümlerin boyaması ertelenir: tarayıcı ilk boyamada yalnız
-   görünen alanı işler (LCP/FCP kazancı). contain-intrinsic-size kaydırma
-   çubuğunun zıplamasını önler; desteklenmeyen tarayıcıda hiçbir etkisi yok. */
-@supports (content-visibility: auto) {
-  .gec-boya {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 640px;
-  }
-}
-
-/* ── Bölüm başlığı için indeks damgası (§ numaralandırma) ── */
-.bolum-indeks {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.18em;
-  color: var(--sinyal);
-}
-
-/* ── `.centik`: eski keskin köşe braketleri ADR 0010 ile kaldırıldı;
-   sınıf geriye dönük uyum için kart davranışına eşlenir (yumuşak kenar +
-   yükselti). Bileşenleri tek tek değiştirmeye gerek kalmaz. ── */
-.centik {
-  position: relative;
-  border-radius: var(--r-lg);
-  transition:
-    border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.centik:hover,
-.centik:focus-within {
-  box-shadow: var(--yukselti-2);
-  transform: translateY(-2px);
-}
-@media (prefers-reduced-motion: reduce) {
-  .centik:hover,
-  .centik:focus-within {
-    transform: none;
-  }
-}
-
-/* ── Düğmeler: yumuşak köşe + yükselti (ADR 0010) ── */
-.dugme-birincil {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--sinyal);
-  color: var(--kagit);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  padding: 0.7rem 1.35rem;
-  border-radius: var(--r-md);
-  text-decoration: none;
-  border: 1px solid transparent;
-  box-shadow: var(--yukselti-1);
-  transition:
-    background-color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.dugme-birincil:hover {
-  background: var(--sinyal-dip);
-  color: var(--kagit);
-  box-shadow: var(--yukselti-2);
-  transform: translateY(-1px);
-}
-.dugme-cerceve {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--murekkep);
-  background: var(--kagit-alt);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  padding: 0.7rem 1.35rem;
-  border-radius: var(--r-md);
-  text-decoration: none;
-  border: 1px solid var(--doku);
-  box-shadow: var(--ic-isik);
-  transition:
-    color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    background-color 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.dugme-cerceve:hover {
-  color: var(--sinyal);
-  border-color: var(--doku-guclu);
-  background: var(--kagit-ust);
-  transform: translateY(-1px);
-}
-@media (prefers-reduced-motion: reduce) {
-  .dugme-birincil:hover,
-  .dugme-cerceve:hover {
-    transform: none;
-  }
-}
-
-/* ── Kart: yumuşak yüzey. Utility yığını yerine tek sınıf; hover'da
-   yükselir ve kenarı belirginleşir (Stripe/Notion hissi). ── */
-.kart {
-  background: var(--kagit-alt);
-  border: 1px solid var(--doku);
-  border-radius: var(--r-lg);
-  box-shadow: var(--yukselti-1), var(--ic-isik);
-  transition:
-    border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.kart:hover,
-.kart:focus-within {
-  border-color: var(--doku-guclu);
-  box-shadow: var(--yukselti-2), var(--ic-isik);
-  transform: translateY(-2px);
-}
-@media (prefers-reduced-motion: reduce) {
-  .kart:hover,
-  .kart:focus-within {
-    transform: none;
-  }
-}
-
-/* Rozet: yumuşak zeminli etiket */
-.rozet {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-full);
-  background: var(--sinyal-yumusak);
-  color: var(--sinyal);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  line-height: 1.4;
-}
-
-/* ── Ölçüm cetveli motifi: bölüm ayırıcı (dekoratif değil, derinlik taşır) ── */
-.cetvel {
-  height: 8px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--doku) 0,
-    var(--doku) 1px,
-    transparent 1px,
-    transparent 8px
-  );
-  background-size: 100% 4px;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  border-bottom: 1px solid var(--doku);
-}
-
-/* ── Kenar notu (BRIEF §5.5): gövde sütunundan sağ paya taşar; yalnız xl+.
-   Tufte deseni: float + negatif sağ marj → makale ızgarasının 3. kolonuna
-   düşer (IcerikSayfasi: 64px iz + 68ch gövde + 280px kenar, gap 40px). ── */
-.kenar-notu {
-  display: none;
-}
-@media (min-width: 80rem) {
-  .kenar-notu {
-    display: block;
-    float: right;
-    clear: right;
-    width: 260px;
-    margin-right: -300px;
-    margin-top: 0.2rem;
-    margin-bottom: 0.5rem;
-    font-size: var(--fs-xs);
-    line-height: 1.5;
-    border-left: 1px solid var(--doku);
-    padding-left: 0.75rem;
-  }
-}
-
-/* ── Tema anahtarı ikon görünürlüğü (components/layout/TemaAnahtari.tsx) ── */
-/* Koyu varsayılan (ADR 0010): normalde GÜNEŞ görünür (açığa geçirir);
-   açık temada AY görünür (koyuya geçirir). */
-.tema-ay {
-  display: none;
-}
-[data-theme="light"] .tema-ay {
-  display: block;
-}
-[data-theme="light"] .tema-gunes {
-  display: none;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .tema-ay {
-    display: block;
-  }
-  :root:not([data-theme="dark"]) .tema-gunes {
-    display: none;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   HAREKET SİSTEMİ (ADR 0009) — §5.6'nın genişletilmiş hâli.
-   İlkeler: (1) her hareket bir ölçüm/kalibrasyon davranışını taklit eder,
-   (2) yalnız compositor özellikleri (transform/opacity) — layout/paint yok,
-   (3) `prefers-reduced-motion: reduce` altında TAMAMI kapalı,
-   (4) scroll animasyonları sıfır JS (CSS scroll-driven); desteklenmeyen
-       tarayıcıda içerik tam görünür kalır (@supports koruması).
-   ════════════════════════════════════════════════════════════════════ */
-
-/* DİKKAT — opaklık animasyonu YOK, yalnız konum.
-   `opacity: 0` ile başlayan giriş, ekranın altındaki metni görünmez yapıyor
-   ve axe bunu haklı olarak kontrast ihlali sayıyor (ölçüldü: 1.03:1).
-   Metin her an okunabilir kalmalı: çapayla sayfa ortasına düşen, sayfayı
-   arayan ya da yavaş kaydıran kullanıcı hiçbir zaman boş alan görmez. */
-@keyframes beliris {
-  from {
-    transform: translateY(18px);
-  }
-  to {
-    transform: none;
-  }
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Görüş alanına giren bölüm: kalibrasyon oturması gibi yerine yerleşir */
-    .beliren {
-      animation: beliris linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 48%;
-    }
-    /* Izgara öğeleri için kademeli giriş: --k indeksi kadar geciken aralık */
-    .kademe {
-      animation: beliris linear both;
-      animation-timeline: view();
-      animation-range: entry calc(var(--k, 0) * 6%) entry calc(46% + var(--k, 0) * 6%);
-    }
-  }
-}
-
-/* İz çizimi: SVG yolu soldan sağa "kaydedilir" (osiloskop kaydı) */
-@keyframes iz-ciz {
-  from {
-    stroke-dashoffset: var(--iz-uzunluk, 1400);
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .iz-ciz {
-    stroke-dasharray: var(--iz-uzunluk, 1400);
-    animation: iz-ciz 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   ÖLÇÜM TEZGÂHI HAREKETİ (hero görseli — ADR 0009 kapsamında)
-
-   Tek bir hareket dili: SİNYAL YOL BOYUNCA İLERLER. Paneller arası akış,
-   iz üstündeki kayıt kafası ve bilgi ağındaki nabız aynı tekniği kullanır
-   (kısa parlak parça, uzun boşluk, dashoffset ile yürür) — böylece dokuz
-   ayrı animasyon değil, çalışan tek bir cihaz izlenimi doğar.
-
-   Kurallar: hepsi salt CSS, JS yok; süreler 3-9sn arası (dikkat çalmaz);
-   reduced-motion altında tamamı kapalı — görsel çizili ve okunur kalır.
-   ════════════════════════════════════════════════════════════════════ */
-
-/* Paneller arası veri akışı: kesikler yol boyunca yürür */
-@keyframes akis-yuru {
-  to {
-    stroke-dashoffset: -24;
-  }
-}
-
-/* Kayıt kafası / ağ nabzı: kısa parlak parça yolu baştan sona kat eder,
-   sonra bir süre bekler (yüzde durakları o beklemeyi verir).
-
-   Uç değerler DÜZ değişkenden gelir, `calc(var(--yol) * -1)` DEĞİL: kayıtsız
-   özel değişken calc içinde hesaplanmış değere sadeleşmediği için Chrome iki
-   uç arasında ara değer üretemiyor ve animasyon yerinde donuyordu (ölçüldü).
-   Desen `26 var(--yol)` olduğundan 26 → -yol tam bir periyot eder: parça
-   yola girer, çıkar, tekrarı beklemeye geçer. */
-@keyframes yol-nabzi {
-  0% {
-    stroke-dashoffset: 26;
-  }
-  55%,
-  100% {
-    stroke-dashoffset: var(--yol-son, -300);
-  }
-}
-
-/* Ölçüm çubukları: canlı okuma gibi nefes alır */
-@keyframes cubuk-nefes {
-  0%,
-  100% {
-    transform: scaleY(1);
-  }
-  50% {
-    transform: scaleY(var(--tepe, 1.14));
-  }
-}
-
-/* Kumpas: kalibrasyon rayı boyunca yavaşça gidip gelen ölçüm imleci */
-@keyframes kumpas-kay {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  50% {
-    /* rayın sol köşesinden (x=150) sağ köşesine (x=380) */
-    transform: translateX(230px);
-  }
-}
-
-/* MALİYET NOTU (ölçüldü): SVG'de `stroke-dashoffset` ve `transform`
-   compositor'a çıkmaz; her kare ana iş parçacığında yeniden boyanır.
-   İlk sürümde 17 eşzamanlı animasyon vardı ve Lighthouse TBT'yi 92ms'den
-   814ms'ye, performansı 0.97'den 0.76'ya düşürdü (§9.1 bütçesi kırıldı).
-   İki kaldıraçla düzeltildi:
-     1. Sayı 17 → 7: düğüm nabızları kaldırıldı, üç kenar nabzı tek zincire
-        indirildi (anlatı da düzeldi — sinyal zinciri baştan sona kat eder).
-     2. `steps()`: yürüyen kesik ve nefes gibi hareketlerde değer 60fps
-        yerine sınırlı kademede güncellenir; değer değişmeyen karede
-        tarayıcı boyama yapmaz. Gözle fark edilmiyor, maliyet katbekat
-        düşüyor. Kumpas kaydı sürekli kalır (tek öğe, düz çizgi). */
-@media (prefers-reduced-motion: no-preference) {
-  /* Ortam hareketi sayfa oturduktan SONRA başlar. Yükleme penceresinde
-     koşarsa hidrasyonla aynı ana iş parçacığını paylaşıp doğrudan TBT'ye
-     yazılıyor (ölçüldü: 4x CPU kısıtında 5 saniyede 155ms uzun görev).
-     1.4sn gecikme bunu bütçe dışına taşır; kullanıcı açısından da doğru —
-     önce iz çizilir (.iz-ciz, 2.2sn), sonra tezgâh çalışmaya başlar. */
-  .akis-izi {
-    stroke-dasharray: 4 8;
-    animation: akis-yuru 1.6s steps(12) 1.4s infinite;
-  }
-  .yol-nabzi {
-    /* kısa parça + yolun tamamı kadar boşluk → tek bir parça dolaşır */
-    stroke-dasharray: 26 var(--yol, 300);
-    animation: yol-nabzi var(--sure, 4s) steps(48) infinite;
-    animation-delay: calc(1.4s + var(--g, 0s));
-  }
-  .olcum-cubugu {
-    transform-box: fill-box;
-    transform-origin: bottom;
-    animation: cubuk-nefes 4.6s steps(24, jump-none) infinite;
-    animation-delay: calc(1.4s + var(--g, 0s));
-  }
-  .kumpas {
-    animation: kumpas-kay 11s cubic-bezier(0.45, 0, 0.55, 1) 1.4s infinite;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   HAREKET KATMANI II — yalnız `transform` ve `opacity`.
-
-   Hero'daki SVG hareketinden ders: SVG'de dashoffset/transform compositor'a
-   çıkmaz, her kare ana iş parçacığında boyanır. Buradaki hareketlerin HEPSİ
-   HTML öğelerinde transform/opacity — compositor'da koşar, ana iş parçacığı
-   maliyeti ~sıfırdır. Layout tetikleyen özellik (width, height, top…) yok.
-
-   Kaydırma güdümlü olanlar `animation-timeline` ister; desteklemeyen
-   tarayıcıda öğe son hâliyle (görünür ve okunur) durur — bozulma yok.
-   Tamamı `prefers-reduced-motion: reduce` altında kapalı.
-   ════════════════════════════════════════════════════════════════════ */
-
-/* ── Giriş sahnesi: hero öğeleri sırayla yerine oturur.
-   OPAKLIK YOK, yalnız konum — `.beliren` ile aynı gerekçe: `opacity: 0` ile
-   başlayan giriş, animasyon sürerken metni görünmez yapıyor ve axe bunu
-   haklı olarak kontrast ihlali sayıyor (bu projede ölçüldü: 1.03:1).
-   Metin ilk kareden itibaren okunur kalmalı. ── */
-@keyframes sahne-giris {
-  from {
-    transform: translateY(16px);
-  }
-  to {
-    transform: none;
-  }
-}
-
-/* ── Okuma ilerlemesi: makale boyunca dolan şerit ── */
-@keyframes ilerleme-dolum {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* ── Ölçü dolumu: yoğunluk çubukları soldan sağa dolar ── */
-@keyframes olcu-dolum {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  /* Hero giriş: `--s` sıra numarası kadar geciken kademeli yükseliş.
-     `both` ile ilk karede de doğru başlangıç değerinde durur. */
-  .sahne > *,
-  .sahne-tek {
-    animation: sahne-giris 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(var(--s, 0) * 90ms);
-  }
-
-  /* Düğme oku: hover'da yol alır (metin kaymaz, yalnız ok) */
-  .dugme-birincil .ok,
-  .dugme-cerceve .ok,
-  .ok-kayar .ok {
-    display: inline-block;
-    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .dugme-birincil:hover .ok,
-  .dugme-cerceve:hover .ok,
-  .ok-kayar:hover .ok,
-  .dugme-birincil:focus-visible .ok,
-  .dugme-cerceve:focus-visible .ok,
-  .ok-kayar:focus-visible .ok {
-    transform: translateX(4px);
-  }
-}
-
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Okuma ilerleme şeridi — sayfanın kaydırma ilerlemesine bağlı */
-    .ilerleme-seridi {
-      transform-origin: left center;
-      animation: ilerleme-dolum linear;
-      animation-timeline: scroll(root block);
-    }
-  }
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Yoğunluk çubukları görüş alanına girerken dolar.
-       ÖNEMLİ: 12 çubuk 12 ayrı `view()` yerine listenin TEK adlandırılmış
-       zaman çizelgesini paylaşır. Ölçüldü: kaydırma güdümlü çizelge sayısı
-       doğrudan "Style & Layout" maliyetine yazılıyor (§9.1 bütçesi). */
-    .yogunluk-liste {
-      view-timeline-name: --yogunluk;
-      view-timeline-axis: block;
-    }
-    .olcu-dolum {
-      transform-origin: left center;
-      animation: olcu-dolum cubic-bezier(0.2, 0.8, 0.2, 1) both;
-      animation-timeline: --yogunluk;
-      animation-range: entry 10% cover 34%;
-    }
-    /* Bölüm başlığının altındaki çizgi görüş alanında çizilir */
-    .cizgi-ciz {
-      transform-origin: left center;
-      animation: olcu-dolum cubic-bezier(0.2, 0.8, 0.2, 1) both;
-      animation-timeline: view();
-      animation-range: entry 8% entry 62%;
-    }
-  }
-}
-
-/* Bağlantı altı çizgisi: hover'da soldan sağa çizilir (renk geçişi değil,
-   solid çizginin genişlemesi) */
-.baglanti-iz {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 1px;
-  transition: background-size 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  text-decoration: none;
-}
-.baglanti-iz:hover,
-.baglanti-iz:focus-visible {
-  background-size: 100% 1px;
-}
-
-/* Kalibrasyon nabzı: durum LED'i — %6 opaklık salınımı, dikkat çalmaz */
-@keyframes led-nabiz {
+/* --- HAREKET ------------------------------------------------------------- */
+@keyframes nabiz {
   0%,
   100% {
     opacity: 1;
+    transform: scale(1);
   }
   50% {
     opacity: 0.45;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .led {
-    animation: led-nabiz 2.4s ease-in-out infinite;
+    transform: scale(0.82);
   }
 }
 
-/* Yükleniyor iskeleti: tarama bandı (renk gradyanı değil, aynı token'ın
-   opaklık maskesi) */
-@keyframes iskelet-tarama {
+@keyframes yukari-sus {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes kayan-parilti {
   from {
     transform: translateX(-100%);
   }
@@ -908,210 +385,17 @@ pre {
     transform: translateX(100%);
   }
 }
-.iskelet {
-  position: relative;
-  overflow: hidden;
-  background: var(--kagit-alt);
-  border: 1px solid var(--doku);
-  border-radius: var(--r-lg);
-}
-.iskelet::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in srgb, var(--doku) 55%, transparent),
-    transparent
-  );
-}
-@media (prefers-reduced-motion: no-preference) {
-  .iskelet::after {
-    animation: iskelet-tarama 1.6s ease-in-out infinite;
-  }
-}
 
-/* Tema geçişi: anahtar çevrildiğinde renkler sert atlamaz.
-   DİKKAT: `.ekran` bu geçişe DAHİL EDİLMEZ — tema bağımsız olduğu için
-   değeri hiç değişmez, ama geçiş tanımlamak ilk boyamada zemini açıktan
-   koyuya animasyonlu getirip "açık zeminde açık metin" flaşı yaratıyordu
-   (axe kontrast ihlali olarak yakalandı). */
-body {
-  transition:
-    background-color 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    color 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-/* ── Hareket: sayfa geçişi 180ms fade+lift (BRIEF §5.6) ── */
-@view-transition {
-  navigation: auto;
-}
-::view-transition-old(root) {
-  animation: 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both vt-cikis;
-}
-::view-transition-new(root) {
-  animation: 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both vt-giris;
-}
-@keyframes vt-cikis {
+@keyframes yavas-donus {
   to {
-    opacity: 0;
-  }
-}
-@keyframes vt-giris {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
+    transform: rotate(360deg);
   }
 }
 
-/* ════════════════════════════════════════════════════════════════════
-   YAZDIRMA — teknik içerik basılır ve arşivlenir. Kâğıtta enstrüman
-   süsü değil, okunur belge hedeflenir: kabuk gizlenir, bağlantı adresleri
-   metne yazılır, sayfa sonları bölüm ortasında kırılmaz.
-   ════════════════════════════════════════════════════════════════════ */
-@media print {
-  header,
-  footer,
-  nav[aria-label="Bölüm haritası"],
-  nav[aria-label="İçindekiler"],
-  .supurme,
-  .hud-kose,
-  [data-yazdirma-gizle] {
-    display: none !important;
-  }
-  .ekran {
-    background: #fff !important;
-    color: #000 !important;
-  }
-  body {
-    background: #fff;
-    color: #000;
-    font-size: 11pt;
-  }
-  a {
-    color: #000;
-    text-decoration: underline;
-  }
-  /* Gövde içi dış bağlantıların adresi kâğıtta görünür olsun */
-  #icerik-govde a[href^="http"]::after {
-    content: " (" attr(href) ")";
-    font-size: 9pt;
-    word-break: break-all;
-  }
-  h1,
-  h2,
-  h3 {
-    break-after: avoid;
-  }
-  .shiki,
-  figure,
-  aside {
-    break-inside: avoid;
-  }
-  .kenar-notu {
-    display: none;
-  }
-  details {
-    open: true;
-  }
-  details > summary {
-    list-style: none;
-  }
-  article {
-    display: block !important;
-    max-width: none !important;
-  }
+@utility nabiz-nokta {
+  animation: nabiz 2.4s var(--ease-sinaptik) infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   Shiki kod blokları — lib/mdx/derle.tsx üretir (BRIEF §6.3).
-   defaultColor:false → token renkleri yalnız --shiki-light/--shiki-dark
-   CSS değişkenlerinde gelir; hangisinin uygulanacağını buradaki kurallar
-   seçer: varsayılan dark; [data-theme="light"] ve sistem-açık+attr'sizde light.
-   ════════════════════════════════════════════════════════════════════ */
-
-.shiki {
-  margin: 0;
-  padding: 0.875rem 1rem;
-  background: var(--kagit-alt); /* Shiki'nin tema zemini yerine tezgâh zemini */
-  color: var(--shiki-dark);
-  font-size: var(--fs-sm);
-  line-height: 1.6;
-  max-height: 32rem;
-  overflow: auto;
-  border-radius: var(--r-md);
-}
-.shiki span {
-  color: var(--shiki-dark);
-}
-[data-theme="light"] .shiki,
-[data-theme="light"] .shiki span {
-  color: var(--shiki-light);
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .shiki,
-  :root:not([data-theme="dark"]) .shiki span {
-    color: var(--shiki-light);
-  }
-}
-
-/* Satır vurgusu — kod içi `// [!code highlight]` notasyonu
-   (lib/mdx/derle.tsx satirVurguDonusturucu) `.highlighted` sınıfını basar.
-   Sol bordür border yerine inset gölgeyle: satır hizası kaymaz. */
-.shiki .line.highlighted {
-  display: inline-block;
-  min-width: 100%;
-  box-shadow: inset 2px 0 0 0 var(--sinyal);
-  background: color-mix(in srgb, var(--sinyal) 8%, transparent);
-}
-
-/* Genişletilmiş kod bloğu: yükseklik sınırı kalkar (KodGenislet.tsx) */
-.kod-acik .shiki {
-  max-height: none;
-}
-
-/* Diff satırları — `// [!code ++]` ve `// [!code --]` notasyonu.
-   ± işareti ::before ile basılır (kopyalamada metne karışmaz). */
-.shiki .line.diff-ekle,
-.shiki .line.diff-sil {
-  display: inline-block;
-  min-width: 100%;
-  position: relative;
-  padding-left: 1.1rem;
-}
-.shiki .line.diff-ekle {
-  background: color-mix(in srgb, var(--onay) 12%, transparent);
-}
-.shiki .line.diff-sil {
-  background: color-mix(in srgb, var(--uyari) 10%, transparent);
-  opacity: 0.75;
-}
-.shiki .line.diff-ekle::before,
-.shiki .line.diff-sil::before {
-  position: absolute;
-  left: 0.25rem;
-  font-family: var(--font-mono);
-}
-.shiki .line.diff-ekle::before {
-  content: "+";
-  color: var(--onay);
-}
-.shiki .line.diff-sil::before {
-  content: "−";
-  color: var(--uyari);
+@utility giris-animasyonu {
+  animation: yukari-sus 0.6s var(--ease-sinaptik) both;
 }

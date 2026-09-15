@@ -1,153 +1,141 @@
-// /llms.txt — llmstxt.org spesifikasyonu (BRIEF §8.1): H1 + tek cümlelik
-// blockquote özet + açıklama, ardından Konular (pillar hub'ları), Sözlük
-// (kanonik Türkçe terminoloji), Arşivler (tür indeksleri), İçerik (yayındaki
-// en önemli ≤50 URL) ve Diğer (makine uç noktaları, feed'ler, site haritası).
-// DB hatasında 500 ATILMAZ; statik iskelet yine döner (lib/feeds.ts deseni).
-import { yayindakiIcerikListesi } from "@/lib/db/queries/contents";
-import type { IcerikOzetDTO } from "@/lib/db/queries/dto";
-import { testListesi, type TestOzetDTO } from "@/lib/db/queries/quizzes";
-import { terimListesi, type TerimOzetDTO } from "@/lib/db/queries/terms";
-import { pillarlar, type PillarOzetDTO } from "@/lib/db/queries/topics";
-import { env } from "@/lib/env";
-import { icerikYolu } from "@/lib/rotalar";
-import { ARSIVLI_TURLER, TUR_ARSIV_METNI, turIndeksYolu } from "@/lib/tur-arsivi";
-import { turSayisi } from "@/lib/db/queries/arsiv";
+import { SITE, KATMANLAR } from '@/lib/site';
+import { atlasListesi } from '@/lib/icerik/atlas';
+import { analizler, tumGundem } from '@/lib/icerik/gundem';
+import { arastirmaListesi } from '@/lib/icerik/arastirma';
+import { dersler, ogrenmeYollari, testler } from '@/lib/icerik/ogrenme';
+import { modelListesi, sirketListesi, aracListesi } from '@/lib/icerik/varliklar';
+import { rehberListesi } from '@/lib/icerik/yayin';
+import { konuListesi } from '@/lib/icerik/temel';
 
-export const revalidate = 3600;
+/**
+ * `llms.txt` — dil modelleri için makine yüzeyi.
+ *
+ * Amaç: bir modelin siteyi tarayarak çıkarmak zorunda kalacağı yapıyı doğrudan
+ * vermek — hangi bölümler var, kanonik adresler ne, hangi içerik nerede.
+ *
+ * İKİ İLKE
+ *
+ * 1. **Sayılar CANLI sorgudan gelir.** Elle yazılmış bir "480+ kavram" satırı
+ *    gerçek 35 kayıtla çelişir ve makine yüzeyini güvenilmez kılar. Buradaki
+ *    her sayı o anda yayında olan belge sayısıdır (MASTER-PLAN §59, CLAUDE.md
+ *    değişmez kural 5).
+ * 2. **Yalnızca yayındaki içerik listelenir.** Okuma katmanı taslakları
+ *    döndürmüyor; bu yüzden dosya yayımlanmamış bir adresi hiç göstermez.
+ */
 
-export async function GET(): Promise<Response> {
-  const site = env.NEXT_PUBLIC_SITE_URL;
+export const dynamic = 'force-dynamic';
 
-  let konular: PillarOzetDTO[] = [];
-  try {
-    konular = await pillarlar();
-  } catch {
-    konular = [];
-  }
-  let icerikler: IcerikOzetDTO[] = [];
-  try {
-    icerikler = await yayindakiIcerikListesi({ adet: 50 });
-  } catch {
-    icerikler = [];
-  }
-  let terimler: TerimOzetDTO[] = [];
-  try {
-    terimler = await terimListesi();
-  } catch {
-    terimler = [];
-  }
-  let testler: TestOzetDTO[] = [];
-  try {
-    testler = await testListesi();
-  } catch {
-    testler = [];
-  }
-  // Yalnız yayını olan arşivler duyurulur: boş bir indekse ajan yollamak,
-  // sayfayı noindex tutup sitemap'ten çıkarma kararıyla çelişirdi.
-  const arsivler = (
-    await Promise.all(
-      ARSIVLI_TURLER.map(async (tur) => {
-        try {
-          const adet = await turSayisi(tur);
-          const yol = turIndeksYolu(tur);
-          return adet > 0 && yol !== null ? { tur, yol, adet } : null;
-        } catch {
-          return null;
-        }
-      }),
-    )
-  ).filter(
-    (a): a is { tur: (typeof ARSIVLI_TURLER)[number]; yol: string; adet: number } => a !== null,
-  );
+/** Listelerde en fazla bu kadar örnek adres verilir; dosya okunabilir kalmalı. */
+const ORNEK_SINIRI = 15;
 
-  const bolumler: string[] = [
-    "# Sinaptiklab",
-    "> Yapay zeka sistemlerini gerçekten üretenler için kaynaklı, yeniden üretilebilir " +
-      "Türkçe teknik yayın — saha verisi, uydurma yok.",
-    "Sinaptiklab'de her iddia numaralı kaynak listesiyle, her tutorial çalışan repo ile " +
-      "yayımlanır; içerik sürümlenir ve son doğrulama tarihi taşır. Her içerik URL'sinin " +
-      "sonuna `.md` ekleyerek sayfanın LLM-dostu ham Markdown halini alabilirsiniz " +
-      "(örn. `/rehber/llm-nedir.md`); aynısı sözlük terimleri için de geçerlidir " +
-      "(`/sozluk/ajan.md`). Pillar bazlı toplu dışa aktarım `/llms-full.txt` altındadır. " +
-      "Yapısal sorgular için MCP uç noktası `/api/mcp` ve açık JSON `/api/content` " +
-      "kullanılabilir; ikisi de kimlik doğrulama istemez.",
-  ];
+export async function GET() {
+  const [
+    ATLAS,
+    KONULAR,
+    GUNDEM,
+    ANALIZLER,
+    REHBERLER,
+    ARASTIRMA,
+    YOLLAR,
+    DERSLER,
+    TESTLER,
+    MODELLER,
+    SIRKETLER,
+    ARACLAR,
+  ] = await Promise.all([
+    atlasListesi(),
+    konuListesi(),
+    tumGundem(),
+    analizler(),
+    rehberListesi(),
+    arastirmaListesi(),
+    ogrenmeYollari(),
+    dersler(),
+    testler(),
+    modelListesi(),
+    sirketListesi(),
+    aracListesi(),
+  ]);
 
-  if (konular.length > 0) {
-    bolumler.push(
-      "## Konular",
-      konular
-        .map((konu) => `- [${konu.title}](${site}/konu/${konu.slug}): ${konu.intro}`)
-        .join("\n"),
-    );
-  }
+  const bolum = (baslik: string, satirlar: readonly string[]) =>
+    satirlar.length ? [`## ${baslik}`, '', ...satirlar, ''] : [];
 
-  if (terimler.length > 0) {
-    bolumler.push(
-      "## Sözlük",
-      `Kanonik Türkçe yapay zeka terminolojisi — ${terimler.length} terim. Her terimin ` +
-        `Türkçe adı, İngilizce karşılığı, tanımı ve kaynağı vardır; sitedeki her metin ` +
-        `bu sözlüğe bağlanır. Terim listesi: ${site}/sozluk`,
-      terimler
-        .map(
-          (terim) =>
-            `- [${terim.tr} (${terim.en})](${site}/sozluk/${terim.slug}): ${terim.shortDef}`,
-        )
-        .join("\n"),
-    );
-  }
+  const liste = <T>(ogeler: readonly T[], bicim: (oge: T) => string) =>
+    ogeler.slice(0, ORNEK_SINIRI).map(bicim);
 
-  if (testler.length > 0) {
-    const soruSayisi = testler.reduce((toplam, t) => toplam + t.soruSayisi, 0);
-    bolumler.push(
-      "## Testler",
-      `Kendini sınama setleri — ${testler.length} test, ${soruSayisi} çoktan seçmeli soru. ` +
-        `Her sorunun gerekçesi vardır ve mümkün olduğunca sitedeki kaynaklı yayına bağlanır. ` +
-        `Liste: ${site}/testler`,
-      testler
-        .map((t) => `- [${t.title}](${site}/testler/${t.slug}): ${t.dek} (${t.soruSayisi} soru)`)
-        .join(String.fromCharCode(10)),
-    );
-  }
+  const govde = [
+    `# ${SITE.ad}`,
+    '',
+    `> ${SITE.vaat}`,
+    '',
+    SITE.aciklama,
+    '',
+    `Kanonik kök: ${SITE.url}`,
+    'Dil: Türkçe (tr-TR). Tüm adresler sondaki eğik çizgiyle biter ve tarih içermez.',
+    '',
+    '## Yapı',
+    '',
+    ...KATMANLAR.map((k) => `- **${k.ad}** — ${k.soru} → ${k.urun}`),
+    '',
+    '## Yayında olan içerik (canlı sayım)',
+    '',
+    `- Atlas kavramı: ${ATLAS.length}`,
+    `- Konu: ${KONULAR.length}`,
+    `- Haber ve analiz: ${GUNDEM.length} + ${ANALIZLER.length}`,
+    `- Rehber: ${REHBERLER.length}`,
+    `- Araştırma yayını: ${ARASTIRMA.length}`,
+    `- Öğrenme yolu / ders / test: ${YOLLAR.length} / ${DERSLER.length} / ${TESTLER.length}`,
+    `- Model / şirket / araç: ${MODELLER.length} / ${SIRKETLER.length} / ${ARACLAR.length}`,
+    '',
+    '## Makine yüzeyleri',
+    '',
+    `- Site haritası indeksi: ${SITE.url}/sitemap.xml`,
+    `- RSS: ${SITE.url}/rss.xml`,
+    `- Atom: ${SITE.url}/atom.xml`,
+    `- robots.txt: ${SITE.url}/robots.txt`,
+    '- Sayfalar JSON-LD taşır: Article, FAQPage, BreadcrumbList, Organization, WebSite.',
+    '',
+    ...bolum(
+      'Atlas — kavram referansı',
+      liste(ATLAS, (g) => `- [${g.ad}](${SITE.url}/atlas/${g.slug}/): ${g.kisaTanim}`),
+    ),
+    ...bolum(
+      'Konular',
+      liste(KONULAR, (k) => `- [${k.ad}](${SITE.url}/konu/${k.slug}/)`),
+    ),
+    ...bolum(
+      'Rehberler',
+      liste(REHBERLER, (r) => `- [${r.baslik}](${SITE.url}/rehber/${r.slug}/)`),
+    ),
+    ...bolum(
+      'Araştırma',
+      liste(ARASTIRMA, (a) => `- [${a.baslik}](${SITE.url}/arastirma/${a.slug}/)`),
+    ),
+    ...bolum(
+      'Öğrenme yolları',
+      liste(YOLLAR, (y) => `- [${y.ad}](${SITE.url}/ogren/yollar/${y.slug}/): ${y.rol}`),
+    ),
+    ...bolum(
+      'Modeller',
+      liste(MODELLER, (m) => `- [${m.ad}](${SITE.url}/modeller/${m.slug}/): ${m.saglayici}`),
+    ),
+    '## Atıf',
+    '',
+    `İçerik alıntılanırken kanonik adres ve "${SITE.ad}" adı belirtilmelidir.`,
+    'Araştırma yayınlarının kendi atıf biçimi ilgili sayfada verilir.',
+    '',
+    '## Kapsam dışı',
+    '',
+    '- /admin/ — editör paneli, dizinlenmez.',
+    '- /onizleme/ — yayımlanmamış taslak önizlemeleri.',
+    '- /ara/ — arama sonuçları (sonsuz sorgu uzayı).',
+    '',
+  ].join('\n');
 
-  if (arsivler.length > 0) {
-    bolumler.push(
-      "## Arşivler",
-      arsivler
-        .map(
-          (a) =>
-            `- [${TUR_ARSIV_METNI[a.tur].baslik}](${site}${a.yol}): ${TUR_ARSIV_METNI[a.tur].aciklama} (${a.adet} yayın)`,
-        )
-        .join("\n"),
-    );
-  }
-
-  if (icerikler.length > 0) {
-    bolumler.push(
-      "## İçerik",
-      icerikler
-        .map(
-          (icerik) =>
-            `- [${icerik.title}](${site}${icerikYolu(icerik.type, icerik.slug)}): ${icerik.dek}`,
-        )
-        .join("\n"),
-    );
-  }
-
-  bolumler.push(
-    "## Diğer",
-    [
-      `- [MCP uç noktası](${site}/api/mcp): Model Context Protocol (Streamable HTTP). Araçlar: icerik_ara, icerik_oku, konulari_listele, sozluk_ara, terim_oku`,
-      `- [İçerik API](${site}/api/content): yayındaki tüm içeriğin JSON listesi; kimlik doğrulama gerekmez`,
-      `- [Tam içerik dışa aktarımı](${site}/llms-full.txt): tüm yayınların pillar bazlı düz Markdown paketleri`,
-      `- [RSS](${site}/feed.xml): son 20 yayın (RSS 2.0)`,
-      `- [Atom](${site}/atom.xml): son 20 yayın (Atom 1.0)`,
-      `- [JSON Feed](${site}/feed.json): son 20 yayın (JSON Feed 1.1)`,
-      `- [Site haritası](${site}/sitemap.xml): tüm kalıcı URL'ler`,
-    ].join("\n"),
-  );
-
-  return new Response(`${bolumler.join("\n\n")}\n`, {
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  return new Response(govde, {
+    headers: {
+      'content-type': 'text/plain; charset=utf-8',
+      'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
+    },
   });
 }

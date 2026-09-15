@@ -1,264 +1,236 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { DurumRozeti } from "@/components/admin/DurumRozeti";
-import { PanelBasligi } from "@/components/admin/PanelBasligi";
-import { tumIcerikler, type AdminIcerikOzeti } from "@/lib/db/queries/admin";
-import { DURUM_ETIKETLERI, type Durum } from "@/lib/editorial/durum-makinesi";
-import { turEtiketi, type IcerikTuru } from "@/lib/rotalar";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { veritabani } from '@/lib/mongo/istemci';
+import { KOLEKSIYONLAR, TANIMLAR } from '@/lib/mongo/koleksiyonlar';
+import { oturumGerekli } from '@/lib/yetki/oturum';
+import { izinVarMi, ROL_ADI, type Rol } from '@/lib/yetki/roller';
 
-// Panel her istekte taze okur — önbellek yok (liste, taslakları da gösterir).
-export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: 'Panel' };
 
-export const metadata: Metadata = { title: "İçerikler" };
+/** Panel her zaman canlı veri gösterir; önbelleğe alınmaz. */
+export const dynamic = 'force-dynamic';
 
-const TARIH_TR = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeStyle: "short" });
-const tarih = (iso: string) => TARIH_TR.format(new Date(iso));
+type Sayim = { ad: string; aciklama: string; adet: number; yol?: string; kisiselVeri?: boolean };
 
-// Faz 2 alt kümesi: panelden yalnız bu üç tür oluşturulur (BRIEF §11).
-const YENI_TURLER = ["article", "guide", "tutorial"] as const;
+const PAROLA_TAZELIK_SINIRI_MS = 180 * 24 * 60 * 60 * 1000;
 
-const DURUMLAR = [
-  "draft",
-  "in_review",
-  "scheduled",
-  "published",
-  "archived",
-] as const satisfies readonly Durum[];
+async function sayimlariTopla(parolaGuncellendi?: Date) {
+  const db = await veritabani();
 
-function durumCoz(deger: string | undefined): Durum | null {
-  return DURUMLAR.find((durum) => durum === deger) ?? null;
-}
+  // `Date.now()` render gövdesinde çağrılamaz (react-hooks/purity); zaman
+  // bağımlı hesap veri toplama adımında yapılır.
+  const parolaEski = parolaGuncellendi
+    ? Date.now() - new Date(parolaGuncellendi).getTime() > PAROLA_TAZELIK_SINIRI_MS
+    : false;
 
-const SUZGEC_BAGLANTISI =
-  "border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] no-underline transition-colors";
-const SUZGEC_PASIF = "border-doku text-murekkep-2 hover:border-sinyal hover:text-sinyal";
-const SUZGEC_AKTIF = "border-sinyal bg-sinyal text-kagit hover:text-kagit";
+  const listelenecek = [
+    { koleksiyon: KOLEKSIYONLAR.icerikler, ad: 'İçerik', yol: '/admin/koleksiyon/icerikler/' },
+    { koleksiyon: KOLEKSIYONLAR.atlas, ad: 'Atlas girdisi', yol: '/admin/koleksiyon/atlas/' },
+    { koleksiyon: KOLEKSIYONLAR.modeller, ad: 'Model', yol: '/admin/koleksiyon/modeller/' },
+    { koleksiyon: KOLEKSIYONLAR.dersler, ad: 'Ders', yol: '/admin/koleksiyon/dersler/' },
+    { koleksiyon: KOLEKSIYONLAR.arastirma, ad: 'Araştırma', yol: '/admin/koleksiyon/arastirma/' },
+    { koleksiyon: KOLEKSIYONLAR.konular, ad: 'Konu', yol: '/admin/koleksiyon/konular/' },
+  ];
 
-/** Mevcut sorguyu koruyarak tek parametreyi değiştiren yol üretir. */
-function suzgecYolu(mevcut: { durum: Durum | null; tur: string | null }): string {
-  const parametreler = new URLSearchParams();
-  if (mevcut.durum !== null) parametreler.set("durum", mevcut.durum);
-  if (mevcut.tur !== null) parametreler.set("tur", mevcut.tur);
-  const sorgu = parametreler.toString();
-  return sorgu.length > 0 ? `/admin?${sorgu}` : "/admin";
-}
-
-interface Props {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-export default async function AdminIcerikListesi({ searchParams }: Props) {
-  const parametreler = await searchParams;
-  const durumParam = parametreler["durum"];
-  const turParam = parametreler["tur"];
-  const seciliDurum = durumCoz(typeof durumParam === "string" ? durumParam : undefined);
-  const seciliTurAdayi = typeof turParam === "string" ? turParam : null;
-
-  const icerikler = await tumIcerikler();
-
-  // Türler veriden türetilir (adet sırasıyla) — panelde ölü süzgeç linki olmaz.
-  const turSayaci = new Map<IcerikTuru, number>();
-  for (const icerik of icerikler) {
-    turSayaci.set(icerik.type, (turSayaci.get(icerik.type) ?? 0) + 1);
-  }
-  const turler = [...turSayaci.entries()].sort((a, b) => b[1] - a[1]);
-  const seciliTur = turler.some(([tur]) => tur === seciliTurAdayi) ? seciliTurAdayi : null;
-
-  const durumSayaci = (durum: Durum) =>
-    icerikler.filter((icerik) => icerik.status === durum).length;
-
-  const listelenen: AdminIcerikOzeti[] = icerikler.filter(
-    (icerik) =>
-      (seciliDurum === null || icerik.status === seciliDurum) &&
-      (seciliTur === null || icerik.type === seciliTur),
+  const sayimlar = await Promise.all(
+    listelenecek.map(async (oge) => ({
+      ad: oge.ad,
+      yol: oge.yol,
+      aciklama: oge.koleksiyon,
+      adet: await db.collection(oge.koleksiyon).countDocuments(),
+    })),
   );
 
-  const suzgecAcik = seciliDurum !== null || seciliTur !== null;
+  const [taslak, incelemede, yayinda] = await Promise.all([
+    db.collection(KOLEKSIYONLAR.icerikler).countDocuments({ durum: 'taslak' }),
+    db.collection(KOLEKSIYONLAR.icerikler).countDocuments({ durum: 'incelemede' }),
+    db.collection(KOLEKSIYONLAR.icerikler).countDocuments({ durum: 'yayinda' }),
+  ]);
+
+  const sonDenetim = await db
+    .collection(KOLEKSIYONLAR.denetimKaydi)
+    .find({})
+    .sort({ zaman: -1 })
+    .limit(8)
+    .toArray();
+
+  const bosSorgular = await db
+    .collection(KOLEKSIYONLAR.aramaKayitlari)
+    .countDocuments({ sonucBulundu: false });
+
+  const toplamBelge = await Promise.all(
+    TANIMLAR.map(async (t) => ({ ad: t.ad, adet: await db.collection(t.ad).countDocuments() })),
+  );
+
+  return {
+    parolaEski,
+    sayimlar,
+    akis: { taslak, incelemede, yayinda },
+    sonDenetim,
+    bosSorgular,
+    doluKoleksiyon: toplamBelge.filter((t) => t.adet > 0).length,
+    toplamKoleksiyon: TANIMLAR.length,
+    toplamBelgeSayisi: toplamBelge.reduce((t, k) => t + k.adet, 0),
+  };
+}
+
+function Kutu({ ad, adet, aciklama, yol }: Sayim) {
+  const icerik = (
+    <>
+      <span className="etiket-mono block text-metin-soluk">{ad}</span>
+      <span className="mt-2 block font-mono text-2xl font-semibold tabular-nums text-metin">
+        {adet}
+      </span>
+      <span className="etiket-mono mt-1 block text-kenar-guclu">{aciklama}</span>
+    </>
+  );
+
+  return yol ? (
+    <Link
+      href={yol}
+      className="rounded-xl border border-kenar bg-yuzey/40 p-4 transition-colors hover:border-vurgu/45 hover:bg-yuzey/70"
+    >
+      {icerik}
+    </Link>
+  ) : (
+    <div className="rounded-xl border border-kenar bg-yuzey/40 p-4">{icerik}</div>
+  );
+}
+
+export default async function PanelAnaSayfasi() {
+  const kullanici = await oturumGerekli();
+  const veri = await sayimlariTopla(kullanici.parolaGuncellendi);
 
   return (
-    <>
-      <PanelBasligi
-        indeks="içerik envanteri"
-        baslik="İçerikler"
-        aciklama="Her durumdaki kayıt; başlığa tıklayınca editör açılır. Yayın kontrolleri (BRIEF §4.3) editörün sağ sütununda çalışır."
-        aksiyon={
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="w-full font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2 sm:w-auto">
-              yeni kayıt
-            </span>
-            {YENI_TURLER.map((tur) => (
-              <Link key={tur} href={`/admin/yeni?tur=${tur}`} className="dugme-cerceve bg-kagit">
-                + {turEtiketi(tur)}
+    <div className="mx-auto max-w-6xl space-y-8">
+      {/* Başlık */}
+      <div>
+        <p className="etiket-mono text-metin-soluk">PANEL</p>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-metin">
+          Merhaba{kullanici.adSoyad ? `, ${kullanici.adSoyad.split(' ')[0]}` : ''}
+        </h1>
+        <p className="mt-2 text-sm text-metin-ikincil">
+          Rol: {kullanici.roller.map((r) => ROL_ADI[r as Rol] ?? r).join(', ')} ·{' '}
+          {kullanici.izinler.length} izin · {veri.doluKoleksiyon}/{veri.toplamKoleksiyon}{' '}
+          koleksiyonda veri var
+        </p>
+      </div>
+
+      {/* Güvenlik uyarısı — kurulum parolası hâlâ kullanımdaysa */}
+      <section className="rounded-xl border border-uyari/35 bg-uyari/10 p-5">
+        <p className="etiket-mono mb-2 text-uyari">GÜVENLİK</p>
+        <p className="text-[0.9375rem] leading-relaxed text-metin-ikincil">
+          Hesap parolanız kurulum sırasında komut satırından verildiyse, bu parola kurulum
+          kayıtlarında görünmüş olabilir. Panele ilk girişten sonra{' '}
+          <Link href="/admin/hesap/" className="text-uyari underline underline-offset-2">
+            parolanızı değiştirin
+          </Link>
+          {veri.parolaEski && ' (parolanız 6 aydan eski)'}. Panel parolası ile veritabanı parolası
+          ASLA aynı olmamalı.
+        </p>
+      </section>
+
+      {/* Yayın akışı */}
+      {izinVarMi(kullanici.roller, 'icerik:oku') && (
+        <section>
+          <h2 className="etiket-mono mb-3 text-metin">YAYIN AKIŞI</h2>
+          <div className="grid gap-px overflow-hidden rounded-xl border border-kenar bg-kenar sm:grid-cols-3">
+            {[
+              { ad: 'Taslak', adet: veri.akis.taslak, ton: 'text-metin-soluk' },
+              { ad: 'İncelemede', adet: veri.akis.incelemede, ton: 'text-uyari' },
+              { ad: 'Yayında', adet: veri.akis.yayinda, ton: 'text-basari' },
+            ].map((durum) => (
+              <Link
+                key={durum.ad}
+                href={`/admin/koleksiyon/icerikler/?durum=${durum.ad === 'Taslak' ? 'taslak' : durum.ad === 'İncelemede' ? 'incelemede' : 'yayinda'}`}
+                className="bg-zemin p-4 transition-colors hover:bg-yuzey/60"
+              >
+                <span className={`etiket-mono block ${durum.ton}`}>{durum.ad}</span>
+                <span className="mt-2 block font-mono text-2xl font-semibold tabular-nums text-metin">
+                  {durum.adet}
+                </span>
               </Link>
             ))}
           </div>
-        }
-      >
-        <div className="veri-rayi mt-7 max-w-2xl bg-kagit">
-          <div>
-            toplam
-            <br />
-            <span className="deger tabular-nums">{icerikler.length}</span>
-          </div>
-          <div>
-            yayında
-            <br />
-            <span className="deger tabular-nums text-onay">{durumSayaci("published")}</span>
-          </div>
-          <div>
-            taslak
-            <br />
-            <span className="deger tabular-nums">{durumSayaci("draft")}</span>
-          </div>
-          <div>
-            incelemede
-            <br />
-            <span className="deger tabular-nums">{durumSayaci("in_review")}</span>
-          </div>
-          <div>
-            arşivde
-            <br />
-            <span className="deger tabular-nums">{durumSayaci("archived")}</span>
-          </div>
+        </section>
+      )}
+
+      {/* Koleksiyon sayımları */}
+      <section>
+        <h2 className="etiket-mono mb-3 text-metin">VERİTABANI</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {veri.sayimlar.map((s) => (
+            <Kutu key={s.aciklama} {...s} />
+          ))}
         </div>
-      </PanelBasligi>
-
-      <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-8">
-        {/* ── Süzgeçler: server-side, salt searchParams ── */}
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="w-20 shrink-0 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
-              durum
-            </span>
-            <Link
-              href={suzgecYolu({ durum: null, tur: seciliTur })}
-              className={`${SUZGEC_BAGLANTISI} ${seciliDurum === null ? SUZGEC_AKTIF : SUZGEC_PASIF}`}
-            >
-              tümü
-            </Link>
-            {DURUMLAR.map((durum) => (
-              <Link
-                key={durum}
-                href={suzgecYolu({ durum, tur: seciliTur })}
-                className={`${SUZGEC_BAGLANTISI} ${seciliDurum === durum ? SUZGEC_AKTIF : SUZGEC_PASIF}`}
-              >
-                {DURUM_ETIKETLERI[durum]} · {durumSayaci(durum)}
-              </Link>
-            ))}
-          </div>
-
-          {turler.length > 1 && (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="w-20 shrink-0 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
-                tür
-              </span>
-              <Link
-                href={suzgecYolu({ durum: seciliDurum, tur: null })}
-                className={`${SUZGEC_BAGLANTISI} ${seciliTur === null ? SUZGEC_AKTIF : SUZGEC_PASIF}`}
-              >
-                tümü
-              </Link>
-              {turler.map(([tur, adet]) => (
-                <Link
-                  key={tur}
-                  href={suzgecYolu({ durum: seciliDurum, tur })}
-                  className={`${SUZGEC_BAGLANTISI} ${seciliTur === tur ? SUZGEC_AKTIF : SUZGEC_PASIF}`}
-                >
-                  {turEtiketi(tur)} · {adet}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="cetvel mt-6" aria-hidden />
-
-        <p aria-live="polite" className="mt-4 font-mono text-xs text-murekkep-2">
-          {listelenen.length} / {icerikler.length} kayıt gösteriliyor
-          {suzgecAcik && (
+        <p className="mt-3 text-xs text-metin-soluk">
+          Toplam {veri.toplamBelgeSayisi} belge, {veri.toplamKoleksiyon} koleksiyon.
+          {veri.toplamBelgeSayisi < 50 && (
             <>
-              {" · "}
-              <Link href="/admin" className="no-underline hover:underline">
-                süzgeci temizle
-              </Link>
+              {' '}
+              Koleksiyonlar henüz büyük ölçüde boş — site şu an{' '}
+              <code className="font-mono">lib/veri/*</code> fixture&apos;larından besleniyor.
             </>
           )}
         </p>
+      </section>
 
-        {icerikler.length === 0 ? (
-          <p className="mt-6 border border-doku rounded-lg bg-kagit-alt p-6 text-murekkep-2">
-            Henüz içerik yok — yukarıdan tür seçip ilk içeriği oluşturun.
+      {/* Arama açığı */}
+      {izinVarMi(kullanici.roller, 'arama:oku') && veri.bosSorgular > 0 && (
+        <section className="rounded-xl border border-kenar bg-yuzey/40 p-5">
+          <p className="etiket-mono mb-2 text-metin-soluk">İÇERİK AÇIĞI</p>
+          <p className="text-sm text-metin-ikincil">
+            {veri.bosSorgular} arama sorgusu sonuç üretmedi.{' '}
+            <Link href="/admin/arama/" className="text-vurgu-parlak underline underline-offset-2">
+              Listeyi aç
+            </Link>
           </p>
-        ) : listelenen.length === 0 ? (
-          <p className="mt-6 border border-doku rounded-lg bg-kagit-alt p-6 text-murekkep-2">
-            Bu süzgeçle eşleşen kayıt yok. <Link href="/admin">Süzgeci temizleyin</Link> ya da başka
-            bir durum seçin.
-          </p>
-        ) : (
-          <div className="mt-6 overflow-x-auto border border-doku rounded-md">
-            <table className="w-full min-w-[52rem] border-collapse text-sm">
-              <caption className="sr-only">
-                İçerik envanteri: başlık, tür, durum, güncelleme ve yayın tarihleri
-              </caption>
-              <thead>
-                <tr className="border-b border-doku bg-kagit-alt text-left font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
-                  <th scope="col" className="w-12 px-4 py-2.5 font-normal">
-                    #
-                  </th>
-                  <th scope="col" className="px-4 py-2.5 font-normal">
-                    Başlık
-                  </th>
-                  <th scope="col" className="w-28 px-4 py-2.5 font-normal">
-                    Tür
-                  </th>
-                  <th scope="col" className="w-36 px-4 py-2.5 font-normal">
-                    Durum
-                  </th>
-                  <th scope="col" className="w-44 px-4 py-2.5 font-normal">
-                    Güncelleme
-                  </th>
-                  <th scope="col" className="w-44 px-4 py-2.5 font-normal">
-                    Yayın
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {listelenen.map((icerik, sira) => (
-                  <tr
-                    key={icerik.id}
-                    className="border-b border-doku transition-colors last:border-b-0 hover:bg-kagit-alt"
-                  >
-                    <td className="px-4 py-3 font-mono text-[0.65rem] text-murekkep-2 tabular-nums">
-                      {String(sira + 1).padStart(2, "0")}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/admin/icerik/${icerik.id}`}
-                        className="font-medium text-murekkep no-underline hover:text-sinyal"
-                      >
-                        {icerik.title}
-                      </Link>
-                      <span className="mt-0.5 block font-mono text-[0.65rem] text-murekkep-2">
-                        /{icerik.slug}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs">{turEtiketi(icerik.type)}</td>
-                    <td className="px-4 py-3">
-                      <DurumRozeti durum={icerik.status} />
-                    </td>
-                    <td className="px-4 py-3 font-mono text-[0.65rem] tabular-nums text-murekkep-2">
-                      {tarih(icerik.updatedAt)}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-[0.65rem] tabular-nums text-murekkep-2">
-                      {icerik.publishedAt !== null ? tarih(icerik.publishedAt) : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        </section>
+      )}
+
+      {/* Son işlemler */}
+      {izinVarMi(kullanici.roller, 'denetim:oku') && (
+        <section>
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="etiket-mono text-metin">SON İŞLEMLER</h2>
+            <Link href="/admin/denetim/" className="etiket-mono text-vurgu-parlak">
+              tümü →
+            </Link>
           </div>
-        )}
-      </div>
-    </>
+          {veri.sonDenetim.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-kenar-guclu p-5 text-sm text-metin-soluk">
+              Henüz kayıt yok.
+            </p>
+          ) : (
+            <ul className="divide-y divide-kenar-soluk overflow-hidden rounded-xl border border-kenar">
+              {veri.sonDenetim.map((kayit, sira) => (
+                <li
+                  key={String(kayit._id ?? sira)}
+                  className="flex flex-wrap items-baseline gap-x-3 gap-y-1 bg-yuzey/30 px-4 py-2.5 text-[0.8125rem]"
+                >
+                  <span className="etiket-mono w-32 shrink-0 text-metin-soluk">
+                    {kayit.zaman instanceof Date
+                      ? kayit.zaman.toISOString().slice(0, 16).replace('T', ' ')
+                      : ''}
+                  </span>
+                  <span
+                    className={`etiket-mono ${kayit.basarili === false ? 'text-tehlike' : 'text-vurgu-parlak'}`}
+                  >
+                    {String(kayit.eylem ?? '')}
+                  </span>
+                  <span className="text-metin-ikincil">{String(kayit.koleksiyon ?? '')}</span>
+                  {kayit.kullaniciEpostasi && (
+                    <span className="text-metin-soluk">{String(kayit.kullaniciEpostasi)}</span>
+                  )}
+                  {kayit.not && (
+                    <span className="w-full text-xs text-metin-soluk">{String(kayit.not)}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+    </div>
   );
 }

@@ -1,59 +1,54 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import type { ReactNode } from "react";
-import { KonsolGezinme } from "@/components/admin/KonsolGezinme";
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { PanelKabugu } from '@/components/admin/PanelKabugu';
+import { guvenliIcYol } from '@/lib/guvenlik/adres';
+import { gezinmeyiSuz } from '@/lib/admin/gezinme';
+import { oturumKullanicisi, panelErisimiVarMi } from '@/lib/yetki/oturum';
 
 /**
- * Admin kabuğu — site Header/Footer'ı YOK; yalnız enstrüman konsolu şeridi
- * (ADR 0008 `.ekran`: tema bağımsız koyu panel, "cihazın ekranı hep koyu").
- * Erişim middleware'de Basic Auth ile korunur (ADR 0007); robots noindex
- * yedek emniyettir.
- * Not: /admin/onizleme/<id> de bu kabuğu alır; editördeki iframe önizlemesinin
- * üstünde bar görünür (Faz 2 için kabul edilen sadelik).
+ * Panel kabuğu ve ASIL oturum kapısı.
+ *
+ * `proxy.ts` yalnızca çerez varlığına bakar (Edge'de veritabanı yok);
+ * tokenin geçerliliği burada, sunucuda doğrulanır.
+ *
+ * UYARI: Bu kapı SAYFA GÖRÜNTÜLEMEYİ korur, yazma eylemlerini KORUMAZ.
+ * Next.js'te Server Action layout render'ından önce çalıştığı için her eylem
+ * kendi yetki kontrolünü `korumaliEylem` ile yapmak zorundadır.
  */
+
 export const metadata: Metadata = {
-  title: { default: "Admin", template: "%s · Sinaptiklab Admin" },
-  robots: { index: false, follow: false },
+  title: { default: 'Panel', template: '%s · Sinaptik Panel' },
+  robots: { index: false, follow: false, nocache: true },
 };
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  return (
-    <>
-      <header className="ekran relative border-b border-doku">
-        <div className="ekran-izgara">
-          <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
-            {/* Cihaz üst çubuğu: durum LED'i + konsol kimliği */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-doku py-2.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-murekkep-2">
-              <span className="flex items-center gap-2 text-onay">
-                <span aria-hidden className="inline-block size-1.5 bg-onay" />
-                bağlı
-              </span>
-              <span aria-hidden>/</span>
-              <Link
-                href="/admin"
-                className="font-bold tracking-[0.18em] text-murekkep no-underline hover:text-sinyal"
-              >
-                ADMİN KONSOLU
-              </Link>
-              <span aria-hidden>/</span>
-              <span>kanal 00 · editoryal</span>
-              <span className="ml-auto max-sm:hidden">erişim: basic-auth · tr</span>
-            </div>
+export default async function PanelDuzeni({ children }: { children: ReactNode }) {
+  const basliklar = await headers();
+  const suAnkiYol = guvenliIcYol(basliklar.get('x-yol'), '/admin/');
 
-            {/* Sekmeler + çıkış */}
-            <div className="flex flex-wrap items-center justify-between gap-x-6">
-              <KonsolGezinme />
-              <Link
-                href="/"
-                className="py-2.5 font-mono text-xs uppercase tracking-[0.18em] text-murekkep-2 no-underline hover:text-sinyal"
-              >
-                siteye dön <span aria-hidden>→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-      <main className="flex-1">{children}</main>
-    </>
+  // Giriş ekranı kabuğun dışındadır; kendi düzenini kullanır.
+  const girisSayfasindaMiyiz = suAnkiYol.startsWith('/admin/giris');
+
+  const kullanici = await oturumKullanicisi();
+
+  if (girisSayfasindaMiyiz) {
+    // Oturumu olan biri giriş ekranına gelirse panele al.
+    if (kullanici && panelErisimiVarMi(kullanici)) redirect('/admin/');
+    return <>{children}</>;
+  }
+
+  if (!kullanici) {
+    redirect(`/admin/giris/?devam=${encodeURIComponent(suAnkiYol)}`);
+  }
+
+  if (!panelErisimiVarMi(kullanici)) {
+    redirect('/admin/giris/?hata=yetki');
+  }
+
+  return (
+    <PanelKabugu kullanici={kullanici} bolumler={gezinmeyiSuz(kullanici.izinler)} yol={suAnkiYol}>
+      {children}
+    </PanelKabugu>
   );
 }

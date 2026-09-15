@@ -1,9 +1,5 @@
-.next/
-node_modules/
-docs/
+node_modules
+.next
 package-lock.json
-coverage/
-playwright-report/
-test-results/
-docs/arastirma/rakip-ham-veri.json
-content-ops/tohum/
+*.md
+_*

@@ -1,16 +1,24 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect } from "react";
-import { HataGorseli } from "@/components/gorsel";
+import Link from 'next/link';
+import { useEffect } from 'react';
+import { Dugme } from '@/components/arayuz/Dugme';
+import { Ok } from '@/components/arayuz/Ikonlar';
 
 /**
- * Site tarafı hata sınırı (BRIEF §12.3/§9). Sunucu hatası, DB kesintisi ya
- * da render hatası burada yakalanır; kullanıcı boş ekranla karşılaşmaz.
- * Sentry Faz 9'da bağlanacak — şimdilik hata konsola düşer (digest ile
- * sunucu günlüğünden eşleştirilebilir).
+ * Site tarafı hata sınırı.
+ *
+ * Kapsam: `(site)` düzeninin altındaki her sayfa. Düzenin kendisi (başlık,
+ * gezinme, altlık) ayakta kalır — yalnızca sayfa gövdesi bu ekranla değişir.
+ * Düzenin KENDİSİ hata verirse bu sınır yakalamaz; onu `app/global-error.tsx`
+ * karşılar.
+ *
+ * HATA METNİ GÖSTERİLMEZ. Üretimde Next zaten iletiyi maskeler ve yerine bir
+ * `digest` verir; burada da yalnızca o özet basılır. Yığın izi veya sorgu
+ * ayrıntısı okuyucuya sızmaz — hata ayıklama sunucu günlüğünden yapılır.
  */
-export default function SiteHatasi({
+
+export default function SiteHataSinir({
   error,
   reset,
 }: {
@@ -18,40 +26,45 @@ export default function SiteHatasi({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Site hatası:", error);
+    // Tarayıcı konsoluna yazmak, hatayı ilk bildiren kişinin ekran görüntüsünü
+    // işe yarar hâle getirir. Sunucu tarafı kaydı Next'in kendisi tutar.
+    console.error('[sinaptiklab] sayfa hatası', error.digest ?? error.message);
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-[var(--gutter)] py-20">
-      <div className="max-w-[60ch] border border-doku rounded-lg bg-kagit-alt p-8">
-        <HataGorseli className="h-auto w-44 text-murekkep-2" />
-        <p className="mt-6 flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-uyari">
-          <span aria-hidden className="inline-block size-1.5 rounded-full bg-uyari" />
-          ölçüm kesintisi · sunucu hatası
+    <div className="kap flex min-h-[70vh] flex-col justify-center py-20">
+      <p className="etiket-mono text-metin-soluk">HATA</p>
+      <h1 className="mt-4 max-w-2xl text-3xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-4xl">
+        Bu sayfa yüklenirken bir şey ters gitti.
+      </h1>
+      <p className="mt-4 max-w-lg text-[0.9375rem] leading-relaxed text-metin-ikincil">
+        Hata bizde kaydedildi. Sayfayı yeniden denemek çoğu zaman yeterli olur; sorun sürerse
+        aşağıdaki numarayı bize iletin.
+      </p>
+
+      {error.digest && (
+        <p className="mt-4 font-mono text-xs text-metin-soluk">
+          Hata numarası: <span className="text-metin-ikincil">{error.digest}</span>
         </p>
-        <h1 className="mt-5 font-display text-3xl font-bold leading-tight tracking-tight">
-          Bu sayfa şu an yüklenemedi.
-        </h1>
-        <p className="mt-4 leading-relaxed text-murekkep-2">
-          Geçici bir sorun oluştu; içerik kaybolmadı. Sayfayı yeniden deneyebilir ya da başka bir
-          bölüme geçebilirsiniz. Sorun sürerse hata kodunu iletirseniz kaydı hızla bulabiliriz.
-        </p>
-        {error.digest !== undefined && (
-          <p className="mt-4 border border-doku rounded-md bg-kagit px-3 py-2 font-mono text-xs text-murekkep-2">
-            hata kodu: {error.digest}
-          </p>
-        )}
-        <div className="mt-8 flex flex-wrap gap-3">
-          <button type="button" onClick={reset} className="dugme-birincil">
-            Yeniden dene <span aria-hidden>↻</span>
-          </button>
-          <Link href="/" className="dugme-cerceve">
-            Ana sayfa
-          </Link>
-          <Link href="/iletisim" className="dugme-cerceve">
-            Bildir
-          </Link>
-        </div>
+      )}
+
+      <div className="mt-8 flex flex-wrap items-center gap-3">
+        <Dugme onClick={reset}>
+          Yeniden dene
+          <Ok className="size-4" />
+        </Dugme>
+        <Link
+          href="/"
+          className="text-sm text-metin-ikincil underline underline-offset-4 transition-colors hover:text-metin"
+        >
+          ana sayfaya dön
+        </Link>
+        <Link
+          href="/iletisim/"
+          className="text-sm text-metin-ikincil underline underline-offset-4 transition-colors hover:text-metin"
+        >
+          durumu bildir
+        </Link>
       </div>
     </div>
   );

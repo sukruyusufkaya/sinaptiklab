@@ -1,55 +1,74 @@
-import type { NextConfig } from "next";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import type { NextConfig } from 'next';
 
-/**
- * Next, route group içindeki metadata görsel rotalarına hash soneki ekler:
- * app/(site)/makale/[slug]/opengraph-image.tsx → /makale/<slug>/opengraph-image-16m5zo
- * (kaynak: next/dist/lib/metadata/get-metadata-route.js — djb2Hash(parent).toString(36).slice(0,6)).
- * Aşağıdaki kopya aynı algoritmadır (next/dist/shared/lib/hash.js, djbxor);
- * soneksiz temiz URL'yi hash'li gerçek rotaya rewrite etmek için kullanılır.
- * Next algoritmayı değiştirirse rewrite hedefi 404 verir — CI'daki OG curl
- * doğrulaması bunu yakalar.
- */
-function djb2Hash(str: string): number {
-  let hash = 5381;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) + hash + str.charCodeAt(i)) & 0xffffffff;
-  }
-  return hash >>> 0;
-}
+const kok = dirname(fileURLToPath(import.meta.url));
 
-const ogSoneki = (parent: string) => djb2Hash(parent).toString(36).slice(0, 6);
+/** Üretimde güvenlik başlıkları; canlıya çıkmadan önce zorunlu (bkz. ADR). */
+const GUVENLIK_BASLIKLARI = [
+  // Tarayıcı MIME türünü tahmin etmesin.
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  // Site başka bir sayfaya çerçevelenemez (clickjacking).
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  // Dış sitelere tam URL sızmasın.
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  // Kullanılmayan güçlü API'ler kapalı.
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+  },
+  // HTTPS zorunlu — yalnızca üretimde anlamlı, yerelde tarayıcı yok sayar.
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  // Çapraz kaynak yalıtımı.
+  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+];
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  turbopack: { root: kok },
   poweredByHeader: false,
-  // Ev dizini ayrı bir git deposu + lockfile içerdiği için kökü açıkça sabitle
-  turbopack: {
-    root: fileURLToPath(new URL(".", import.meta.url)),
-  },
-  images: {
-    formats: ["image/avif", "image/webp"],
-  },
-  // /sitemap.xml → sitemap indeksi. app/sitemap.ts (generateSitemaps) yolu
-  // metadata rotası olarak sahiplendiği için indeks app dizininde doğrudan
-  // /sitemap.xml'e konamıyor; içerik bu rewrite ile kanonik adresten servis
-  // edilir (bkz. app/sitemap-indeksi.xml/route.ts).
-  async rewrites() {
+  // Kalıcı URL politikası (MASTER-PLAN §45): her yol sondaki eğik çizgiyle biter.
+  trailingSlash: true,
+
+  /**
+   * `mongodb` sunucu tarafında dışsal bırakılır.
+   *
+   * Paketlenmeye çalışıldığında sürücünün DNS (SRV kaydı çözümleme), TLS ve
+   * yerel eklenti yolları bozulur; belirtisi `querySrv ETIMEOUT` hatasıdır —
+   * bağlantı dizesi doğru olmasına rağmen Atlas bulunamaz.
+   */
+  serverExternalPackages: ['mongodb'],
+
+  async headers() {
     return [
-      { source: "/sitemap.xml", destination: "/sitemap-indeksi.xml" },
-      // Soneksiz OG görsel URL'leri → hash'li gerçek metadata rotaları
-      // (sayfa meta etiketleri zaten hash'li URL'yi işaret eder; bu kayıtlar
-      // temiz URL'yi elle/CI'dan çağırabilmek için).
       {
-        source: "/makale/:slug/opengraph-image",
-        destination: `/makale/:slug/opengraph-image-${ogSoneki("/(site)/makale/[slug]")}`,
+        source: '/:path*',
+        headers: GUVENLIK_BASLIKLARI,
       },
       {
-        source: "/rehber/:slug/opengraph-image",
-        destination: `/rehber/:slug/opengraph-image-${ogSoneki("/(site)/rehber/[slug]")}`,
+        // Panel hiçbir koşulda dizinlenmez ve çerçevelenmez.
+        source: '/admin/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Cache-Control', value: 'no-store, max-age=0' },
+        ],
       },
       {
-        source: "/uygulama/:slug/opengraph-image",
-        destination: `/uygulama/:slug/opengraph-image-${ogSoneki("/(site)/uygulama/[slug]")}`,
+        /**
+         * Taslak önizleme rotası: yayımlanmamış içerik taşır.
+         *
+         * Sayfa `metadata.robots` ile de noindex verir; başlık, meta etiketi
+         * okumayan aracılar (bazı tarayıcı botları, önbellek katmanları) için
+         * ikinci kattır. `no-store` şart: süresi dolmuş bir bağlantının
+         * yanıtının ara belleklerde yaşamaya devam etmesi önizlemeyi kalıcı
+         * bir yayın adresine çevirirdi.
+         */
+        source: '/onizleme/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+          { key: 'Cache-Control', value: 'no-store, max-age=0' },
+        ],
       },
     ];
   },

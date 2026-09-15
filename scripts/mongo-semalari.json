@@ -1,0 +1,6503 @@
+[
+  {
+    "ad": "icerikler",
+    "aciklama": "Tüm editoryal formatlar: haber, analiz, rehber, görüş, röportaj, uygulama. Formatı `tur`, konuyu `konuSlug` belirler.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "tur",
+          "baslik",
+          "kisaCevap",
+          "konuSlug",
+          "yazarSlug",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "yol": {
+            "bsonType": "string",
+            "description": "Kanonik yol; /haber/<slug>/ gibi."
+          },
+          "tur": {
+            "bsonType": "string",
+            "enum": [
+              "haber",
+              "analiz",
+              "rehber",
+              "gorus",
+              "roportaj",
+              "uygulama",
+              "vaka"
+            ]
+          },
+          "baslik": {
+            "bsonType": "string",
+            "minLength": 8,
+            "maxLength": 160
+          },
+          "kisaCevap": {
+            "bsonType": "string",
+            "minLength": 40,
+            "maxLength": 600,
+            "description": "Answer-first: tek cümlelik, alıntılanabilir cevap (§56)."
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "konuSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "etiketler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "yazarSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "inceleyenSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "seviye": {
+            "bsonType": "string",
+            "enum": [
+              "baslangic",
+              "orta",
+              "ileri"
+            ]
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "oneCikan": {
+            "bsonType": "bool"
+          },
+          "yayinTarihi": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "guncellemeTarihi": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "okumaDakika": {
+            "bsonType": "number",
+            "minimum": 1,
+            "maximum": 180
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "kaynaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "yayinci",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "yayinci": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string",
+                  "enum": [
+                    "Makale",
+                    "Dokümantasyon",
+                    "Teknik rapor",
+                    "Mevzuat",
+                    "Veri seti",
+                    "Röportaj"
+                  ]
+                },
+                "adres": {
+                  "bsonType": "string"
+                },
+                "erisimTarihi": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                }
+              }
+            }
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "adimListesi": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "ozet"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "ozet": {
+                  "bsonType": "string"
+                },
+                "ayrinti": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "tip"
+                    ],
+                    "properties": {
+                      "tip": {
+                        "bsonType": "string",
+                        "enum": [
+                          "paragraf",
+                          "altbaslik",
+                          "liste",
+                          "kisa-cevap",
+                          "alinti",
+                          "kod",
+                          "tablo",
+                          "akis",
+                          "uyari"
+                        ]
+                      },
+                      "metin": {
+                        "bsonType": "string"
+                      },
+                      "kimlik": {
+                        "bsonType": "string"
+                      },
+                      "ogeler": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "string"
+                        }
+                      },
+                      "sirali": {
+                        "bsonType": "bool"
+                      },
+                      "kaynak": {
+                        "bsonType": "string"
+                      },
+                      "dil": {
+                        "bsonType": "string"
+                      },
+                      "basliklar": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "string"
+                        }
+                      },
+                      "satirlar": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "array",
+                          "items": {
+                            "bsonType": "string"
+                          }
+                        }
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      },
+                      "adimlar": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "object",
+                          "required": [
+                            "ad",
+                            "aciklama"
+                          ],
+                          "properties": {
+                            "ad": {
+                              "bsonType": "string"
+                            },
+                            "aciklama": {
+                              "bsonType": "string"
+                            }
+                          }
+                        }
+                      },
+                      "ton": {
+                        "bsonType": "string",
+                        "enum": [
+                          "bilgi",
+                          "dikkat"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "onKosullar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "araclar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kontrolListesi": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "tuzaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "baslik",
+                "aciklama"
+              ],
+              "properties": {
+                "baslik": {
+                  "bsonType": "string"
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "ilgiliAtlas": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "tezGuveni": {
+            "bsonType": "string",
+            "enum": [
+              "yuksek",
+              "orta",
+              "dusuk"
+            ],
+            "description": "Tezin dayandığı kanıtın gücü; okura açıkça bildirilir."
+          },
+          "yanlislanmaKosulu": {
+            "bsonType": "string",
+            "maxLength": 600,
+            "description": "Bu tezi çürütecek gözlem. Yazılamıyorsa tez değil temennidir."
+          },
+          "ilgiliIcerik": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "durum": 1,
+          "yayinTarihi": -1
+        },
+        "secenekler": {
+          "name": "akis"
+        }
+      },
+      {
+        "anahtar": {
+          "konuSlug": 1,
+          "durum": 1,
+          "yayinTarihi": -1
+        },
+        "secenekler": {
+          "name": "konu_akisi"
+        }
+      },
+      {
+        "anahtar": {
+          "tur": 1,
+          "durum": 1,
+          "yayinTarihi": -1
+        },
+        "secenekler": {
+          "name": "tur_akisi"
+        }
+      },
+      {
+        "anahtar": {
+          "yazarSlug": 1,
+          "yayinTarihi": -1
+        },
+        "secenekler": {
+          "name": "yazar_akisi"
+        }
+      },
+      {
+        "anahtar": {
+          "etiketler": 1
+        },
+        "secenekler": {
+          "name": "etiket"
+        }
+      },
+      {
+        "anahtar": {
+          "baslik": "text",
+          "kisaCevap": "text",
+          "ozet": "text"
+        },
+        "secenekler": {
+          "name": "metin_arama",
+          "default_language": "turkish",
+          "weights": {
+            "baslik": 10,
+            "kisaCevap": 5,
+            "ozet": 1
+          }
+        }
+      }
+    ]
+  },
+  {
+    "ad": "atlas",
+    "aciklama": "AI Atlas kavram girdileri. Makale değil varlık: kalıcı URL, sürüm geçmişi ve son doğrulama tarihi taşır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "kategoriSlug",
+          "kisaTanim",
+          "seviye",
+          "sonDogrulama",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string",
+            "minLength": 2,
+            "maxLength": 120
+          },
+          "altAd": {
+            "bsonType": "string",
+            "description": "Türkçe karşılık veya kısaltma açılımı."
+          },
+          "kategoriSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "kisaTanim": {
+            "bsonType": "string",
+            "minLength": 40,
+            "maxLength": 600,
+            "description": "Answer-first tanım; sözlük görünümünde de kullanılır."
+          },
+          "seviye": {
+            "bsonType": "string",
+            "enum": [
+              "baslangic",
+              "orta",
+              "ileri"
+            ]
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "ilgili": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "onkosullar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "sonDogrulama": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "yayinTarihi": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "guncellemeTarihi": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "kaynaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "yayinci",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "yayinci": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string",
+                  "enum": [
+                    "Makale",
+                    "Dokümantasyon",
+                    "Teknik rapor",
+                    "Mevzuat",
+                    "Veri seti",
+                    "Röportaj"
+                  ]
+                },
+                "adres": {
+                  "bsonType": "string"
+                },
+                "erisimTarihi": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                }
+              }
+            }
+          },
+          "surumler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "surum",
+                "tarih",
+                "degisiklik"
+              ],
+              "properties": {
+                "surum": {
+                  "bsonType": "string"
+                },
+                "tarih": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                },
+                "degisiklik": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "yazarSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "inceleyenSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "kategoriSlug": 1,
+          "ad": 1
+        },
+        "secenekler": {
+          "name": "kategori"
+        }
+      },
+      {
+        "anahtar": {
+          "seviye": 1
+        },
+        "secenekler": {
+          "name": "seviye"
+        }
+      },
+      {
+        "anahtar": {
+          "sonDogrulama": 1
+        },
+        "secenekler": {
+          "name": "tazelik_denetimi"
+        }
+      },
+      {
+        "anahtar": {
+          "ad": "text",
+          "altAd": "text",
+          "kisaTanim": "text"
+        },
+        "secenekler": {
+          "name": "metin_arama",
+          "default_language": "turkish",
+          "weights": {
+            "ad": 10,
+            "altAd": 8,
+            "kisaTanim": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "ad": "konular",
+    "aciklama": "Konu taksonomisi: pillar (ana konu) ve cluster (alt konu) hiyerarşisi. İçerikler bu slug ile bağlanır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "kume",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "kume": {
+            "bsonType": "string",
+            "description": "Üst küme adı (pillar)."
+          },
+          "ustKonuSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "sira": {
+            "bsonType": "number"
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "ustKonuSlug": 1,
+          "sira": 1
+        },
+        "secenekler": {
+          "name": "hiyerarsi"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "yazarlar",
+    "aciklama": "Yazar ve editör künyeleri. E-E-A-T için özgeçmiş ve uzmanlık alanları zorunludur.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "unvan",
+          "basHarfler"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "unvan": {
+            "bsonType": "string"
+          },
+          "basHarfler": {
+            "bsonType": "string",
+            "maxLength": 4
+          },
+          "ozgecmis": {
+            "bsonType": "string"
+          },
+          "uzmanlik": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "sosyal": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "etiket",
+                "adres"
+              ],
+              "properties": {
+                "etiket": {
+                  "bsonType": "string"
+                },
+                "adres": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "modeller",
+    "aciklama": "Yapay zekâ modelleri. Karşılaştırma sayfaları bu koleksiyondan türetilir; her alan için son doğrulama tarihi tutulur.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "saglayici",
+          "tip",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "saglayici": {
+            "bsonType": "string"
+          },
+          "saglayiciSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "aileSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "aileMi": {
+            "bsonType": "bool",
+            "description": "Bu kayıt bir model ailesinin hub künyesi mi (tek bir model değil)."
+          },
+          "tip": {
+            "bsonType": "string",
+            "description": "Dil modeli, görsel, çok modlu, gömme vb."
+          },
+          "baglamPenceresi": {
+            "bsonType": "string"
+          },
+          "acikKaynak": {
+            "bsonType": "bool"
+          },
+          "acikAgirlik": {
+            "bsonType": "bool"
+          },
+          "lisans": {
+            "bsonType": "string"
+          },
+          "yayin": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "surum": {
+            "bsonType": "string"
+          },
+          "guncellikDurumu": {
+            "bsonType": "string",
+            "enum": [
+              "guncel",
+              "yeni",
+              "onceki-surum",
+              "emekli"
+            ]
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "vurgu": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "yetenekler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "sinirliliklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kullanimAlanlari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "modaliteler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "api": {
+            "bsonType": "bool"
+          },
+          "fiyatlandirma": {
+            "bsonType": "object",
+            "properties": {
+              "girdiBirimFiyat": {
+                "bsonType": "number",
+                "minimum": 0
+              },
+              "ciktiBirimFiyat": {
+                "bsonType": "number",
+                "minimum": 0
+              },
+              "birim": {
+                "bsonType": "string",
+                "description": "Örn. 1M token."
+              },
+              "paraBirimi": {
+                "bsonType": "string"
+              },
+              "kaynakAdres": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "kaynaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "yayinci",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "yayinci": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string",
+                  "enum": [
+                    "Makale",
+                    "Dokümantasyon",
+                    "Teknik rapor",
+                    "Mevzuat",
+                    "Veri seti",
+                    "Röportaj"
+                  ]
+                },
+                "adres": {
+                  "bsonType": "string"
+                },
+                "erisimTarihi": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                }
+              }
+            }
+          },
+          "sonDogrulama": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "saglayiciSlug": 1,
+          "yayin": -1
+        },
+        "secenekler": {
+          "name": "saglayici"
+        }
+      },
+      {
+        "anahtar": {
+          "aileSlug": 1
+        },
+        "secenekler": {
+          "name": "aile"
+        }
+      },
+      {
+        "anahtar": {
+          "guncellikDurumu": 1
+        },
+        "secenekler": {
+          "name": "guncellik"
+        }
+      },
+      {
+        "anahtar": {
+          "sonDogrulama": 1
+        },
+        "secenekler": {
+          "name": "tazelik_denetimi"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "sirketler",
+    "aciklama": "Yapay zekâ şirketleri ve kuruluşları; model ve araç kayıtlarına bağlanır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "tur",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "tur": {
+            "bsonType": "string"
+          },
+          "merkez": {
+            "bsonType": "string"
+          },
+          "kurulus": {
+            "bsonType": "string"
+          },
+          "alan": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "urunler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "modelSluglari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "kilometreTaslari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tarih",
+                "olay"
+              ],
+              "properties": {
+                "tarih": {
+                  "bsonType": "string"
+                },
+                "olay": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "kaynaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "yayinci",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "yayinci": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string",
+                  "enum": [
+                    "Makale",
+                    "Dokümantasyon",
+                    "Teknik rapor",
+                    "Mevzuat",
+                    "Veri seti",
+                    "Röportaj"
+                  ]
+                },
+                "adres": {
+                  "bsonType": "string"
+                },
+                "erisimTarihi": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                }
+              }
+            }
+          },
+          "sonDogrulama": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "alan": 1
+        },
+        "secenekler": {
+          "name": "alan"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "araclar",
+    "aciklama": "Araç kayıt defteri: ne işe yarar, kim kullanmalı, artı ve eksiler.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "kategori",
+          "neIse",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "kategori": {
+            "bsonType": "string"
+          },
+          "neIse": {
+            "bsonType": "string"
+          },
+          "kimKullanmali": {
+            "bsonType": "string"
+          },
+          "enIyiKullanim": {
+            "bsonType": "string"
+          },
+          "alternatifler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "fiyat": {
+            "bsonType": "string"
+          },
+          "artilar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "eksiler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "degerlendirme": {
+            "bsonType": "string"
+          },
+          "sirketSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "sonDogrulama": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "kategori": 1,
+          "ad": 1
+        },
+        "secenekler": {
+          "name": "kategori"
+        }
+      },
+      {
+        "anahtar": {
+          "sirketSlug": 1,
+          "ad": 1
+        },
+        "secenekler": {
+          "name": "uretici"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "meslekler",
+    "aciklama": "Kariyer sayfaları: meslek tanımı, kıdem kırılımı, günlük iş, çıktılar, komşu meslekler ve önerilen rota.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "ozet",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "kisaCevap": {
+            "bsonType": "string",
+            "maxLength": 700
+          },
+          "esAdlar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "rolAilesi": {
+            "bsonType": "string"
+          },
+          "konuSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "neYapar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "beceriler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "teknolojiler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "seviyeler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "basamak",
+                "ad",
+                "odak"
+              ],
+              "properties": {
+                "basamak": {
+                  "bsonType": "string",
+                  "enum": [
+                    "giris",
+                    "orta",
+                    "kidemli",
+                    "lider"
+                  ]
+                },
+                "ad": {
+                  "bsonType": "string"
+                },
+                "odak": {
+                  "bsonType": "string"
+                },
+                "sorumluluklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "kanit": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "gunlukIs": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "dilim",
+                "is"
+              ],
+              "properties": {
+                "dilim": {
+                  "bsonType": "string"
+                },
+                "is": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "ciktilar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "olcutler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "aciklama"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "girisYollari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "portfolyo": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "aciklama"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "kanit": {
+                  "bsonType": "string"
+                },
+                "labSlug": {
+                  "bsonType": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                }
+              }
+            }
+          },
+          "yanlisAnlamalar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "iddia",
+                "gercek"
+              ],
+              "properties": {
+                "iddia": {
+                  "bsonType": "string"
+                },
+                "gercek": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "komsuMeslekler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "slug",
+                "fark"
+              ],
+              "properties": {
+                "slug": {
+                  "bsonType": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                },
+                "fark": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "ilgiliAtlas": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "yolSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "testSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "kaynaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "yayinci",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "yayinci": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string",
+                  "enum": [
+                    "Makale",
+                    "Dokümantasyon",
+                    "Teknik rapor",
+                    "Mevzuat",
+                    "Veri seti",
+                    "Röportaj"
+                  ]
+                },
+                "adres": {
+                  "bsonType": "string"
+                },
+                "erisimTarihi": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "rolAilesi": 1
+        },
+        "secenekler": {
+          "name": "rol_ailesi"
+        }
+      },
+      {
+        "anahtar": {
+          "yolSlug": 1
+        },
+        "secenekler": {
+          "name": "yol"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "ogrenme_yollari",
+    "aciklama": "Öğrenme rotaları: bölümler, çıktılar, önkoşullar ve hedef rol.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "rol",
+          "seviyeAraligi",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "rol": {
+            "bsonType": "string"
+          },
+          "seviyeAraligi": {
+            "bsonType": "string"
+          },
+          "bolum": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "saat": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "aciklama": {
+            "bsonType": "string"
+          },
+          "cikti": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "onkosullar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kimeGore": {
+            "bsonType": "string"
+          },
+          "bolumler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "ozet",
+                "sure"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "ozet": {
+                  "bsonType": "string"
+                },
+                "sure": {
+                  "bsonType": "string"
+                },
+                "kavramlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "dersSluglari": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string",
+                    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                    "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                  }
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "rol": 1
+        },
+        "secenekler": {
+          "name": "rol"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "dersler",
+    "aciklama": "Dersler: hedefler, gövde, uygulamalı alıştırma ve ölçüm bağlantısı.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "yolSlug",
+          "seviye",
+          "dakika",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "yolSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "sira": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "seviye": {
+            "bsonType": "string",
+            "enum": [
+              "baslangic",
+              "orta",
+              "ileri"
+            ]
+          },
+          "dakika": {
+            "bsonType": "number",
+            "minimum": 1,
+            "maximum": 480
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "hedefler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kavramlar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "onkosullar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "alistirma": {
+            "bsonType": "object",
+            "required": [
+              "baslik",
+              "adimlar",
+              "cikti"
+            ],
+            "properties": {
+              "baslik": {
+                "bsonType": "string"
+              },
+              "adimlar": {
+                "bsonType": "array",
+                "items": {
+                  "bsonType": "string"
+                }
+              },
+              "cikti": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "testSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "yolSlug": 1,
+          "sira": 1
+        },
+        "secenekler": {
+          "name": "rota_sirasi"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "testler",
+    "aciklama": "Testler: ölçülen beceriler, öğrenme hedefleri ve soru bankası referansı.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "konu",
+          "dakika",
+          "seviye",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "konu": {
+            "bsonType": "string"
+          },
+          "konuSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "soruSayisi": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "dakika": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "seviye": {
+            "bsonType": "string",
+            "enum": [
+              "baslangic",
+              "orta",
+              "ileri"
+            ]
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "olculenBeceriler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kimlerCozmeli": {
+            "bsonType": "string"
+          },
+          "ogrenmeHedefleri": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "soruEtiketi": {
+            "bsonType": "string",
+            "description": "Soru bankasında bu teste ait soruları seçen etiket."
+          },
+          "gecmeEsigi": {
+            "bsonType": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "seviye": 1
+        },
+        "secenekler": {
+          "name": "seviye"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "sorular",
+    "aciklama": "Soru bankası. Doğru cevap ve açıklama sunucu tarafında kalır; istemciye yalnızca gerekli alanlar gönderilir.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "kimlik",
+          "konu",
+          "zorluk",
+          "beceri",
+          "soru",
+          "secenekler",
+          "dogruIndeks"
+        ],
+        "properties": {
+          "kimlik": {
+            "bsonType": "string"
+          },
+          "konu": {
+            "bsonType": "string"
+          },
+          "altKonu": {
+            "bsonType": "string"
+          },
+          "etiketler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "zorluk": {
+            "bsonType": "string",
+            "enum": [
+              "baslangic",
+              "orta",
+              "ileri"
+            ]
+          },
+          "beceri": {
+            "bsonType": "string"
+          },
+          "soru": {
+            "bsonType": "string",
+            "minLength": 10
+          },
+          "secenekler": {
+            "bsonType": "array",
+            "minItems": 2,
+            "maxItems": 6,
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "dogruIndeks": {
+            "bsonType": "number",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "aciklama": {
+            "bsonType": "string"
+          },
+          "ilgiliAtlas": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "kimlik": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "kimlik_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "etiketler": 1,
+          "zorluk": 1
+        },
+        "secenekler": {
+          "name": "secim"
+        }
+      },
+      {
+        "anahtar": {
+          "konu": 1,
+          "zorluk": 1
+        },
+        "secenekler": {
+          "name": "konu_zorluk"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "arastirma",
+    "aciklama": "Sinaptik Research yayınları: rapor, benchmark, veri seti, whitepaper, index ve not. Sınırlılık bölümü zorunludur.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "baslik",
+          "tur",
+          "ozet",
+          "tarih",
+          "sinirliliklar",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "baslik": {
+            "bsonType": "string"
+          },
+          "tur": {
+            "bsonType": "string",
+            "enum": [
+              "Rapor",
+              "Benchmark",
+              "Veri Seti",
+              "Whitepaper",
+              "Index",
+              "Not"
+            ]
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "veriNoktasi": {
+            "bsonType": "string"
+          },
+          "veriEtiketi": {
+            "bsonType": "string"
+          },
+          "tarih": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "yontem": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kapsam": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "etiket",
+                "deger"
+              ],
+              "properties": {
+                "etiket": {
+                  "bsonType": "string"
+                },
+                "deger": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "bulgular": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "sinirliliklar": {
+            "bsonType": "array",
+            "minItems": 1,
+            "items": {
+              "bsonType": "string"
+            },
+            "description": "Sınırlılık bölümü olmayan yayın onaylanmaz (metodoloji ilkesi)."
+          },
+          "atifFormati": {
+            "bsonType": "string"
+          },
+          "lisans": {
+            "bsonType": "string"
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "ekler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string"
+                },
+                "medyaKimligi": {
+                  "bsonType": "string"
+                },
+                "boyutBayt": {
+                  "bsonType": "number"
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "tur": 1,
+          "tarih": -1
+        },
+        "secenekler": {
+          "name": "tur_akisi"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "dergi_sayilari",
+    "aciklama": "Dergi sayıları ve içindeki yazılar. Yazılar PDF içine gömülmez; her biri kendi kalıcı adresinde yayımlanır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "sayi",
+          "kapakKonusu",
+          "tarih",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "sayi": {
+            "bsonType": "string"
+          },
+          "kapakKonusu": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "tarih": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "yazilar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "slug",
+                "baslik",
+                "bolum",
+                "yazarSlug"
+              ],
+              "properties": {
+                "slug": {
+                  "bsonType": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                },
+                "baslik": {
+                  "bsonType": "string"
+                },
+                "bolum": {
+                  "bsonType": "string"
+                },
+                "ozet": {
+                  "bsonType": "string"
+                },
+                "yazarSlug": {
+                  "bsonType": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                },
+                "okumaDakika": {
+                  "bsonType": "number",
+                  "minimum": 1
+                },
+                "govde": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "tip"
+                    ],
+                    "properties": {
+                      "tip": {
+                        "bsonType": "string",
+                        "enum": [
+                          "paragraf",
+                          "altbaslik",
+                          "liste",
+                          "kisa-cevap",
+                          "alinti",
+                          "kod",
+                          "tablo",
+                          "akis",
+                          "uyari"
+                        ]
+                      },
+                      "metin": {
+                        "bsonType": "string"
+                      },
+                      "kimlik": {
+                        "bsonType": "string"
+                      },
+                      "ogeler": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "string"
+                        }
+                      },
+                      "sirali": {
+                        "bsonType": "bool"
+                      },
+                      "kaynak": {
+                        "bsonType": "string"
+                      },
+                      "dil": {
+                        "bsonType": "string"
+                      },
+                      "basliklar": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "string"
+                        }
+                      },
+                      "satirlar": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "array",
+                          "items": {
+                            "bsonType": "string"
+                          }
+                        }
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      },
+                      "adimlar": {
+                        "bsonType": "array",
+                        "items": {
+                          "bsonType": "object",
+                          "required": [
+                            "ad",
+                            "aciklama"
+                          ],
+                          "properties": {
+                            "ad": {
+                              "bsonType": "string"
+                            },
+                            "aciklama": {
+                              "bsonType": "string"
+                            }
+                          }
+                        }
+                      },
+                      "ton": {
+                        "bsonType": "string",
+                        "enum": [
+                          "bilgi",
+                          "dikkat"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "kaynaklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "yayinci",
+                      "tur"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "yayinci": {
+                        "bsonType": "string"
+                      },
+                      "tur": {
+                        "bsonType": "string",
+                        "enum": [
+                          "Makale",
+                          "Dokümantasyon",
+                          "Teknik rapor",
+                          "Mevzuat",
+                          "Veri seti",
+                          "Röportaj"
+                        ]
+                      },
+                      "adres": {
+                        "bsonType": "string"
+                      },
+                      "erisimTarihi": {
+                        "bsonType": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                        "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                      }
+                    }
+                  }
+                },
+                "ilgiliAtlas": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string",
+                    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                    "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                  }
+                }
+              }
+            }
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "tarih": -1
+        },
+        "secenekler": {
+          "name": "arsiv"
+        }
+      },
+      {
+        "anahtar": {
+          "yazilar.slug": 1
+        },
+        "secenekler": {
+          "name": "yazi_slug"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "podcast",
+    "aciklama": "Podcast bölümleri: konuk, çıkarımlar, döküm ve zaman damgaları.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "numara",
+          "ad",
+          "tarih",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "numara": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "konuk": {
+            "bsonType": "string"
+          },
+          "konukUnvan": {
+            "bsonType": "string"
+          },
+          "dakika": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "cikarimlar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "dokum": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "bolumler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "saniye",
+                "baslik"
+              ],
+              "properties": {
+                "saniye": {
+                  "bsonType": "number"
+                },
+                "baslik": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "sesMedyaKimligi": {
+            "bsonType": "string"
+          },
+          "tarih": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "numara": -1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "numara_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "briefler",
+    "aciklama": "Sinaptik Daily: her gün bir sayı, beş madde. Bülten gönderimi bu kayıttan türetilir.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "tarih",
+          "baslik",
+          "maddeler",
+          "durum"
+        ],
+        "properties": {
+          "tarih": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "baslik": {
+            "bsonType": "string"
+          },
+          "kisaCevap": {
+            "bsonType": "string",
+            "minLength": 40,
+            "maxLength": 600,
+            "description": "Answer-first: günün tek paragrafta alıntılanabilir özeti (§56)."
+          },
+          "ozet": {
+            "bsonType": "string",
+            "description": "Kart ve akış özeti; kisaCevap ile aynı değil."
+          },
+          "okumaDakika": {
+            "bsonType": "number",
+            "minimum": 1,
+            "maximum": 60
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "kaynaklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "ad",
+                "yayinci",
+                "tur"
+              ],
+              "properties": {
+                "ad": {
+                  "bsonType": "string"
+                },
+                "yayinci": {
+                  "bsonType": "string"
+                },
+                "tur": {
+                  "bsonType": "string",
+                  "enum": [
+                    "Makale",
+                    "Dokümantasyon",
+                    "Teknik rapor",
+                    "Mevzuat",
+                    "Veri seti",
+                    "Röportaj"
+                  ]
+                },
+                "adres": {
+                  "bsonType": "string"
+                },
+                "erisimTarihi": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                }
+              }
+            }
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "konuSluglari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            },
+            "description": "Sayının dokunduğu konular; konu merkezlerinden geri bağlanır."
+          },
+          "maddeler": {
+            "bsonType": "array",
+            "minItems": 1,
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "numara",
+                "baslik",
+                "neden"
+              ],
+              "properties": {
+                "numara": {
+                  "bsonType": "string"
+                },
+                "baslik": {
+                  "bsonType": "string"
+                },
+                "neden": {
+                  "bsonType": "string"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "konuSlug": {
+                  "bsonType": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                },
+                "icerikSlug": {
+                  "bsonType": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "gonderimZamani": {
+            "bsonType": "date"
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "tarih": -1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "tarih_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "radar",
+    "aciklama": "Trend radarı anlık görüntüleri. Her kayıt bir tarih için momentum ve sinyal kırılımı taşır; zaman serisi olarak saklanır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "tarih",
+          "momentum",
+          "yon"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "tarih": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "momentum": {
+            "bsonType": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "yon": {
+            "bsonType": "string",
+            "enum": [
+              "yukselen",
+              "sabit",
+              "dusen"
+            ]
+          },
+          "degisim": {
+            "bsonType": "number"
+          },
+          "sinyaller": {
+            "bsonType": "object",
+            "properties": {
+              "yayin": {
+                "bsonType": "number"
+              },
+              "github": {
+                "bsonType": "number"
+              },
+              "modelCikisi": {
+                "bsonType": "number"
+              },
+              "aramaIlgisi": {
+                "bsonType": "number"
+              }
+            }
+          },
+          "not": {
+            "bsonType": "string"
+          },
+          "yontemSurumu": {
+            "bsonType": "string",
+            "description": "Skorlama yöntemi sürümü; §64."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1,
+          "tarih": -1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "konu_tarih"
+        }
+      },
+      {
+        "anahtar": {
+          "tarih": -1,
+          "momentum": -1
+        },
+        "secenekler": {
+          "name": "gunluk_siralama"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "hizmetler",
+    "aciklama": "Kurumsal hizmet sayfaları: problem, çözüm, mimari ve güvenlik başlıkları.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "ozet",
+          "problem",
+          "cozum",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "problem": {
+            "bsonType": "string"
+          },
+          "cozum": {
+            "bsonType": "string"
+          },
+          "kullanimAlanlari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "mimari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "guvenlik": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "sss": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "soru",
+                "cevap"
+              ],
+              "properties": {
+                "soru": {
+                  "bsonType": "string"
+                },
+                "cevap": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "sektorler",
+    "aciklama": "Sektör sayfaları: kullanım alanları, teknolojiler ve sektöre özgü riskler.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "ozet",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "kullanimSayisi": {
+            "bsonType": "number",
+            "minimum": 0
+          },
+          "kullanimAlanlari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "teknolojiler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "riskler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "mevzuat": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "vakalar",
+    "aciklama": "Vaka çalışmaları: problem, yaklaşım, etki ve dersler. Müşteri adı yalnızca yazılı onayla yayımlanır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "baslik",
+          "sektor",
+          "problem",
+          "yaklasim",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "baslik": {
+            "bsonType": "string"
+          },
+          "sektor": {
+            "bsonType": "string"
+          },
+          "sektorSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "musteriAdi": {
+            "bsonType": "string"
+          },
+          "onayliYayin": {
+            "bsonType": "bool",
+            "description": "Müşteri adının yayımına yazılı onay var mı."
+          },
+          "temsili": {
+            "bsonType": "bool",
+            "description": "Gerçek müşteri işi değil, yaklaşımı gösteren temsilî senaryo."
+          },
+          "problem": {
+            "bsonType": "string"
+          },
+          "yaklasim": {
+            "bsonType": "string"
+          },
+          "teknolojiler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "etki": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "etiket",
+                "deger"
+              ],
+              "properties": {
+                "etiket": {
+                  "bsonType": "string"
+                },
+                "deger": {
+                  "bsonType": "string"
+                },
+                "olcumYontemi": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "dersler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "sektorSlug": 1
+        },
+        "secenekler": {
+          "name": "sektor"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "lab_projeleri",
+    "aciklama": "Sinaptik Lab: etkileşimli araçlar, deneyler, açık kaynak projeler ve demolar.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "tur",
+          "ozet",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "tur": {
+            "bsonType": "string",
+            "enum": [
+              "Araç",
+              "Deney",
+              "Açık Kaynak",
+              "Demo"
+            ]
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "yayinDurumu": {
+            "bsonType": "string",
+            "enum": [
+              "yayinda",
+              "gelistiriliyor"
+            ]
+          },
+          "bilesenAnahtari": {
+            "bsonType": "string",
+            "description": "Etkileşimli aracın istemci bileşen anahtarı."
+          },
+          "girdiler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "etiket",
+                "birim"
+              ],
+              "properties": {
+                "etiket": {
+                  "bsonType": "string"
+                },
+                "birim": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "depoAdresi": {
+            "bsonType": "string"
+          },
+          "kavramlar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "etkinlikler",
+    "aciklama": "Webinar, workshop, meetup ve konferans kayıtları; kayıt formuna bağlanır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "tur",
+          "tarih",
+          "etkinlikDurumu"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "tur": {
+            "bsonType": "string",
+            "enum": [
+              "Webinar",
+              "Workshop",
+              "Meetup",
+              "Konferans"
+            ]
+          },
+          "tarih": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "baslangicZamani": {
+            "bsonType": "date"
+          },
+          "bicim": {
+            "bsonType": "string"
+          },
+          "yer": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "etkinlikDurumu": {
+            "bsonType": "string",
+            "enum": [
+              "planlandi",
+              "kayit-acik",
+              "gecti",
+              "iptal"
+            ]
+          },
+          "kayitAdresi": {
+            "bsonType": "string"
+          },
+          "kapasite": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "konusmacilar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "tarih": -1
+        },
+        "secenekler": {
+          "name": "takvim"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "terimler",
+    "aciklama": "Sözlük terimleri: tek satırlık, alıntılanabilir tanımlar. Atlas girdisinin HAFİF eşdeğeri.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "terim",
+          "tanim",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "terim": {
+            "bsonType": "string"
+          },
+          "ingilizce": {
+            "bsonType": "string"
+          },
+          "kisaltma": {
+            "bsonType": "string"
+          },
+          "tanim": {
+            "bsonType": "string",
+            "maxLength": 400
+          },
+          "kategoriSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "atlasSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ilgili": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "kategoriSlug": 1
+        },
+        "secenekler": {
+          "name": "kategori"
+        }
+      },
+      {
+        "anahtar": {
+          "terim": 1
+        },
+        "secenekler": {
+          "name": "terim"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "uzmanlar",
+    "aciklama": "Topluluk uzman ağı: alan, sorumluluk kapsamı ve koltuk durumu. Açık koltuklar da kayıttır.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "ad",
+          "unvan",
+          "alan"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "ad": {
+            "bsonType": "string"
+          },
+          "unvan": {
+            "bsonType": "string"
+          },
+          "alan": {
+            "bsonType": "string"
+          },
+          "alanSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "koltukDurumu": {
+            "bsonType": "string",
+            "enum": [
+              "dolu",
+              "acik"
+            ]
+          },
+          "basHarfler": {
+            "bsonType": "string",
+            "maxLength": 4
+          },
+          "ozgecmis": {
+            "bsonType": "string"
+          },
+          "sorumluluklar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "aranan": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "sunulan": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "kapsam": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "katkilar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "koltukDurumu": 1
+        },
+        "secenekler": {
+          "name": "koltuk_durumu"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "sayfalar",
+    "aciklama": "Statik editoryal sayfalar: hakkında, künye, iletişim, metodoloji, editoryal politika.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "baslik",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "yol": {
+            "bsonType": "string"
+          },
+          "baslik": {
+            "bsonType": "string"
+          },
+          "etiket": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "guncellemeTarihi": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "politikalar",
+    "aciklama": "Hukuki metinler: gizlilik, KVKK aydınlatma, çerez politikası, kullanım şartları. Sürüm geçmişi zorunludur.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "slug",
+          "baslik",
+          "yururlukTarihi",
+          "surum",
+          "durum"
+        ],
+        "properties": {
+          "slug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "baslik": {
+            "bsonType": "string"
+          },
+          "ozet": {
+            "bsonType": "string"
+          },
+          "yururlukTarihi": {
+            "bsonType": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO 8601 tarih (YYYY-AA-GG)."
+          },
+          "surum": {
+            "bsonType": "string"
+          },
+          "hukukiOnay": {
+            "bsonType": "bool",
+            "description": "Hukuk incelemesi tamamlandı mı; false ise sayfada taslak uyarısı gösterilir."
+          },
+          "govde": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "tip"
+              ],
+              "properties": {
+                "tip": {
+                  "bsonType": "string",
+                  "enum": [
+                    "paragraf",
+                    "altbaslik",
+                    "liste",
+                    "kisa-cevap",
+                    "alinti",
+                    "kod",
+                    "tablo",
+                    "akis",
+                    "uyari"
+                  ]
+                },
+                "metin": {
+                  "bsonType": "string"
+                },
+                "kimlik": {
+                  "bsonType": "string"
+                },
+                "ogeler": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "sirali": {
+                  "bsonType": "bool"
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "dil": {
+                  "bsonType": "string"
+                },
+                "basliklar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "string"
+                  }
+                },
+                "satirlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "array",
+                    "items": {
+                      "bsonType": "string"
+                    }
+                  }
+                },
+                "aciklama": {
+                  "bsonType": "string"
+                },
+                "adimlar": {
+                  "bsonType": "array",
+                  "items": {
+                    "bsonType": "object",
+                    "required": [
+                      "ad",
+                      "aciklama"
+                    ],
+                    "properties": {
+                      "ad": {
+                        "bsonType": "string"
+                      },
+                      "aciklama": {
+                        "bsonType": "string"
+                      }
+                    }
+                  }
+                },
+                "ton": {
+                  "bsonType": "string",
+                  "enum": [
+                    "bilgi",
+                    "dikkat"
+                  ]
+                }
+              }
+            }
+          },
+          "surumler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "surum",
+                "tarih",
+                "degisiklik"
+              ],
+              "properties": {
+                "surum": {
+                  "bsonType": "string"
+                },
+                "tarih": {
+                  "bsonType": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                  "description": "ISO 8601 tarih (YYYY-AA-GG)."
+                },
+                "degisiklik": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "taslak",
+              "incelemede",
+              "yayinda",
+              "arsiv"
+            ],
+            "description": "Yayın akışı durumu."
+          },
+          "seo": {
+            "bsonType": "object",
+            "properties": {
+              "baslik": {
+                "bsonType": "string",
+                "maxLength": 70
+              },
+              "aciklama": {
+                "bsonType": "string",
+                "maxLength": 200
+              },
+              "kanonik": {
+                "bsonType": "string"
+              },
+              "dizinlenmesin": {
+                "bsonType": "bool"
+              },
+              "ogGorsel": {
+                "bsonType": "string"
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "slug": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "slug_tekil"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "medya",
+    "aciklama": "Görsel, ses, video ve belge varlıkları. Alternatif metin zorunludur (erişilebilirlik ve SEO).",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "kimlik",
+          "tur",
+          "adres",
+          "altMetin"
+        ],
+        "properties": {
+          "kimlik": {
+            "bsonType": "string"
+          },
+          "tur": {
+            "bsonType": "string",
+            "enum": [
+              "gorsel",
+              "ses",
+              "video",
+              "belge"
+            ]
+          },
+          "adres": {
+            "bsonType": "string"
+          },
+          "altMetin": {
+            "bsonType": "string",
+            "minLength": 3
+          },
+          "genislik": {
+            "bsonType": "number"
+          },
+          "yukseklik": {
+            "bsonType": "number"
+          },
+          "boyutBayt": {
+            "bsonType": "number"
+          },
+          "medyaTuru": {
+            "bsonType": "string",
+            "description": "MIME türü."
+          },
+          "telifNotu": {
+            "bsonType": "string"
+          },
+          "kaynak": {
+            "bsonType": "string"
+          },
+          "uretimYontemi": {
+            "bsonType": "string",
+            "enum": [
+              "fotograf",
+              "illustrasyon",
+              "ekran-goruntusu",
+              "diyagram",
+              "yapay-zeka"
+            ],
+            "description": "Yapay zekâ ile üretilen görseller sayfada işaretlenir."
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "kimlik": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "kimlik_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "tur": 1
+        },
+        "secenekler": {
+          "name": "tur"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "yonlendirmeler",
+    "aciklama": "URL yönlendirmeleri. Bir içeriğin adresi değiştiğinde eski adres kalıcı olarak yeni adrese taşınır (§48).",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "kaynakYol",
+          "hedefYol",
+          "kod"
+        ],
+        "properties": {
+          "kaynakYol": {
+            "bsonType": "string",
+            "pattern": "^/"
+          },
+          "hedefYol": {
+            "bsonType": "string",
+            "pattern": "^/"
+          },
+          "kod": {
+            "bsonType": "number",
+            "enum": [
+              301,
+              302,
+              308
+            ]
+          },
+          "gerekce": {
+            "bsonType": "string"
+          },
+          "aktif": {
+            "bsonType": "bool"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "kaynakYol": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "kaynak_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "aktif": 1
+        },
+        "secenekler": {
+          "name": "aktif"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "arama_kayitlari",
+    "aciklama": "Site içi arama sorguları. Sonuç üretmeyen sorgular içerik açığı panosunu besler. Kişisel veri saklanmaz: yalnızca sorgu metni ve sayaç.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "sorgu",
+          "adet"
+        ],
+        "properties": {
+          "sorgu": {
+            "bsonType": "string",
+            "maxLength": 200
+          },
+          "adet": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "sonucBulundu": {
+            "bsonType": "bool"
+          },
+          "ilkSonucYolu": {
+            "bsonType": "string"
+          },
+          "sonGorulme": {
+            "bsonType": "date"
+          },
+          "inceledi": {
+            "bsonType": "bool",
+            "description": "Editoryal ekip bu sorguyu değerlendirdi mi."
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "sorgu": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "sorgu_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "sonucBulundu": 1,
+          "adet": -1
+        },
+        "secenekler": {
+          "name": "icerik_acigi"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "kullanicilar",
+    "aciklama": "Kayıtlı kullanıcılar. Parola ASLA düz metin saklanmaz; yalnızca özet (hash) tutulur.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "eposta",
+          "durum"
+        ],
+        "properties": {
+          "eposta": {
+            "bsonType": "string",
+            "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+            "description": "Küçük harfe normalize edilmiş; tekil dizin bunun üzerinde."
+          },
+          "epostaDogrulandi": {
+            "bsonType": "bool"
+          },
+          "adSoyad": {
+            "bsonType": "string"
+          },
+          "parolaOzeti": {
+            "bsonType": "string",
+            "description": "scrypt$N$r$p$tuz$ozet biçiminde özet. Düz metin parola YASAK."
+          },
+          "parolaGuncellendi": {
+            "bsonType": "date"
+          },
+          "roller": {
+            "bsonType": "array",
+            "minItems": 1,
+            "items": {
+              "bsonType": "string",
+              "enum": [
+                "sahip",
+                "yonetici",
+                "editor",
+                "yazar",
+                "moderator",
+                "uye",
+                "okur"
+              ]
+            },
+            "description": "Panel rolleri lib/yetki/roller.ts içindeki matrise karşılık gelir."
+          },
+          "durum": {
+            "bsonType": "string",
+            "enum": [
+              "aktif",
+              "askida",
+              "silindi"
+            ]
+          },
+          "sonGiris": {
+            "bsonType": "date"
+          },
+          "sonGirisAdresi": {
+            "bsonType": "string",
+            "description": "Son girişin IP adresi (denetim için)."
+          },
+          "basarisizGiris": {
+            "bsonType": "number",
+            "minimum": 0
+          },
+          "kilitBitis": {
+            "bsonType": "date",
+            "description": "Bu ana kadar giriş denemesi reddedilir (oran sınırlama)."
+          },
+          "parolaSifirlamaOzeti": {
+            "bsonType": "string"
+          },
+          "parolaSifirlamaBitis": {
+            "bsonType": "date"
+          },
+          "epostaDogrulamaOzeti": {
+            "bsonType": "string"
+          },
+          "epostaDogrulamaBitis": {
+            "bsonType": "date"
+          },
+          "uyelikTarihi": {
+            "bsonType": "date"
+          },
+          "ogrenmeRolu": {
+            "bsonType": "string",
+            "maxLength": 60
+          },
+          "deneyimSeviyesi": {
+            "bsonType": "string",
+            "enum": [
+              "baslangic",
+              "orta",
+              "ileri"
+            ]
+          },
+          "ilgiAlanlari": {
+            "bsonType": "array",
+            "maxItems": 8,
+            "items": {
+              "bsonType": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+            }
+          },
+          "sektorSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "hedef": {
+            "bsonType": "string",
+            "enum": [
+              "kariyer-degisimi",
+              "mevcut-iste-kullanim",
+              "ekip-kurma",
+              "akademik",
+              "merak"
+            ]
+          },
+          "haftalikSaat": {
+            "bsonType": "number",
+            "minimum": 1,
+            "maximum": 40
+          },
+          "kurum": {
+            "bsonType": "string",
+            "maxLength": 120
+          },
+          "yazarSlug": {
+            "bsonType": "string",
+            "description": "Kullanıcının yazar künyesi; içerik atfı bu slug üzerinden yapılır."
+          },
+          "notlar": {
+            "bsonType": "string",
+            "description": "Yönetici notu; kullanıcıya gösterilmez."
+          },
+          "rizalar": {
+            "bsonType": "object",
+            "description": "KVKK açık rıza kayıtları; her rıza için tarih ve metin sürümü.",
+            "properties": {
+              "bulten": {
+                "bsonType": "bool"
+              },
+              "bultenTarihi": {
+                "bsonType": "date"
+              },
+              "politikaSurumu": {
+                "bsonType": "string"
+              },
+              "bultenListeleri": {
+                "bsonType": "array",
+                "items": {
+                  "bsonType": "string",
+                  "enum": [
+                    "daily",
+                    "weekly",
+                    "research",
+                    "kurumsal"
+                  ]
+                }
+              }
+            }
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "eposta": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "eposta_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "roller": 1
+        },
+        "secenekler": {
+          "name": "rol"
+        }
+      },
+      {
+        "anahtar": {
+          "durum": 1,
+          "sonGiris": -1
+        },
+        "secenekler": {
+          "name": "durum_etkinlik"
+        }
+      },
+      {
+        "anahtar": {
+          "yazarSlug": 1
+        },
+        "secenekler": {
+          "name": "yazar_baglantisi",
+          "sparse": true
+        }
+      }
+    ]
+  },
+  {
+    "ad": "aboneler",
+    "aciklama": "Bülten aboneleri. Çift onay (double opt-in) zorunludur; onay tarihi ve kaynağı kayda geçer.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "eposta",
+          "onayDurumu"
+        ],
+        "properties": {
+          "eposta": {
+            "bsonType": "string",
+            "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+          },
+          "onayDurumu": {
+            "bsonType": "string",
+            "enum": [
+              "bekliyor",
+              "onayli",
+              "cikti"
+            ]
+          },
+          "onayTarihi": {
+            "bsonType": "date"
+          },
+          "onayKaynagi": {
+            "bsonType": "string",
+            "description": "Formun bulunduğu sayfa yolu."
+          },
+          "politikaSurumu": {
+            "bsonType": "string"
+          },
+          "listeler": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string",
+              "enum": [
+                "daily",
+                "weekly",
+                "research",
+                "kurumsal"
+              ]
+            }
+          },
+          "cikisTarihi": {
+            "bsonType": "date"
+          },
+          "cikisAnahtari": {
+            "bsonType": "string"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "eposta": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "eposta_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "onayDurumu": 1
+        },
+        "secenekler": {
+          "name": "onay"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "form_kayitlari",
+    "aciklama": "İletişim, teklif ve etkinlik kayıt formları. Saklama süresi sonunda TTL dizini ile silinir.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "formTuru",
+          "alanlar",
+          "saklamaBitis"
+        ],
+        "properties": {
+          "formTuru": {
+            "bsonType": "string",
+            "enum": [
+              "iletisim",
+              "teklif",
+              "etkinlik-kayit",
+              "readiness-talebi",
+              "katki"
+            ]
+          },
+          "alanlar": {
+            "bsonType": "object",
+            "description": "Formun gönderdiği alanlar; şema forma göre değişir."
+          },
+          "kaynakYol": {
+            "bsonType": "string"
+          },
+          "politikaSurumu": {
+            "bsonType": "string"
+          },
+          "islemDurumu": {
+            "bsonType": "string",
+            "enum": [
+              "yeni",
+              "islemde",
+              "kapandi"
+            ]
+          },
+          "saklamaBitis": {
+            "bsonType": "date",
+            "description": "TTL dizini bu alana bakar; süre dolunca kayıt silinir."
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "formTuru": 1,
+          "islemDurumu": 1
+        },
+        "secenekler": {
+          "name": "kuyruk"
+        }
+      },
+      {
+        "anahtar": {
+          "saklamaBitis": 1
+        },
+        "secenekler": {
+          "name": "saklama_ttl",
+          "expireAfterSeconds": 0
+        }
+      }
+    ]
+  },
+  {
+    "ad": "test_sonuclari",
+    "aciklama": "Test ve seviye testi sonuçları. Anonim çözümlerde kullanıcı bağlanmaz; yalnızca toplu istatistik için tutulur.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "testSlug",
+          "puan",
+          "saklamaBitis"
+        ],
+        "properties": {
+          "testSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "kullaniciKimligi": {
+            "bsonType": "objectId"
+          },
+          "oturumAnahtari": {
+            "bsonType": "string",
+            "description": "Anonim çözümlerde rastgele anahtar."
+          },
+          "puan": {
+            "bsonType": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "dogruSayisi": {
+            "bsonType": "number",
+            "minimum": 0
+          },
+          "soruSayisi": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "seviye": {
+            "bsonType": "string"
+          },
+          "beceriKirilimi": {
+            "bsonType": "object"
+          },
+          "sureSaniye": {
+            "bsonType": "number",
+            "minimum": 0
+          },
+          "saklamaBitis": {
+            "bsonType": "date"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "testSlug": 1,
+          "olusturuldu": -1
+        },
+        "secenekler": {
+          "name": "test_akisi"
+        }
+      },
+      {
+        "anahtar": {
+          "kullaniciKimligi": 1
+        },
+        "secenekler": {
+          "name": "kullanici",
+          "sparse": true
+        }
+      },
+      {
+        "anahtar": {
+          "saklamaBitis": 1
+        },
+        "secenekler": {
+          "name": "saklama_ttl",
+          "expireAfterSeconds": 0
+        }
+      }
+    ]
+  },
+  {
+    "ad": "readiness_sonuclari",
+    "aciklama": "AI Readiness değerlendirme sonuçları. Hesaplama istemcide yapılır; kayıt yalnızca kullanıcı açıkça paylaşmayı seçerse oluşur.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "boyutPuanlari",
+          "toplamPuan",
+          "saklamaBitis"
+        ],
+        "properties": {
+          "kurumAdi": {
+            "bsonType": "string"
+          },
+          "sektorSlug": {
+            "bsonType": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
+          },
+          "calisanAraligi": {
+            "bsonType": "string"
+          },
+          "boyutPuanlari": {
+            "bsonType": "object"
+          },
+          "toplamPuan": {
+            "bsonType": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "olgunlukSeviyesi": {
+            "bsonType": "string"
+          },
+          "iletisimIzni": {
+            "bsonType": "bool"
+          },
+          "eposta": {
+            "bsonType": "string"
+          },
+          "politikaSurumu": {
+            "bsonType": "string"
+          },
+          "saklamaBitis": {
+            "bsonType": "date"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "olusturuldu": -1
+        },
+        "secenekler": {
+          "name": "akis"
+        }
+      },
+      {
+        "anahtar": {
+          "sektorSlug": 1
+        },
+        "secenekler": {
+          "name": "sektor",
+          "sparse": true
+        }
+      },
+      {
+        "anahtar": {
+          "saklamaBitis": 1
+        },
+        "secenekler": {
+          "name": "saklama_ttl",
+          "expireAfterSeconds": 0
+        }
+      }
+    ]
+  },
+  {
+    "ad": "oturumlar",
+    "aciklama": "Aktif panel oturumları. Çerezde düz token durur, burada yalnızca SHA-256 özeti; veritabanı sızsa bile oturum çalınamaz.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "tokenOzeti",
+          "kullaniciKimligi",
+          "biterZaman",
+          "mutlakBitis"
+        ],
+        "properties": {
+          "tokenOzeti": {
+            "bsonType": "string",
+            "description": "Oturum tokeninin SHA-256 özeti (base64url). Token kendisi saklanmaz."
+          },
+          "kullaniciKimligi": {
+            "bsonType": "objectId"
+          },
+          "biterZaman": {
+            "bsonType": "date",
+            "description": "Kayan süre sonu; her etkin istekte ileri alınır. TTL dizini buna bakar."
+          },
+          "mutlakBitis": {
+            "bsonType": "date",
+            "description": "Kayan süreden bağımsız üst sınır; uzatılamaz."
+          },
+          "sonErisim": {
+            "bsonType": "date"
+          },
+          "adres": {
+            "bsonType": "string",
+            "description": "Oturumun açıldığı IP."
+          },
+          "tarayici": {
+            "bsonType": "string",
+            "description": "User-Agent, 200 karaktere kırpılmış."
+          },
+          "iptalEdildi": {
+            "bsonType": "bool"
+          },
+          "iptalNedeni": {
+            "bsonType": "string",
+            "enum": [
+              "cikis",
+              "parola-degisti",
+              "yonetici-iptali",
+              "rol-degisti"
+            ]
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "tokenOzeti": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "token_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "kullaniciKimligi": 1,
+          "sonErisim": -1
+        },
+        "secenekler": {
+          "name": "kullanici"
+        }
+      },
+      {
+        "anahtar": {
+          "biterZaman": 1
+        },
+        "secenekler": {
+          "name": "sure_ttl",
+          "expireAfterSeconds": 0
+        }
+      }
+    ]
+  },
+  {
+    "ad": "giris_denemeleri",
+    "aciklama": "Başarısız giriş denemeleri. Oran sınırlama hem e-posta hem IP ekseninde uygulanır; kayıtlar TTL ile temizlenir.",
+    "kisiselVeri": true,
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "anahtar",
+          "tur",
+          "saklamaBitis"
+        ],
+        "properties": {
+          "anahtar": {
+            "bsonType": "string",
+            "description": "Normalize edilmiş e-posta veya IP adresi."
+          },
+          "tur": {
+            "bsonType": "string",
+            "enum": [
+              "eposta",
+              "adres"
+            ]
+          },
+          "adet": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "sonDeneme": {
+            "bsonType": "date"
+          },
+          "saklamaBitis": {
+            "bsonType": "date"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "anahtar": 1,
+          "tur": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "anahtar_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "saklamaBitis": 1
+        },
+        "secenekler": {
+          "name": "saklama_ttl",
+          "expireAfterSeconds": 0
+        }
+      }
+    ]
+  },
+  {
+    "ad": "denetim_kaydi",
+    "aciklama": "Panelde yapılan her yazma işleminin kaydı: kim, ne zaman, hangi belge, hangi alanlar. Silinemez — yalnızca eklenir.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "eylem",
+          "koleksiyon",
+          "zaman"
+        ],
+        "properties": {
+          "eylem": {
+            "bsonType": "string",
+            "enum": [
+              "giris",
+              "cikis",
+              "giris-basarisiz",
+              "olustur",
+              "guncelle",
+              "durum-degistir",
+              "sil",
+              "yayinla",
+              "geri-al",
+              "rol-degistir",
+              "parola-degistir",
+              "disa-aktar",
+              "kisisel-veri-sil",
+              "yonlendirme-ekle",
+              "medya-yukle",
+              "medya-sil",
+              "ayar-degistir"
+            ]
+          },
+          "koleksiyon": {
+            "bsonType": "string"
+          },
+          "belgeKimligi": {
+            "bsonType": "string"
+          },
+          "belgeSlug": {
+            "bsonType": "string"
+          },
+          "kullaniciKimligi": {
+            "bsonType": "objectId"
+          },
+          "kullaniciEpostasi": {
+            "bsonType": "string"
+          },
+          "zaman": {
+            "bsonType": "date"
+          },
+          "adres": {
+            "bsonType": "string"
+          },
+          "degisenAlanlar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "oncekiDurum": {
+            "bsonType": "string"
+          },
+          "yeniDurum": {
+            "bsonType": "string"
+          },
+          "not": {
+            "bsonType": "string"
+          },
+          "basarili": {
+            "bsonType": "bool"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "zaman": -1
+        },
+        "secenekler": {
+          "name": "akis"
+        }
+      },
+      {
+        "anahtar": {
+          "kullaniciKimligi": 1,
+          "zaman": -1
+        },
+        "secenekler": {
+          "name": "kullanici"
+        }
+      },
+      {
+        "anahtar": {
+          "koleksiyon": 1,
+          "belgeKimligi": 1,
+          "zaman": -1
+        },
+        "secenekler": {
+          "name": "belge"
+        }
+      },
+      {
+        "anahtar": {
+          "eylem": 1,
+          "zaman": -1
+        },
+        "secenekler": {
+          "name": "eylem"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "icerik_surumleri",
+    "aciklama": "İçerik anlık görüntüleri. Her kaydetmede önceki hâl buraya yazılır; yanlış düzenleme geri alınabilir.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "koleksiyon",
+          "belgeKimligi",
+          "surumNo",
+          "anlikGoruntu",
+          "zaman"
+        ],
+        "properties": {
+          "koleksiyon": {
+            "bsonType": "string"
+          },
+          "belgeKimligi": {
+            "bsonType": "string"
+          },
+          "belgeSlug": {
+            "bsonType": "string"
+          },
+          "surumNo": {
+            "bsonType": "number",
+            "minimum": 1
+          },
+          "anlikGoruntu": {
+            "bsonType": "object",
+            "description": "Belgenin değişiklikten ÖNCEKİ hâli."
+          },
+          "zaman": {
+            "bsonType": "date"
+          },
+          "kullaniciKimligi": {
+            "bsonType": "objectId"
+          },
+          "kullaniciEpostasi": {
+            "bsonType": "string"
+          },
+          "degisenAlanlar": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          },
+          "not": {
+            "bsonType": "string"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "koleksiyon": 1,
+          "belgeKimligi": 1,
+          "surumNo": -1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "belge_surum"
+        }
+      },
+      {
+        "anahtar": {
+          "zaman": -1
+        },
+        "secenekler": {
+          "name": "akis"
+        }
+      }
+    ]
+  },
+  {
+    "ad": "onizleme_anahtarlari",
+    "aciklama": "Taslak önizleme bağlantıları. Tek kullanımlık, kısa ömürlü ve tek belgeye kilitli; yayımlanmamış içerik başka yola sızmaz.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "anahtarOzeti",
+          "koleksiyon",
+          "belgeKimligi",
+          "biterZaman"
+        ],
+        "properties": {
+          "anahtarOzeti": {
+            "bsonType": "string",
+            "description": "Önizleme anahtarının SHA-256 özeti."
+          },
+          "koleksiyon": {
+            "bsonType": "string"
+          },
+          "belgeKimligi": {
+            "bsonType": "string"
+          },
+          "belgeSlug": {
+            "bsonType": "string"
+          },
+          "biterZaman": {
+            "bsonType": "date"
+          },
+          "olusturanKimlik": {
+            "bsonType": "objectId"
+          },
+          "kullanildi": {
+            "bsonType": "bool"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "anahtarOzeti": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "anahtar_tekil"
+        }
+      },
+      {
+        "anahtar": {
+          "biterZaman": 1
+        },
+        "secenekler": {
+          "name": "sure_ttl",
+          "expireAfterSeconds": 0
+        }
+      }
+    ]
+  },
+  {
+    "ad": "ayarlar",
+    "aciklama": "Anahtar-değer site ayarları: bakım kipi, ana sayfa manşeti, duyuru şeridi, özellik anahtarları.",
+    "sema": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "anahtar"
+        ],
+        "properties": {
+          "anahtar": {
+            "bsonType": "string",
+            "description": "Örn. bakim-kipi, manset-slug, duyuru-seridi."
+          },
+          "deger": {
+            "description": "Herhangi bir JSON değeri."
+          },
+          "aciklama": {
+            "bsonType": "string"
+          },
+          "guncelleyenKimlik": {
+            "bsonType": "objectId"
+          },
+          "olusturuldu": {
+            "bsonType": "date"
+          },
+          "guncellendi": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "dizinler": [
+      {
+        "anahtar": {
+          "anahtar": 1
+        },
+        "secenekler": {
+          "unique": true,
+          "name": "anahtar_tekil"
+        }
+      }
+    ]
+  }
+]

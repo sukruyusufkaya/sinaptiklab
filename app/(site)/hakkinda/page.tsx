@@ -1,233 +1,206 @@
-// /hakkinda — kurumsal kimlik sayfası (BRIEF §2.2). İçerik kaynağı: BRIEF §1
-// (ürün tezi, ne DEĞİL, pazar boşluğu, hedef kitleler). Tamamen statik.
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Bolum } from "@/components/legal/Bolum";
-import { KurumsalBaslik } from "@/components/legal/KurumsalBaslik";
-import { AltBaslik, Kutu, Liste, Madde, P } from "@/components/legal/Metin";
-import { EPOSTA, SON_GUNCELLEME, YAZAR, epostaBaglantisi } from "@/components/legal/sabitler";
-import { Tablo } from "@/components/legal/Tablo";
-import { env } from "@/lib/env";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { SayfaBasligi } from '@/components/arayuz/SayfaBasligi';
+import { Bolum } from '@/components/arayuz/Bolum';
+import { BolumBasligi } from '@/components/arayuz/BolumBasligi';
+import { Dugme } from '@/components/arayuz/Dugme';
+import { Ok } from '@/components/arayuz/Ikonlar';
+import { KapanisCagrisi } from '@/components/icerik/IcerikDuzeni';
+import { KATMANLAR, SITE } from '@/lib/site';
+import { atlasListesi } from '@/lib/icerik/atlas';
+import { ogrenmeYollari, testler } from '@/lib/icerik/ogrenme';
+import { arastirmaListesi } from '@/lib/icerik/arastirma';
 
-export function generateMetadata(): Metadata {
-  return {
-    title: "Hakkında — Sinaptiklab nedir, neden var",
-    description:
-      "Sinaptiklab, yapay zeka sistemlerini gerçekten üretenler için yazılan, her iddiası kaynaklı ve sürümlü bir Türkçe teknik yayındır. Neden kurulduğu, kime yazdığı ve neyi yayımlamadığı.",
-    alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/hakkinda` },
-  };
-}
+export const metadata: Metadata = {
+  title: 'Hakkında',
+  description:
+    'Sinaptik Lab nedir, neyi amaçlar ve nasıl çalışır? Discover → Understand → Learn → Build katmanları ve editoryal duruş.',
+  alternates: { canonical: '/hakkinda/' },
+};
 
-const BOSLUKLAR = [
-  ["Kod yok, sadece anlatı var", "Her uygulamada çalışan repo ve çalıştırılabilir defter"],
-  [
-    "Sayılar kaynaksız ve tarihsiz",
-    "Her veri noktasında kaynak bağlantısı ve son doğrulama tarihi",
-  ],
-  ["Türkçe terminoloji kaosu", "Kanonik Türkçe YZ sözlüğü ve metin içi otomatik terim bağlama"],
-  ["Regülasyon hiç konuşulmuyor", "KVKK, şirket içi (on-prem) kurulum ve regüle sektör dosyaları"],
-  ["İçerik bir kez yazılıp çürüyor", "Sürümlü içerik ve görünür değişiklik günlüğü"],
-  ["Öğrenci için sıra yok", "Yapılandırılmış öğrenme patikaları ve ödevli dersler"],
-] as const;
+const MOAT = [
+  {
+    ad: 'Bilgi grafiği',
+    tarif: 'Kavramların, modellerin, şirketlerin ve becerilerin ilişkisel haritası.',
+  },
+  { ad: 'Özgün veri', tarif: 'Benchmarklar, saha araştırmaları ve lisanslı veri setleri.' },
+  { ad: 'Uzman ağı', tarif: 'Gerçek isimler, gerçek inceleme süreci.' },
+  {
+    ad: 'Öğrenme grafiği',
+    tarif: 'Test → beceri → içerik → rota arasındaki ölçülebilir ilişki.',
+  },
+  {
+    ad: 'Saha deneyimi',
+    tarif: 'Kurumsal projelerden gelen ve içeriğe geri dönen know-how.',
+  },
+];
 
-const KITLELER = [
-  [
-    "Uygulayıcı mühendis",
-    "Üretimde çalışan desen, tuzaklar, maliyet",
-    "Derin analiz, ölçüm, mimari",
-  ],
-  [
-    "Teknik lider / mimar",
-    "Karar gerekçesi, toplam sahip olma maliyeti, risk",
-    "Vaka, karşılaştırma, karar rehberi",
-  ],
-  [
-    "Regüle sektör kararvericisi",
-    "KVKK uyumu, on-prem, tedarikçi seçimi",
-    "Regülasyon dosyası, uyum listesi",
-  ],
-  ["Öğrenci / kariyer değiştiren", "Sıralı öğrenme, ödev, portföy", "Patika, kurs, laboratuvar"],
-  ["Yönetici okuyucu", "Beş dakikada durum", "Bülten, yönetici özeti bloğu"],
-] as const;
+export default async function HakkindaSayfasi() {
+  const [ATLAS, OGRENME_YOLLARI, TESTLER, ARASTIRMA] = await Promise.all([
+    atlasListesi(),
+    ogrenmeYollari(),
+    testler(),
+    arastirmaListesi(),
+  ]);
 
-export default function HakkindaSayfasi() {
   return (
     <>
-      <KurumsalBaslik
-        indeks="kurumsal · hakkında"
-        baslik="Hakkında"
-        spot="Sinaptiklab, yapay zeka sistemlerini gerçekten üreten insanlar için yazılmış, her iddiası kaynaklı ve yeniden üretilebilir bir Türkçe teknik yayın ve öğrenme platformudur."
-        raylar={[
-          { etiket: "konumlandırma", deger: "saha verisi, uydurma yok" },
-          { etiket: "dil", deger: "Türkçe (özgün)" },
-          { etiket: "erişim", deger: "tamamı ücretsiz" },
-          { etiket: "son güncelleme", deger: SON_GUNCELLEME },
+      <SayfaBasligi
+        kirintilar={[{ ad: 'Hakkında', yol: '/hakkinda/' }]}
+        etiket="SINAPTIK LAB"
+        baslik={SITE.vaat}
+        ozet="Sinaptik Lab, yapay zekâ hakkında yazan bir site değil; ne olduğunu anlamak, bir konuyu öğrenmek, bilgiyi doğrulamak ve bunu gerçek bir projeye dönüştürmek isteyen kişinin başladığı platform."
+        olcumler={[
+          { deger: `${ATLAS.length}`, etiket: 'Atlas girdisi' },
+          { deger: `${OGRENME_YOLLARI.length}`, etiket: 'Öğrenme yolu' },
+          { deger: `${TESTLER.length}`, etiket: 'Test' },
+          { deger: `${ARASTIRMA.length}`, etiket: 'Araştırma yayını' },
         ]}
+        eylemler={
+          <>
+            <Dugme href="/editoryal-ilkeler/">
+              Editoryal ilkeler
+              <Ok className="size-4" />
+            </Dugme>
+            <Dugme href="/kunye/" gorunum="ikincil">
+              Künye
+            </Dugme>
+          </>
+        }
       />
 
-      <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
-        <div className="max-w-[var(--govde-olcu)] py-12">
-          <Bolum id="tek-cumle" no="01" baslik="Tek cümlede">
-            <P>
-              Sinaptiklab; model eğiten, veri hattı kuran, üretime çıkaran, satın alma kararı veren
-              ya da bu işi öğrenen insanlar için yazılıyor. Ölçü basit: bir yazıdaki her sayı bir
-              kaynağa, her uygulama çalışan bir depoya, her iddia bir tarihe bağlı olmalı. Bunu
-              sağlayamıyorsak yayımlamıyoruz.
-            </P>
-            <P>
-              Bu bir tercih değil, teknik bir zorunluluk. İçerik yönetim katmanımız, kaynak listesi
-              boş olan bir metni &ldquo;yayında&rdquo; durumuna geçiremiyor; kural editörün
-              iradesine bırakılmış değil, koda gömülü. Ayrıntısı{" "}
-              <Link href="/editoryal-politika">editoryal politikada</Link>.
-            </P>
-          </Bolum>
-
-          <Bolum id="neden-var" no="02" baslik="Neden var">
-            <P>
-              Türkçe yapay zeka içeriği bugün üç kümede yoğunlaşıyor: reklam geliriyle dönen{" "}
-              <strong className="font-semibold text-murekkep">araç dizinleri</strong>, hız odaklı{" "}
-              <strong className="font-semibold text-murekkep">
-                genel teknoloji haber siteleri
-              </strong>{" "}
-              ve bir ürünü satmak için yazılan{" "}
-              <strong className="font-semibold text-murekkep">kurumsal blog pazarlaması</strong>.
-              Üçü de kendi işini yapıyor; ancak sistemi fiilen kuran kişinin ihtiyacı bu üç kümenin
-              hiçbirinde tam karşılanmıyor.
-            </P>
-            <P>
-              Ortaya çıkan boşluklar somut. Bir mühendis &ldquo;RAG&rsquo;te chunk boyutu ne
-              olmalı&rdquo; diye aradığında karşısına çıkan yazıların çoğunda ne bir ölçüm, ne bir
-              donanım bilgisi, ne de yazının ne zaman doğrulandığı bulunuyor. Türkçe terimler her
-              metinde başka türlü karşılanıyor; &ldquo;embedding&rdquo; bir yerde gömme, başka yerde
-              vektörleştirme oluyor. Regülasyon tarafı ise neredeyse hiç yazılmıyor: KVKK ile bulut
-              tabanlı bir model sağlayıcısını yan yana koyan Türkçe teknik kaynak sayısı bir elin
-              parmaklarını geçmiyor.
-            </P>
-            <Tablo
-              ozet="Türkçe yapay zeka içeriğindeki boşluklar ve Sinaptiklab'ın karşılığı"
-              basliklar={["Boşluk", "Sinaptiklab'ın cevabı"]}
-              satirlar={BOSLUKLAR}
-            />
-            <P>
-              Bu tablonun her satırı bir yayın kuralına çevrildi; ikinci sütun bir vaat değil, yayın
-              öncesi kontrol listesinde işaretlenen bir madde.
-            </P>
-          </Bolum>
-
-          <Bolum id="kime" no="03" baslik="Kime yazıyoruz">
-            <P>
-              Beş okuyucu profili için yazıyoruz. Her içerik en az birini hedefler; hiçbiri
-              &ldquo;herkes&rdquo; için değildir, çünkü herkes için yazılan metin kimseye yetmiyor.
-            </P>
-            <Tablo
-              ozet="Sinaptiklab'ın hedef okuyucu profilleri ve öncelikli içerik türleri"
-              basliklar={["Profil", "İhtiyaç", "Ana içerik türü"]}
-              satirlar={KITLELER}
-            />
-            <P>
-              Bu yüzden her yazının başında seviye etiketi (giriş, orta, ileri, uzman) ve tahmini
-              okuma süresi bulunur: yanlış okuyucunun vaktini almamak da editoryal sorumluluğun bir
-              parçası.
-            </P>
-          </Bolum>
-
-          <Bolum id="ne-yapmiyoruz" no="04" baslik="Ne yapmıyoruz">
-            <P>
-              Bir yayının kimliği, yayımladığı kadar yayımlamadığıyla da belirlenir. Aşağıdaki
-              içerik türleri Sinaptiklab&rsquo;da üretilmez — trafik getirse de üretilmez:
-            </P>
-            <Liste>
-              <Madde>
-                <strong className="font-semibold text-murekkep">
-                  &ldquo;En iyi 20 yapay zeka aracı&rdquo; tipi ortaklık (affiliate) listeleri.
-                </strong>{" "}
-                Sıralamanın komisyon oranıyla belirlendiği hiçbir liste yayımlanmaz; sitede ortaklık
-                bağlantısı hiç yoktur.
-              </Madde>
-              <Madde>
-                <strong className="font-semibold text-murekkep">
-                  Kaynaksız, tarihi belirsiz, sayı uyduran haber özetleri.
-                </strong>{" "}
-                Bir performans iddiası varsa ölçümün kim tarafından, hangi koşulda yapıldığı
-                yazılır; yazılamıyorsa sayı metne girmez.
-              </Madde>
-              <Madde>
-                <strong className="font-semibold text-murekkep">
-                  İngilizce blogların makine çevirisi.
-                </strong>{" "}
-                Yabancı bir kaynaktan yararlanılıyorsa kaynak gösterilir ve metin yeniden yazılır;
-                çeviri, özgün içerik yerine geçmez.
-              </Madde>
-              <Madde>
-                <strong className="font-semibold text-murekkep">
-                  Dil modeline yazdırılıp düzeltilmemiş dolgu içerik.
-                </strong>{" "}
-                Yapay zeka araçlarını nasıl kullandığımızı{" "}
-                <Link href="/editoryal-politika#yapay-zeka">açıkça beyan ediyoruz</Link>; kimsenin
-                gözden geçirmediği bir paragraf yayına çıkmaz.
-              </Madde>
-            </Liste>
-            <Kutu etiket="ölçülebilir taahhüt">
-              <p>
-                Bu dört madde sitede aranabilir bir iz bırakır: ortaklık bağlantısı sayısı sıfır,
-                sponsorlu içerik sayısı sıfır, kaynak listesi boş yayın sayısı sıfır. Aksini
-                bulursanız <a href={epostaBaglantisi("Hata bildirimi")}>bize yazın</a>.
+      {/* --- Katmanlar --- */}
+      <Bolum>
+        <BolumBasligi
+          numara="01"
+          etiket="YAPI"
+          baslik="Dört katman"
+          aciklama="Platform, dört farklı ihtiyacın kesişiminde konumlanır. Her katman bir soruya cevap verir."
+        />
+        <ul className="grid gap-px overflow-hidden rounded-2xl border border-kenar bg-kenar sm:grid-cols-2 lg:grid-cols-4">
+          {KATMANLAR.map((katman, sira) => (
+            <li key={katman.anahtar} className="bg-zemin p-6">
+              <span className="etiket-mono text-metin-soluk">
+                {String(sira + 1).padStart(2, '0')}
+              </span>
+              <p className="etiket-mono mt-2 text-vurgu-parlak">{katman.ad}</p>
+              <p className="mt-3 text-[1.0625rem] leading-snug font-semibold tracking-tight text-metin">
+                {katman.soru}
               </p>
-            </Kutu>
-          </Bolum>
+              <p className="mt-2.5 text-xs leading-relaxed text-metin-soluk">{katman.urun}</p>
+            </li>
+          ))}
+        </ul>
+      </Bolum>
 
-          <Bolum id="nasil" no="05" baslik="Nasıl çalışıyoruz">
-            <AltBaslik>Kaynak zorunluluğu</AltBaslik>
-            <P>
-              Her içerik, veritabanında kendi kaynak listesiyle birlikte durur. Bir metnin yayına
-              geçebilmesi için en az bir birincil kaynağa bağlı olması, metindeki her sayının ve her
-              olgusal iddianın bu listeden bir kayda dayanması gerekir. Kaynak tercihimiz sırasıyla:
-              resmî dokümantasyon ve sürüm notları, hakemli yayınlar ve teknik raporlar, birinci
-              elden ölçümlerimiz. İkincil aktarım (haber sitesinin haberi) yalnızca birincil kaynağa
-              ulaşılamadığında ve bu durum belirtilerek kullanılır.
-            </P>
+      {/* --- Duruş --- */}
+      <Bolum zemin="derin">
+        <BolumBasligi numara="02" etiket="DURUŞ" baslik="Nasıl çalışıyoruz?" />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="olcu">
+            <p className="font-serif text-[1.0625rem] leading-relaxed text-metin-ikincil">
+              İçerik organizasyonu &quot;hangi kategoride yazı yayınlayalım?&quot; sorusundan
+              başlamıyor. Temel soru şu: yapay zekâ bilgisini nasıl modellenebilir bir yapıya
+              dönüştürürüz?
+            </p>
+            <p className="mt-5 font-serif text-[1.0625rem] leading-relaxed text-metin-ikincil">
+              Bu yüzden mimarinin temel nesnesi makale değil{' '}
+              <strong className="text-metin">varlık</strong>. Makale varlık hakkında bilgi verir,
+              ders onu öğretir, test ölçer, haber değişimini bildirir, araştırma yeni bilgi üretir,
+              danışmanlık gerçek dünyaya uygular.
+            </p>
+          </div>
 
-            <AltBaslik>Sürümleme ve tazeleme</AltBaslik>
-            <P>
-              Teknik içerik çürür: bir model sürümü değişir, bir kütüphane API&rsquo;si kırılır, bir
-              fiyat güncellenir. Bu yüzden içerikler tek seferlik değil sürümlüdür. Her yazının
-              yayın tarihi, son güncelleme tarihi ve son doğrulama tarihi ayrı ayrı tutulur; anlamlı
-              değişiklikler yazının altındaki değişiklik günlüğüne işlenir. Doğrulaması eskiyen
-              içerikler yönetim panelinde &ldquo;çürüyen içerik&rdquo; listesine düşer ve yeniden
-              elden geçirilir.
-            </P>
-
-            <AltBaslik>Tek yazar, teknik editör</AltBaslik>
-            <P>
-              Bugün Sinaptiklab tek yazarlı bir yayındır: {YAZAR}. Yayımlanan her metin, yayın
-              öncesinde teknik editör gözüyle ikinci bir okumadan geçer — kod çalışıyor mu, kaynak
-              iddiayı gerçekten destekliyor mu, terimler sözlükle tutarlı mı. Konuk yazar programı
-              belirli bir içerik olgunluğuna ulaşıldıktan sonra davetle açılacaktır; açıldığında da
-              aynı kapılardan geçecektir.
-            </P>
-
-            <AltBaslik>Açık ve ücretsiz</AltBaslik>
-            <P>
-              Tüm içerik, kurslar ve laboratuvarlar dahil, ücretsiz ve ödeme duvarsızdır. Sitede
-              ödeme altyapısı yoktur. Ücretsiz üyelik ileride yorum yazmak ve okuma durumunu takip
-              etmek gibi özellikler için gelecek; içeriğe erişimin koşulu olmayacak.
-            </P>
-          </Bolum>
-
-          <Bolum id="iletisim" no="06" baslik="İletişim ve şeffaflık">
-            <P>
-              Yayıncı kimliği, teknoloji künyesi, telif ve alıntı kuralları{" "}
-              <Link href="/kunye">künye sayfasında</Link>; kaynak, düzeltme ve yapay zeka kullanımı
-              kuralları <Link href="/editoryal-politika">editoryal politikada</Link> ayrıntılı
-              yazılıdır. Bir hata bulduysanız veya bir kaynağın iddiayı desteklemediğini
-              düşünüyorsanız <a href={`mailto:${EPOSTA}`}>{EPOSTA}</a> adresine yazabilir,{" "}
-              <Link href="/iletisim">iletişim sayfasındaki</Link> bildirim şablonunu
-              kullanabilirsiniz. Doğrulanan her düzeltme, ilgili yazının değişiklik günlüğüne
-              işlenir.
-            </P>
-          </Bolum>
+          <ul className="space-y-3">
+            {[
+              'Sayısal her iddia kaynaklandırılır.',
+              'Her içeriğin görünür bir yazarı vardır.',
+              'Yapay zekâ üretimi içerik doğrudan yayımlanmaz.',
+              'İçerik değişmeden güncelleme tarihi değiştirilmez.',
+              'Benchmark metodolojisi her zaman açıktır.',
+              'Araştırma, danışmanlık müşterilerinden bağımsız yürütülür.',
+            ].map((ilke) => (
+              <li
+                key={ilke}
+                className="flex items-start gap-3 rounded-xl border border-kenar bg-yuzey/40 p-4"
+              >
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-vurgu" aria-hidden="true" />
+                <span className="text-[0.9375rem] leading-relaxed text-metin-ikincil">{ilke}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
+      </Bolum>
+
+      {/* --- Moat --- */}
+      <Bolum>
+        <BolumBasligi
+          numara="03"
+          etiket="UZUN VADE"
+          baslik="Savunulabilir olan ne?"
+          aciklama="Haber moat değildir; başkası da yazabilir. Blog moat değildir; yapay zekâ ile herkes üretebilir."
+        />
+        <ul className="grid gap-px overflow-hidden rounded-2xl border border-kenar bg-kenar sm:grid-cols-2 lg:grid-cols-5">
+          {MOAT.map((madde, sira) => (
+            <li key={madde.ad} className="bg-zemin p-5">
+              <span className="etiket-mono text-vurgu-parlak">
+                {String(sira + 1).padStart(2, '0')}
+              </span>
+              <p className="mt-3 text-[0.9375rem] font-semibold tracking-tight text-metin">
+                {madde.ad}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-metin-soluk">{madde.tarif}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 text-[0.875rem] leading-relaxed text-metin-soluk">
+          Bu beşinin birleşimini kopyalamak, tek tek kopyalamaktan çok daha zordur.
+        </p>
+      </Bolum>
+
+      {/* --- Şeffaflık --- */}
+      <Bolum zemin="derin">
+        <BolumBasligi numara="04" etiket="ŞEFFAFLIK" baslik="Politikalar" />
+        <ul className="grid gap-px overflow-hidden rounded-2xl border border-kenar bg-kenar sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { ad: 'Editoryal ilkeler', yol: '/editoryal-ilkeler/' },
+            { ad: 'AI kullanım politikası', yol: '/ai-politikasi/' },
+            { ad: 'Düzeltme politikası', yol: '/duzeltme-politikasi/' },
+            { ad: 'Metodoloji', yol: '/metodoloji/' },
+            { ad: 'Künye', yol: '/kunye/' },
+            { ad: 'Gizlilik', yol: '/gizlilik/' },
+          ].map((sayfa) => (
+            <li key={sayfa.yol}>
+              <Link
+                href={sayfa.yol}
+                className="group flex items-center justify-between gap-3 bg-zemin px-5 py-4 transition-colors hover:bg-yuzey/60"
+              >
+                <span className="text-[0.9375rem] text-metin-ikincil group-hover:text-metin">
+                  {sayfa.ad}
+                </span>
+                <Ok className="size-4 shrink-0 text-metin-soluk opacity-0 transition-opacity group-hover:opacity-100" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Bolum>
+
+      <KapanisCagrisi
+        etiket="İLETİŞİM"
+        baslik="Katkı vermek veya birlikte çalışmak"
+        metin="Uzman katkısı, kurumsal proje veya editoryal iş birliği için iletişime geçebilirsiniz."
+        eylemler={
+          <>
+            <Dugme href="/iletisim/">
+              İletişim
+              <Ok className="size-4" />
+            </Dugme>
+            <Dugme href="/topluluk/katki/" gorunum="ikincil">
+              Katkıda bulun
+            </Dugme>
+          </>
+        }
+      />
     </>
   );
 }

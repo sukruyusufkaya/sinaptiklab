@@ -1,615 +1,474 @@
-// BRIEF §7.2 — JSON-LD katmanı: hepsi tipli builder fonksiyonlarıyla, elle
-// string yok. Şema tipleri minimal tutulur (yalnız ürettiğimiz alanlar);
-// schema.org'un tamamını modellemek hedef değildir. jsonLdScript çıktıyı
-// `<` kaçışıyla (XSS) tek tip <script type="application/ld+json"> yapar.
-// (Dosya .tsx: jsonLdScript JSX döndürür.)
-import type { ReactElement } from "react";
-import type { IcerikDetayDTO, YazarDetayDTO } from "@/lib/db/queries/dto";
-import { env } from "@/lib/env";
-
-// ── Şema tipleri (minimal) ───────────────────────────────────────────
-
-const SCHEMA_BAGLAMI = "https://schema.org" as const;
-
-interface SemaKoku {
-  "@context": typeof SCHEMA_BAGLAMI;
-  "@type": string;
-}
-
-/** İç içe kullanılan kısa Person referansı (TechArticle.author vb.). */
-export interface KisiRefJsonLd {
-  "@type": "Person";
-  name: string;
-  url?: string;
-}
-
-export interface OrganizasyonJsonLd extends SemaKoku {
-  "@type": "Organization";
-  name: string;
-  url: string;
-  logo: string;
-  sameAs: string[];
-}
-
-export interface WebSitesiJsonLd extends SemaKoku {
-  "@type": "WebSite";
-  name: string;
-  url: string;
-  inLanguage: string;
-  potentialAction: {
-    "@type": "SearchAction";
-    target: { "@type": "EntryPoint"; urlTemplate: string };
-    "query-input": string;
-  };
-}
-
-export interface AtifJsonLd {
-  "@type": "CreativeWork";
-  name: string;
-  url: string;
-}
-
-export interface TechArticleJsonLd extends SemaKoku {
-  "@type": "TechArticle";
-  headline: string;
-  description: string;
-  inLanguage: string;
-  datePublished?: string;
-  dateModified: string;
-  author: KisiRefJsonLd[];
-  editor?: KisiRefJsonLd;
-  reviewedBy?: KisiRefJsonLd;
-  citation: AtifJsonLd[];
-  isAccessibleForFree: true;
-  mainEntityOfPage: { "@type": "WebPage"; "@id": string };
-}
-
-export interface HowToAdimJsonLd {
-  "@type": "HowToStep";
-  position: number;
-  name: string;
-  url: string;
-}
-
-export interface HowToJsonLd extends SemaKoku {
-  "@type": "HowTo";
-  name: string;
-  description: string;
-  inLanguage: string;
-  step: HowToAdimJsonLd[];
-}
-
-export interface BreadcrumbOgesiJsonLd {
-  "@type": "ListItem";
-  position: number;
-  name: string;
-  /** URL'siz öğe geçerlidir: rotası henüz olmayan ara kırıntılar item taşımaz. */
-  item?: string;
-}
-
-export interface BreadcrumbJsonLd extends SemaKoku {
-  "@type": "BreadcrumbList";
-  itemListElement: BreadcrumbOgesiJsonLd[];
-}
-
-export interface FaqSorusuJsonLd {
-  "@type": "Question";
-  name: string;
-  acceptedAnswer: { "@type": "Answer"; text: string };
-}
-
-export interface FaqPageJsonLd extends SemaKoku {
-  "@type": "FAQPage";
-  mainEntity: FaqSorusuJsonLd[];
-}
-
-export interface KisiJsonLd extends SemaKoku {
-  "@type": "Person";
-  name: string;
-  url: string;
-  jobTitle: string;
-  description: string;
-  sameAs: string[];
-  worksFor: { "@type": "Organization"; name: string };
-  knowsAbout: string[];
-}
-
-export interface TanimliTerimJsonLd extends SemaKoku {
-  "@type": "DefinedTerm";
-  name: string;
-  description: string;
-  url: string;
-  inLanguage: string;
-  termCode: string;
-  alternateName?: string[];
-  inDefinedTermSet: { "@type": "DefinedTermSet"; name: string; url: string };
-}
-
-export interface TeklifJsonLd {
-  "@type": "Offer";
-  price: string;
-  priceCurrency: string;
-  url?: string;
-  availability?: string;
-}
-
-export interface YazilimUygulamasiJsonLd extends SemaKoku {
-  "@type": "SoftwareApplication";
-  name: string;
-  description: string;
-  url: string;
-  inLanguage: string;
-  applicationCategory: string;
-  dateModified: string;
-  citation: AtifJsonLd[];
-  offers?: TeklifJsonLd;
-  operatingSystem?: string;
-}
-
-export interface VeriKumesiJsonLd extends SemaKoku {
-  "@type": "Dataset";
-  name: string;
-  description: string;
-  url: string;
-  inLanguage: string;
-  datePublished?: string;
-  dateModified: string;
-  creator: KisiRefJsonLd[];
-  citation: AtifJsonLd[];
-  isAccessibleForFree: true;
-  keywords?: string[];
-  measurementTechnique?: string;
-}
-
-export interface ListeOgesiJsonLd {
-  "@type": "ListItem";
-  position: number;
-  name: string;
-  url: string;
-}
-
-export interface KoleksiyonSayfasiJsonLd extends SemaKoku {
-  "@type": "CollectionPage";
-  name: string;
-  description: string;
-  url: string;
-  inLanguage: string;
-  isPartOf: { "@type": "WebSite"; name: string; url: string };
-  mainEntity: {
-    "@type": "ItemList";
-    numberOfItems: number;
-    itemListElement: ListeOgesiJsonLd[];
-  };
-}
-
-interface TanimliTerimKumesiJsonLd {
-  "@context": string;
-  "@type": "DefinedTermSet";
-  name: string;
-  description: string;
-  url: string;
-  inLanguage: string;
-  hasDefinedTerm: {
-    "@type": "DefinedTerm";
-    name: string;
-    description: string;
-    url: string;
-    termCode: string;
-    alternateName?: string[];
-  }[];
-}
-
-interface TestJsonLd {
-  "@context": string;
-  "@type": "Quiz";
-  name: string;
-  description: string;
-  url: string;
-  inLanguage: string;
-  educationalLevel: string;
-  assesses: string;
-  dateModified: string;
-  numberOfQuestions: number;
-  hasPart: {
-    "@type": "Question";
-    eduQuestionType: "Multiple choice";
-    name: string;
-    suggestedAnswer: { "@type": "Answer"; text: string; position: number }[];
-    acceptedAnswer: { "@type": "Answer"; text: string; explanation: string };
-  }[];
-}
-
-export type JsonLdVerisi =
-  | OrganizasyonJsonLd
-  | WebSitesiJsonLd
-  | TechArticleJsonLd
-  | HowToJsonLd
-  | BreadcrumbJsonLd
-  | FaqPageJsonLd
-  | KisiJsonLd
-  | TanimliTerimJsonLd
-  | TanimliTerimKumesiJsonLd
-  | TestJsonLd
-  | YazilimUygulamasiJsonLd
-  | VeriKumesiJsonLd
-  | KoleksiyonSayfasiJsonLd;
-
-// ── Builder'lar ──────────────────────────────────────────────────────
-
-/** Global Organization (BRIEF §8.4 varlık sinyali; logo şimdilik favicon). */
-export function organizasyonJsonLd(): OrganizasyonJsonLd {
-  const url = env.NEXT_PUBLIC_SITE_URL;
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "Organization",
-    name: "Sinaptiklab",
-    url,
-    logo: `${url}/favicon.ico`,
-    sameAs: ["https://github.com/sukruyusufkaya"],
-  };
-}
-
-/** Global WebSite + SearchAction (/ara rotası Faz 6'da; şema şimdiden doğru). */
-export function webSiteJsonLd(): WebSitesiJsonLd {
-  const url = env.NEXT_PUBLIC_SITE_URL;
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "WebSite",
-    name: "Sinaptiklab",
-    url,
-    inLanguage: "tr",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${url}/ara?q={search_term_string}` },
-      "query-input": "required name=search_term_string",
-    },
-  };
-}
-
-const kisiRef = (kisi: { name: string; slug: string }): KisiRefJsonLd => ({
-  "@type": "Person",
-  name: kisi.name,
-  url: `${env.NEXT_PUBLIC_SITE_URL}/yazar/${kisi.slug}`,
-});
+import { SITE } from '@/lib/site';
+import type { SSS, Yazar } from '@/lib/tipler';
 
 /**
- * Makale/rehber/uygulama TechArticle'ı. `citation[]` sources'tan otomatik
- * doldurulur — hem SEO hem GEO için ana kaldıraç (BRIEF §7.2).
+ * Structured data, görünür içerikle birebir uyumlu olmalıdır (MASTER-PLAN §67).
+ * Burada yalnızca sayfada gerçekten görünen bilgiler işaretlenir.
  */
-export function techArticleJsonLd(icerik: IcerikDetayDTO, mutlakUrl: string): TechArticleJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "TechArticle",
-    headline: icerik.title,
-    description: icerik.dek,
-    inLanguage: icerik.lang,
-    ...(icerik.publishedAt !== null ? { datePublished: icerik.publishedAt } : {}),
-    dateModified: icerik.updatedAt,
-    author: icerik.yazarlar.map(kisiRef),
-    ...(icerik.teknikEditor !== null
-      ? { editor: kisiRef(icerik.teknikEditor), reviewedBy: kisiRef(icerik.teknikEditor) }
-      : {}),
-    citation: icerik.sources.map((kaynak) => ({
-      "@type": "CreativeWork",
-      name: kaynak.label,
-      url: kaynak.url,
-    })),
-    isAccessibleForFree: true,
-    mainEntityOfPage: { "@type": "WebPage", "@id": mutlakUrl },
-  };
-}
 
-/**
- * Tutorial için HowTo — adımlar TOC'un H2'lerinden türetilir; url mutlak
- * sayfa adresi + stabil çapa (#id) taşır (Google mutlak URL bekler).
- */
-export function howToJsonLd(icerik: IcerikDetayDTO, mutlakUrl: string): HowToJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "HowTo",
-    name: icerik.title,
-    description: icerik.dek,
-    inLanguage: icerik.lang,
-    step: icerik.toc
-      .filter((madde) => madde.depth === 2)
-      .map((madde, sira) => ({
-        "@type": "HowToStep",
-        position: sira + 1,
-        name: madde.text,
-        url: `${mutlakUrl}#${madde.id}`,
-      })),
-  };
-}
-
-/** BreadcrumbList — url'siz parça (örn. rotasız tür etiketi) item taşımaz. */
-export function breadcrumbJsonLd(parcalar: { ad: string; url?: string }[]): BreadcrumbJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "BreadcrumbList",
-    itemListElement: parcalar.map((parca, sira) => ({
-      "@type": "ListItem",
-      position: sira + 1,
-      name: parca.ad,
-      ...(parca.url !== undefined ? { item: parca.url } : {}),
-    })),
-  };
-}
-
-/** SSS bölümü olan sayfalar için FAQPage. */
-export function faqPageJsonLd(faq: { q: string; a: string }[]): FaqPageJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "FAQPage",
-    mainEntity: faq.map((madde) => ({
-      "@type": "Question",
-      name: madde.q,
-      acceptedAnswer: { "@type": "Answer", text: madde.a },
-    })),
-  };
-}
-
-/** Yazar sayfası Person'ı (BRIEF §8.4 E-E-A-T varlık sinyalleri). */
-export function kisiJsonLd(yazar: YazarDetayDTO, mutlakUrl: string): KisiJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "Person",
-    name: yazar.name,
-    url: mutlakUrl,
-    jobTitle: yazar.title,
-    description: yazar.bio,
-    sameAs: yazar.sameAs,
-    worksFor: { "@type": "Organization", name: yazar.employer },
-    knowsAbout: yazar.expertise,
-  };
-}
-
-/**
- * Sözlük terimi (BRIEF §4.2 → `DefinedTerm`). `inDefinedTermSet` tüm terimleri
- * tek kanonik kümeye (/sozluk) bağlar — TR YZ terminolojisinde otorite sinyali
- * bu bağdan doğar. `alternateName` İngilizce karşılık + eşanlamlıları taşır;
- * boşsa alan hiç yazılmaz.
- */
-export function tanimliTerimJsonLd(
-  terim: { tr: string; en: string; shortDef: string; slug: string; aliases: string[] },
-  mutlakUrl: string,
-): TanimliTerimJsonLd {
-  const digerAdlar = [terim.en, ...terim.aliases].filter((ad) => ad.trim() !== "");
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "DefinedTerm",
-    name: terim.tr,
-    description: terim.shortDef,
-    url: mutlakUrl,
-    inLanguage: "tr",
-    termCode: terim.slug,
-    ...(digerAdlar.length > 0 ? { alternateName: digerAdlar } : {}),
-    inDefinedTermSet: {
-      "@type": "DefinedTermSet",
-      name: "Sinaptiklab Türkçe Yapay Zeka Sözlüğü",
-      url: `${env.NEXT_PUBLIC_SITE_URL}/sozluk`,
-    },
-  };
-}
-
-/**
- * Sözlük İNDEKSİNİN şeması (BRIEF §7.2). Tek tek terim sayfaları DefinedTerm
- * basıyordu ama indeks yalnız WebSite taşıyordu; oysa kanonik terminoloji
- * sitenin en ayırt edici varlığı ve zengin sonuç adayı. Kümenin üyeleri
- * gömülü verilir: tarayıcı tek istekte tüm sözlüğü görür.
- */
-export function tanimliTerimKumesiJsonLd(
-  terimler: { tr: string; en: string; shortDef: string; slug: string }[],
-): TanimliTerimKumesiJsonLd {
-  const site = env.NEXT_PUBLIC_SITE_URL;
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "DefinedTermSet",
-    name: "Sinaptiklab Türkçe Yapay Zeka Sözlüğü",
-    description:
-      "Yapay zeka terimlerinin kanonik Türkçe karşılıkları: her terimin İngilizce " +
-      "aslı, tanımı ve kaynağı ile.",
-    url: `${site}/sozluk`,
-    inLanguage: "tr",
-    hasDefinedTerm: terimler.map((t) => ({
-      "@type": "DefinedTerm" as const,
-      name: t.tr,
-      description: t.shortDef,
-      url: `${site}/sozluk/${t.slug}`,
-      termCode: t.slug,
-      ...(t.en.trim() !== "" ? { alternateName: [t.en] } : {}),
-    })),
-  };
-}
-
-/** Araç kartındaki fiyat bilgisi; çağrı yerinden AÇIKÇA verilir (aşağıya bkz.). */
-export interface AracTeklifi {
-  /** "0" ücretsiz katman anlamına gelir. */
-  fiyat: string;
-  /** ISO 4217 kodu (ör. "USD"). */
-  paraBirimi: string;
-  url?: string;
-  availability?: string;
-}
-
-/**
- * Araç/model kartı için SoftwareApplication (BRIEF §7.2). `offers` OPSİYONELDİR
- * ve çağrı yerinden geçilir: fiyat alanı `contents` şemasında henüz yok, uydurma
- * fiyat basmak §14/7 (kaynaksız sayı) yasağına girer. Araç kartı alanları
- * şemaya eklendiğinde tek yapılacak iş burada teklifi doldurmaktır.
- * `Review` de aynı gerekçeyle dışarıda: puan verisini üretmiyoruz.
- */
-export function yazilimUygulamasiJsonLd(
-  icerik: IcerikDetayDTO,
-  mutlakUrl: string,
-  teklif?: AracTeklifi,
-): YazilimUygulamasiJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "SoftwareApplication",
-    name: icerik.title,
-    description: icerik.dek,
-    url: mutlakUrl,
-    inLanguage: icerik.lang,
-    applicationCategory: "DeveloperApplication",
-    dateModified: icerik.updatedAt,
-    citation: icerik.sources.map((kaynak) => ({
-      "@type": "CreativeWork",
-      name: kaynak.label,
-      url: kaynak.url,
-    })),
-    ...(teklif !== undefined
-      ? {
-          offers: {
-            "@type": "Offer" as const,
-            price: teklif.fiyat,
-            priceCurrency: teklif.paraBirimi,
-            ...(teklif.url !== undefined ? { url: teklif.url } : {}),
-            ...(teklif.availability !== undefined ? { availability: teklif.availability } : {}),
-          },
-        }
-      : {}),
-  };
-}
-
-/**
- * Ölçüm (benchmark) için Dataset (BRIEF §7.2). Karşılaştırma verisi bir veri
- * kümesidir: `citation[]` kaynaklardan, `measurementTechnique` yeniden üretim
- * kutusundaki GERÇEK donanım bilgisinden gelir — repro yoksa alan hiç yazılmaz.
- */
-export function veriKumesiJsonLd(icerik: IcerikDetayDTO, mutlakUrl: string): VeriKumesiJsonLd {
-  const donanim = icerik.repro?.hardware;
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "Dataset",
-    name: icerik.title,
-    description: icerik.dek,
-    url: mutlakUrl,
-    inLanguage: icerik.lang,
-    ...(icerik.publishedAt !== null ? { datePublished: icerik.publishedAt } : {}),
-    dateModified: icerik.updatedAt,
-    creator: icerik.yazarlar.map(kisiRef),
-    citation: icerik.sources.map((kaynak) => ({
-      "@type": "CreativeWork",
-      name: kaynak.label,
-      url: kaynak.url,
-    })),
-    isAccessibleForFree: true,
-    ...(icerik.tags.length > 0 ? { keywords: icerik.tags } : {}),
-    ...(donanim !== undefined && donanim !== "" ? { measurementTechnique: donanim } : {}),
-  };
-}
-
-/**
- * Arşiv/liste sayfaları için CollectionPage + ItemList (tür indeksleri, etiket
- * arşivi, cluster hub'ı). `toplam` verilmezse öğe sayısı kullanılır; sayfalı
- * listelerde toplam kayıt sayısı geçilir ki ItemList gerçeği söylesin.
- */
-export function koleksiyonSayfasiJsonLd(params: {
-  ad: string;
-  aciklama: string;
-  url: string;
-  ogeler: { baslik: string; url: string }[];
-  toplam?: number;
-  /** Sayfa 2+ listelerinde ilk öğenin gerçek sırası (0 tabanlı atlama). */
-  atla?: number;
-}): KoleksiyonSayfasiJsonLd {
-  const atla = params.atla ?? 0;
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "CollectionPage",
-    name: params.ad,
-    description: params.aciklama,
-    url: params.url,
-    inLanguage: "tr",
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Sinaptiklab",
-      url: env.NEXT_PUBLIC_SITE_URL,
-    },
-    mainEntity: {
-      "@type": "ItemList",
-      numberOfItems: params.toplam ?? params.ogeler.length,
-      itemListElement: params.ogeler.map((oge, sira) => ({
-        "@type": "ListItem",
-        position: atla + sira + 1,
-        name: oge.baslik,
-        url: oge.url,
-      })),
-    },
-  };
-}
-
-// ── Script yardımcısı ────────────────────────────────────────────────
-
-/**
- * JSON-LD'yi <script type="application/ld+json"> olarak basar. `<` kaçışı
- * zorunlu: içerik alanlarındaki olası `</script>` dizisi HTML bağlamında
- * script'i kapatamasın (XSS).
- */
-export function jsonLdScript(veri: JsonLdVerisi): ReactElement {
+function Betik({ veri }: { veri: Record<string, unknown> }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(veri).replace(/</g, "\\u003c") }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(veri).replace(/</g, '\\u003c') }}
+    />
+  );
+}
+
+function yazarNesnesi(yazar: Yazar) {
+  return {
+    '@type': 'Person',
+    name: yazar.ad,
+    jobTitle: yazar.unvan,
+    url: `${SITE.url}/yazar/${yazar.slug}/`,
+    ...(yazar.sosyal?.length ? { sameAs: yazar.sosyal.map((s) => s.adres) } : {}),
+  };
+}
+
+export function OrganizasyonSemasi() {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        '@id': `${SITE.url}/#organizasyon`,
+        name: SITE.ad,
+        url: SITE.url,
+        description: SITE.aciklama,
+        slogan: SITE.vaat,
+        sameAs: [SITE.sosyal.x, SITE.sosyal.linkedin, SITE.sosyal.github, SITE.sosyal.youtube],
+      }}
+    />
+  );
+}
+
+export function SiteSemasi() {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        '@id': `${SITE.url}/#site`,
+        name: SITE.ad,
+        url: SITE.url,
+        inLanguage: 'tr-TR',
+        publisher: { '@id': `${SITE.url}/#organizasyon` },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${SITE.url}/ara/?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      }}
+    />
+  );
+}
+
+export function KirintiSemasi({ ogeler }: { ogeler: { ad: string; yol: string }[] }) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: ogeler.map((oge, sira) => ({
+          '@type': 'ListItem',
+          position: sira + 1,
+          name: oge.ad,
+          item: `${SITE.url}${oge.yol}`,
+        })),
+      }}
+    />
+  );
+}
+
+export function MakaleSemasi({
+  tur = 'Article',
+  baslik,
+  aciklama,
+  yol,
+  yazar,
+  inceleyen,
+  yayinTarihi,
+  guncellemeTarihi,
+  bolum,
+  anahtarlar,
+}: {
+  tur?: 'Article' | 'NewsArticle' | 'TechArticle';
+  baslik: string;
+  aciklama: string;
+  yol: string;
+  yazar: Yazar;
+  inceleyen?: Yazar;
+  yayinTarihi?: string;
+  guncellemeTarihi?: string;
+  bolum?: string;
+  anahtarlar?: string[];
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': tur,
+        headline: baslik,
+        description: aciklama,
+        mainEntityOfPage: `${SITE.url}${yol}`,
+        inLanguage: 'tr-TR',
+        author: yazarNesnesi(yazar),
+        ...(inceleyen ? { reviewedBy: yazarNesnesi(inceleyen) } : {}),
+        publisher: { '@id': `${SITE.url}/#organizasyon` },
+        ...(yayinTarihi ? { datePublished: yayinTarihi } : {}),
+        ...(guncellemeTarihi ? { dateModified: guncellemeTarihi } : {}),
+        ...(bolum ? { articleSection: bolum } : {}),
+        ...(anahtarlar?.length ? { keywords: anahtarlar.join(', ') } : {}),
+      }}
+    />
+  );
+}
+
+export function SSSSemasi({ sorular }: { sorular: SSS[] }) {
+  if (sorular.length === 0) return null;
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: sorular.map((oge) => ({
+          '@type': 'Question',
+          name: oge.soru,
+          acceptedAnswer: { '@type': 'Answer', text: oge.cevap },
+        })),
+      }}
     />
   );
 }
 
 /**
- * Test sayfasının şeması (schema.org `Quiz` + `Question`). Google'ın
- * "practice problems" zengin sonucu bu kalıbı okur: doğru şık
- * `acceptedAnswer`, diğerleri `suggestedAnswer` olur ve gerekçe
- * `explanation` alanına girer.
+ * `HowTo` şeması — adımlı rehberler için.
  *
- * Gerekçenin şemaya girmesi bilinçli: testin asıl değeri "hangi şık doğru"
- * değil "neden doğru" bilgisidir; hem okuyucu hem tarayıcı onu görmeli.
+ * NEDEN EKSİKTİ: rehber sayfaları `Article` ve `FAQPage` basıyordu ama
+ * numaralı adım listesi taşıyan bir içerik için doğru tip `HowTo`dur. Bu,
+ * arama sonuçlarında adımların ayrı ayrı gösterildiği zengin sonuç tipini
+ * açar ve üretken arama yüzeylerine "bu iş şu adımlarla yapılır" biçiminde
+ * yapılandırılmış bir cevap verir — rehberin tüm değeri tam olarak budur.
+ *
+ * ADIM AÇIKLAMASI ÖZETTEN GELİR, gövdeden değil: `ayrinti` blokları uzun
+ * anlatımdır ve şemaya gömüldüğünde hem devasa bir JSON üretir hem de
+ * Google'ın "adım açıklaması kısa olmalı" beklentisini bozar.
+ *
+ * `totalTime` YAZILMAZ: okuma dakikası, işin ne kadar süreceği DEĞİLDİR.
+ * İkisini karıştırmak, aramada yanlış bir süre vaadi basmak olurdu.
  */
-export function testJsonLd(
-  test: {
-    title: string;
-    dek: string;
-    level: string;
-    pillar: string;
-    updatedAt: string;
-    sorular: {
-      soru: string;
-      secenekler: { id: string; metin: string }[];
-      dogru: string;
-      aciklama: string;
-    }[];
-  },
-  mutlakUrl: string,
-): TestJsonLd {
-  return {
-    "@context": SCHEMA_BAGLAMI,
-    "@type": "Quiz",
-    name: test.title,
-    description: test.dek,
-    url: mutlakUrl,
-    inLanguage: "tr",
-    educationalLevel: test.level,
-    assesses: test.pillar,
-    dateModified: test.updatedAt,
-    numberOfQuestions: test.sorular.length,
-    hasPart: test.sorular.map((soru) => {
-      const dogruSecenek = soru.secenekler.find((s) => s.id === soru.dogru);
-      return {
-        "@type": "Question" as const,
-        eduQuestionType: "Multiple choice" as const,
-        name: soru.soru,
-        suggestedAnswer: soru.secenekler
-          .filter((s) => s.id !== soru.dogru)
-          .map((s, sira) => ({
-            "@type": "Answer" as const,
-            text: s.metin,
-            position: sira,
-          })),
-        acceptedAnswer: {
-          "@type": "Answer" as const,
-          text: dogruSecenek?.metin ?? "",
-          explanation: soru.aciklama,
+export function NasilYapilirSemasi({
+  ad,
+  aciklama,
+  yol,
+  adimlar,
+  araclar,
+  onKosullar,
+}: {
+  ad: string;
+  aciklama: string;
+  yol: string;
+  adimlar: { ad: string; ozet: string }[];
+  araclar?: string[];
+  onKosullar?: string[];
+}) {
+  if (adimlar.length === 0) return null;
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: ad,
+        description: aciklama,
+        url: `${SITE.url}${yol}`,
+        inLanguage: 'tr-TR',
+        ...(araclar && araclar.length > 0
+          ? { tool: araclar.map((arac) => ({ '@type': 'HowToTool', name: arac })) }
+          : {}),
+        ...(onKosullar && onKosullar.length > 0
+          ? { supply: onKosullar.map((k) => ({ '@type': 'HowToSupply', name: k })) }
+          : {}),
+        step: adimlar.map((adim, sira) => ({
+          '@type': 'HowToStep',
+          position: sira + 1,
+          name: adim.ad,
+          text: adim.ozet,
+          url: `${SITE.url}${yol}#adim-${sira + 1}`,
+        })),
+      }}
+    />
+  );
+}
+
+export function ListeSemasi({ ad, ogeler }: { ad: string; ogeler: { ad: string; yol: string }[] }) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: ad,
+        numberOfItems: ogeler.length,
+        itemListElement: ogeler.map((oge, sira) => ({
+          '@type': 'ListItem',
+          position: sira + 1,
+          name: oge.ad,
+          url: `${SITE.url}${oge.yol}`,
+        })),
+      }}
+    />
+  );
+}
+
+export function KursSemasi({
+  ad,
+  aciklama,
+  yol,
+  seviye,
+}: {
+  ad: string;
+  aciklama: string;
+  yol: string;
+  seviye?: string;
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Course',
+        name: ad,
+        description: aciklama,
+        url: `${SITE.url}${yol}`,
+        inLanguage: 'tr-TR',
+        provider: { '@id': `${SITE.url}/#organizasyon` },
+        ...(seviye ? { educationalLevel: seviye } : {}),
+      }}
+    />
+  );
+}
+
+export function TestSemasi({
+  ad,
+  aciklama,
+  sorular,
+}: {
+  ad: string;
+  aciklama: string;
+  sorular: { soru: string; secenekler: string[]; dogruIndeks: number; aciklama: string }[];
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Quiz',
+        name: ad,
+        description: aciklama,
+        inLanguage: 'tr-TR',
+        provider: { '@id': `${SITE.url}/#organizasyon` },
+        hasPart: sorular.map((soru) => ({
+          '@type': 'Question',
+          eduQuestionType: 'Multiple choice',
+          name: soru.soru,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: soru.secenekler[soru.dogruIndeks] ?? '',
+            comment: soru.aciklama,
+          },
+          suggestedAnswer: soru.secenekler
+            .filter((_, sira) => sira !== soru.dogruIndeks)
+            .map((secenek) => ({ '@type': 'Answer', text: secenek })),
+        })),
+      }}
+    />
+  );
+}
+
+export function VeriSetiSemasi({
+  ad,
+  aciklama,
+  yol,
+  lisans,
+  tarih,
+}: {
+  ad: string;
+  aciklama: string;
+  yol: string;
+  lisans?: string;
+  tarih?: string;
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: ad,
+        description: aciklama,
+        url: `${SITE.url}${yol}`,
+        inLanguage: 'tr-TR',
+        creator: { '@id': `${SITE.url}/#organizasyon` },
+        ...(lisans ? { license: lisans } : {}),
+        ...(tarih ? { datePublished: tarih } : {}),
+      }}
+    />
+  );
+}
+
+export function ProfilSemasi({ yazar }: { yazar: Yazar }) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'ProfilePage',
+        mainEntity: {
+          ...yazarNesnesi(yazar),
+          ...(yazar.ozgecmis ? { description: yazar.ozgecmis } : {}),
+          ...(yazar.uzmanlik?.length ? { knowsAbout: yazar.uzmanlik } : {}),
         },
-      };
-    }),
-  };
+      }}
+    />
+  );
+}
+
+export function HizmetSemasi({ ad, aciklama, yol }: { ad: string; aciklama: string; yol: string }) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: ad,
+        description: aciklama,
+        url: `${SITE.url}${yol}`,
+        areaServed: 'TR',
+        provider: { '@id': `${SITE.url}/#organizasyon` },
+      }}
+    />
+  );
+}
+
+export function EtkinlikSemasi({
+  ad,
+  aciklama,
+  tarih,
+  yol,
+  bicim,
+}: {
+  ad: string;
+  aciklama: string;
+  tarih: string;
+  yol: string;
+  bicim: string;
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        name: ad,
+        description: aciklama,
+        startDate: tarih,
+        url: `${SITE.url}${yol}`,
+        eventAttendanceMode: bicim.includes('Çevrim')
+          ? 'https://schema.org/OnlineEventAttendanceMode'
+          : 'https://schema.org/OfflineEventAttendanceMode',
+        organizer: { '@id': `${SITE.url}/#organizasyon` },
+      }}
+    />
+  );
+}
+
+/**
+ * Meslek sayfası — schema.org `Occupation`.
+ *
+ * MAAŞ ALANI BİLİNÇLİ OLARAK YOK. `Occupation` tipi `estimatedSalary` alanını
+ * destekler ve zengin sonuçta en görünür alandır; ama Sinaptik Lab'de
+ * doğrulanmış bir maaş araştırması yayımlanmadı. Uydurma bir aralık yazmak
+ * hem değişmez kural 5'i hem de yapılandırılmış verinin "görünür içerikle
+ * birebir uyum" ilkesini (MASTER-PLAN §67) çiğnerdi: sayfada görünmeyen bir
+ * sayıyı arama motoruna bildirmek olurdu.
+ *
+ * `skills` ve `responsibilities` sayfada gerçekten basılan listelerden gelir.
+ */
+export function MeslekSemasi({
+  ad,
+  aciklama,
+  yol,
+  beceriler,
+  sorumluluklar,
+  esAdlar,
+  kategori,
+}: {
+  ad: string;
+  aciklama: string;
+  yol: string;
+  beceriler: string[];
+  sorumluluklar: string[];
+  esAdlar?: string[];
+  kategori?: string;
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'Occupation',
+        name: ad,
+        description: aciklama,
+        url: `${SITE.url}${yol}`,
+        inLanguage: SITE.dil,
+        ...(esAdlar?.length ? { alternateName: esAdlar } : {}),
+        ...(kategori ? { occupationalCategory: kategori } : {}),
+        ...(beceriler.length ? { skills: beceriler.join(', ') } : {}),
+        ...(sorumluluklar.length ? { responsibilities: sorumluluklar } : {}),
+        occupationLocation: { '@type': 'Country', name: 'Türkiye' },
+      }}
+    />
+  );
+}
+
+/**
+ * Sözlük — schema.org `DefinedTermSet`.
+ *
+ * NEDEN ÖNEMLİ: sözlük, üretken aramanın en kolay alıntıladığı içerik
+ * biçimidir — her giriş kendi başına tam, kısa ve tanım niteliğinde. Bu şema
+ * terimleri tek tek işaretleyerek hangi metnin hangi terimin TANIMI olduğunu
+ * makineye açıkça söyler; tanım paragrafını çevresindeki metinden ayırt etme
+ * işini tahmine bırakmaz.
+ *
+ * `identifier` terimin sayfa içi çapasıdır (`#terim-<slug>`): terimlerin ayrı
+ * sayfası olmadığı için `url` yerine bu kullanılır. Ayrı sayfa açmak, tek
+ * satırlık tanımlar için yüzlerce ince adres üretmek olurdu (§51).
+ */
+export function TerimKumesiSemasi({
+  ad,
+  aciklama,
+  yol,
+  terimler,
+}: {
+  ad: string;
+  aciklama: string;
+  yol: string;
+  terimler: { ad: string; tanim: string; kimlik: string; esAd?: string }[];
+}) {
+  return (
+    <Betik
+      veri={{
+        '@context': 'https://schema.org',
+        '@type': 'DefinedTermSet',
+        '@id': `${SITE.url}${yol}#sozluk`,
+        name: ad,
+        description: aciklama,
+        url: `${SITE.url}${yol}`,
+        inLanguage: SITE.dil,
+        hasDefinedTerm: terimler.map((terim) => ({
+          '@type': 'DefinedTerm',
+          name: terim.ad,
+          description: terim.tanim,
+          identifier: `${SITE.url}${yol}#terim-${terim.kimlik}`,
+          ...(terim.esAd ? { alternateName: terim.esAd } : {}),
+          inDefinedTermSet: { '@id': `${SITE.url}${yol}#sozluk` },
+        })),
+      }}
+    />
+  );
 }

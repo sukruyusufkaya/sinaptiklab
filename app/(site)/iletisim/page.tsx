@@ -1,177 +1,104 @@
-// /iletisim — tek adres + konu bazlı yönlendirme (BRIEF §2.2).
-// Bilinçli karar: FORM YOK. Form, spam koruması, oran sınırı ve kişisel veri
-// işleme sorumluluğu getirir; bunların altyapısı Faz 7'de gelecek. O zamana
-// kadar mailto, hem dürüst hem sıfır veri toplayan çözüm.
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Bolum } from "@/components/legal/Bolum";
-import { KurumsalBaslik } from "@/components/legal/KurumsalBaslik";
-import { Kutu, Liste, Madde, P, SiraliListe, SiraliMadde } from "@/components/legal/Metin";
-import { EPOSTA, SON_GUNCELLEME, YAZAR, epostaBaglantisi } from "@/components/legal/sabitler";
-import { Tablo } from "@/components/legal/Tablo";
-import { env } from "@/lib/env";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { SayfaBasligi } from '@/components/arayuz/SayfaBasligi';
+import { Bolum } from '@/components/arayuz/Bolum';
+import { BolumBasligi } from '@/components/arayuz/BolumBasligi';
+import { Ok } from '@/components/arayuz/Ikonlar';
+import { IletisimFormu } from '@/components/form/IletisimFormu';
+import { SITE } from '@/lib/site';
 
-export function generateMetadata(): Metadata {
-  return {
-    title: "İletişim — hata bildirimi, kaynak düzeltme, işbirliği",
-    description:
-      "Sinaptiklab'a nasıl ulaşılır: içerik hatası bildirimi, kaynak düzeltme, işbirliği ve basın başvuruları için konu başlıkları, yanıt süreleri ve bildirim şablonu.",
-    alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/iletisim` },
-  };
-}
+export const metadata: Metadata = {
+  title: 'İletişim',
+  description:
+    'Kurumsal proje, editoryal düzeltme, uzman katkısı veya basın talepleri için Sinaptik Lab ile iletişime geçin.',
+  alternates: { canonical: '/iletisim/' },
+};
 
-const KONULAR = [
-  [
-    "İçerik hatası",
-    "Yanlış sayı, eskimiş sürüm, çalışmayan kod, kırık bağlantı",
-    "İçerik hatası bildirimi",
-  ],
-  [
-    "Kaynak düzeltme",
-    "Kaynak iddiayı desteklemiyor ya da daha iyi bir birincil kaynak var",
-    "Kaynak düzeltme önerisi",
-  ],
-  ["İşbirliği", "Konuk yazı, ortak ölçüm, vaka çalışması, konuşma daveti", "İşbirliği önerisi"],
-  ["Basın", "Röportaj, alıntı talebi, görsel kullanımı", "Basın başvurusu"],
-  ["Kişisel veri (KVKK)", "Aydınlatma metni kapsamındaki başvurular ve haklar", "KVKK başvurusu"],
-  ["Diğer", "Yukarıdakilere girmeyen her şey", "Genel"],
-] as const;
+const KANALLAR = [
+  {
+    ad: 'Kurumsal talepler',
+    tarif: 'Proje değerlendirmesi, AI Readiness ve eğitim talepleri.',
+    yol: '/kurumsal/',
+    baglantiMetni: 'Kurumsal hizmetler',
+  },
+  {
+    ad: 'İçerik düzeltmesi',
+    tarif: 'Hata bildirimleri değerlendirilir ve doğrulanan hatalar düzeltme kaydıyla düzeltilir.',
+    yol: '/duzeltme-politikasi/',
+    baglantiMetni: 'Düzeltme politikası',
+  },
+  {
+    ad: 'Uzman katkısı',
+    tarif: 'Atlas girdisi yazma, teknik inceleme ve podcast konukluğu.',
+    yol: '/topluluk/katki/',
+    baglantiMetni: 'Katkı biçimleri',
+  },
+  {
+    ad: 'Basın ve veri',
+    tarif: 'Araştırma verilerimizi kaynak göstererek kullanabilirsiniz.',
+    yol: '/arastirma/',
+    baglantiMetni: 'Araştırma yayınları',
+  },
+];
 
 export default function IletisimSayfasi() {
   return (
     <>
-      <KurumsalBaslik
-        indeks="kurumsal · iletişim"
+      <SayfaBasligi
+        kirintilar={[{ ad: 'İletişim', yol: '/iletisim/' }]}
+        etiket="KURUMSAL"
         baslik="İletişim"
-        spot="Tek adres, konu başlığıyla yönlendirme. En değerli mesaj türü içerik hatası bildirimi: bir yanlış gördüyseniz, düzeltmesi bizim işimiz."
-        raylar={[
-          { etiket: "adres", deger: EPOSTA },
-          { etiket: "yanıt hedefi", deger: "5 iş günü" },
-          { etiket: "kvkk başvurusu", deger: "en geç 30 gün" },
-          { etiket: "son güncelleme", deger: SON_GUNCELLEME },
-        ]}
+        ozet="Hangi konuda yazdığınızı seçin; talep doğru masaya düşsün. Kurumsal taleplerde ilk görüşme uygulanabilirlik değerlendirmesiyle sonuçlanır."
+        yan={<IletisimFormu />}
       />
 
-      <div className="mx-auto max-w-[1280px] px-[var(--gutter)]">
-        <div className="max-w-[var(--govde-olcu)] py-12">
-          <Bolum id="adres" no="01" baslik="Adres">
-            <P>
-              Tüm başvurular tek adrese gelir ve doğrudan sorumlu editöre ({YAZAR}) ulaşır; arada
-              destek ekibi yoktur.
-            </P>
-            <p className="mt-6">
-              <a href={`mailto:${EPOSTA}`} className="dugme-birincil">
-                {EPOSTA} <span aria-hidden>→</span>
-              </a>
-            </p>
-            <Kutu etiket="form neden yok">
-              <p>
-                Bilinçli bir karar: iletişim formu, spam filtresi, oran sınırı ve form üzerinden
-                gelen kişisel verinin saklanması demektir. Bunların altyapısı henüz kurulmadı;
-                kurulana kadar hiç veri toplamayan e-posta yolunu kullanıyoruz. Form geldiğinde{" "}
-                <Link href="/kvkk-aydinlatma">aydınlatma metni</Link> de aynı gün güncellenecek.
+      <Bolum>
+        <BolumBasligi numara="01" etiket="KANALLAR" baslik="Hangi konuda yazıyorsunuz?" />
+        <ul className="grid gap-px overflow-hidden rounded-2xl border border-kenar bg-kenar sm:grid-cols-2">
+          {KANALLAR.map((kanal) => (
+            <li key={kanal.ad} className="bg-zemin p-6">
+              <p className="text-[1.0625rem] font-semibold tracking-tight text-metin">{kanal.ad}</p>
+              <p className="mt-2 text-[0.875rem] leading-relaxed text-metin-ikincil">
+                {kanal.tarif}
               </p>
-            </Kutu>
-          </Bolum>
+              <Link
+                href={kanal.yol}
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-vurgu-parlak"
+              >
+                {kanal.baglantiMetni}
+                <Ok className="size-3.5" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Bolum>
 
-          <Bolum id="konular" no="02" baslik="Konu başlığıyla yönlendirin">
-            <P>
-              Doğru başlık, doğru sırada yanıtlanmayı sağlar. E-postanın konu satırına aşağıdaki
-              ifadelerden birini yazmanız yeterli:
-            </P>
-            <Tablo
-              ozet="Başvuru türleri ve kullanılacak e-posta konu başlıkları"
-              basliklar={["Tür", "Ne zaman", "Konu satırı"]}
-              satirlar={KONULAR}
-            />
-            <p className="mt-5 flex flex-wrap gap-3">
-              <a href={epostaBaglantisi("İçerik hatası bildirimi")} className="dugme-cerceve">
-                Hata bildir
+      <Bolum zemin="derin">
+        <BolumBasligi numara="02" etiket="SOSYAL" baslik="Diğer kanallar" />
+        <ul className="flex flex-wrap gap-2">
+          {[
+            { ad: 'LinkedIn', yol: SITE.sosyal.linkedin },
+            { ad: 'X', yol: SITE.sosyal.x },
+            { ad: 'GitHub', yol: SITE.sosyal.github },
+            { ad: 'YouTube', yol: SITE.sosyal.youtube },
+          ].map((sosyal) => (
+            <li key={sosyal.ad}>
+              <a
+                href={sosyal.yol}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-kenar bg-yuzey/40 px-4 py-2 text-sm text-metin-ikincil transition-colors hover:border-kenar-guclu hover:text-metin"
+              >
+                {sosyal.ad}
               </a>
-              <a href={epostaBaglantisi("İşbirliği önerisi")} className="dugme-cerceve">
-                İşbirliği
-              </a>
-              <a href={epostaBaglantisi("KVKK başvurusu")} className="dugme-cerceve">
-                KVKK başvurusu
-              </a>
-            </p>
-          </Bolum>
+            </li>
+          ))}
+        </ul>
 
-          <Bolum id="hata-bildirimi" no="03" baslik="Hata bildirirken ne gönderin">
-            <P>
-              Bir düzeltmeyi hızlandıran üç bilgi var. Üçü de varsa bildirim genellikle aynı gün
-              sonuçlanır:
-            </P>
-            <SiraliListe>
-              <SiraliMadde no={1}>
-                <strong className="font-semibold text-murekkep">Sayfanın adresi (URL).</strong>{" "}
-                Mümkünse ilgili başlığın çapa bağlantısı — her ara başlığın yanındaki bağlantı
-                simgesi kalıcı adres verir.
-              </SiraliMadde>
-              <SiraliMadde no={2}>
-                <strong className="font-semibold text-murekkep">Hangi iddia yanlış.</strong> İlgili
-                cümleyi kopyalayıp yapıştırın; &ldquo;yazıda bir hata var&rdquo; tek başına
-                izlenebilir değil.
-              </SiraliMadde>
-              <SiraliMadde no={3}>
-                <strong className="font-semibold text-murekkep">Doğrusunu gösteren kaynak.</strong>{" "}
-                Resmî dokümantasyon, sürüm notu, hakemli yayın ya da yeniden üretilebilir bir ölçüm.
-                Kaynağınız yoksa da yazın; doğrulaması bize ait.
-              </SiraliMadde>
-            </SiraliListe>
-            <P>
-              Kod çalışmıyorsa çalıştırdığınız ortamı da ekleyin: işletim sistemi, çalışma zamanı
-              sürümü, paket sürümleri ve tam hata çıktısı. Ölçüm sonucumuz sizinkinden farklıysa
-              donanım ve yapılandırma bilgisi kritik.
-            </P>
-            <P>
-              Kabul edilen düzeltmeler ilgili yazının değişiklik günlüğüne işlenir. İsterseniz
-              bildirimde adınız anılır; istemezseniz anılmaz — e-postanızda belirtin. Süreç{" "}
-              <Link href="/editoryal-politika#duzeltme">editoryal politikada</Link> ayrıntılı.
-            </P>
-          </Bolum>
-
-          <Bolum id="yanit" no="04" baslik="Yanıt süresi">
-            <Liste>
-              <Madde>
-                <strong className="font-semibold text-murekkep">Genel başvurular:</strong> hedefimiz
-                beş iş günü. Tek kişilik bir yayın olduğumuz için yoğun dönemlerde gecikme olabilir;
-                yanıtsız kalan mesaj olursa aynı başlıkla tekrar yazmaktan çekinmeyin.
-              </Madde>
-              <Madde>
-                <strong className="font-semibold text-murekkep">İçerik hatası bildirimi:</strong>{" "}
-                öncelikli kuyruk. Bariz bir olgusal hata söz konusuysa düzeltme, doğrulanır
-                doğrulanmaz yapılır.
-              </Madde>
-              <Madde>
-                <strong className="font-semibold text-murekkep">KVKK başvuruları:</strong> ilgili
-                mevzuatın öngördüğü süre içinde, en geç 30 gün içinde yanıtlanır. Ayrıntı{" "}
-                <Link href="/kvkk-aydinlatma#basvuru">aydınlatma metninde</Link>.
-              </Madde>
-            </Liste>
-          </Bolum>
-
-          <Bolum id="henuz-yok" no="05" baslik="Henüz olmayan kanallar">
-            <P>Şeffaflık için: aşağıdakiler bugün mevcut değil, ileride gelebilir.</P>
-            <Liste>
-              <Madde>İletişim formu ve site içi bildirim düğmesi.</Madde>
-              <Madde>
-                Bülten aboneliği — altyapı kurulduğunda çift onaylı olarak açılacak; o güne kadar
-                hiçbir yerde e-posta adresi toplanmıyor.
-              </Madde>
-              <Madde>
-                Üyelik, yorum ve forum; yayın topluluğu bileşenleri sonraki fazların konusu.
-              </Madde>
-              <Madde>Telefon hattı ve fiziki ofis adresi bulunmamaktadır.</Madde>
-            </Liste>
-            <P>
-              Sinaptiklab&rsquo;ın kim tarafından, hangi altyapıyla yayımlandığı{" "}
-              <Link href="/kunye">künye sayfasında</Link>; hangi verinin işlendiği{" "}
-              <Link href="/gizlilik">gizlilik politikasındadır</Link>.
-            </P>
-          </Bolum>
-        </div>
-      </div>
+        <p className="mt-6 rounded-lg border border-kenar bg-yuzey/40 px-4 py-3 text-xs text-metin-soluk">
+          Sosyal medya hesapları yayına alındığında bu bağlantılar etkinleşecek.
+        </p>
+      </Bolum>
     </>
   );
 }
