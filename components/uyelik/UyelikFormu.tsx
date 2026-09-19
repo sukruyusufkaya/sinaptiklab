@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition, type ReactNode } from 'react';
 import { Ok } from '@/components/arayuz/Ikonlar';
+import { oturumTazele } from '@/lib/site/oturum-durumu';
 import type { EylemSonucu } from '@/lib/yetki/korumali-eylem';
 
 /**
@@ -62,6 +63,20 @@ export function UyelikFormu<T extends { yol?: string } | undefined>({
       setHata(undefined);
       setAlanHatalari({});
       setIleti(sonuc.ileti);
+
+      /*
+       * BAŞLIK DA YENİ OTURUMU GÖRSÜN.
+       *
+       * `router.refresh()` yalnızca SUNUCU bileşenlerini tazeler; site başlığı
+       * ise statik düzenin altında duran bir istemci bileşeni ve oturumu ayrı
+       * bir depodan okuyor (bkz. `lib/site/oturum-durumu.ts`). Bu çağrı
+       * olmadan giriş yapan kullanıcı, tam sayfa yenileyene kadar başlıkta
+       * "Giriş Yap" görmeye devam ederdi — düzeltilen hatanın ta kendisi.
+       *
+       * Ad güncellemesi de buradan geçer: hesap formu adı değiştirdiğinde
+       * başlıktaki ad aynı anda güncellenir.
+       */
+      oturumTazele();
 
       const hedef = sonuc.veri?.yol ?? basariYolu;
       if (hedef) {

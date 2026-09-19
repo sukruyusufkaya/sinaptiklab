@@ -6,6 +6,7 @@ import { ANA_MENU, UST_CUBUK } from '@/lib/rotalar';
 import { Ara, Kevron, Menu } from '@/components/arayuz/Ikonlar';
 import { Logo } from './Logo';
 import { MegaMenu } from './MegaMenu';
+import { OturumAlani } from './OturumAlani';
 import { TemaAnahtari } from './TemaAnahtari';
 import { MobilMenu } from './MobilMenu';
 
@@ -137,18 +138,7 @@ export function Baslik({ paletiAc }: { paletiAc: () => void }) {
               </kbd>
             </button>
 
-            <Link
-              href="/giris/"
-              className="hidden h-9 items-center rounded-full px-3 text-sm font-medium text-metin-ikincil transition-colors hover:text-metin lg:inline-flex"
-            >
-              Giriş Yap
-            </Link>
-            <Link
-              href="/uye-ol/"
-              className="hidden h-9 items-center rounded-full bg-vurgu px-4 text-sm font-medium text-white shadow-[0_6px_24px_-10px_var(--vurgu)] transition-colors hover:bg-vurgu-parlak lg:inline-flex"
-            >
-              Üye Ol
-            </Link>
+            <OturumAlani />
 
             <button
               type="button"

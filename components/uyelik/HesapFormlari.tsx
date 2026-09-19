@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { UyelikAlani, UyelikFormu } from '@/components/uyelik/UyelikFormu';
+import { oturumTazele } from '@/lib/site/oturum-durumu';
 import { dogrulamaYenidenGonder, hesabiGuncelle, uyeCikis } from '@/lib/site/uyelik-eylemleri';
 import { useRouter } from 'next/navigation';
 
@@ -87,6 +88,8 @@ export function CikisDugmesi() {
       onClick={() =>
         baslat(async () => {
           const sonuc = await uyeCikis();
+          // Başlık statik düzenin altında; oturumu kendi deposundan okuyor.
+          oturumTazele();
           yonlendirici.push(sonuc.tamam ? (sonuc.veri?.yol ?? '/') : '/');
           yonlendirici.refresh();
         })

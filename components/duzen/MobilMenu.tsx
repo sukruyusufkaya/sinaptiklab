@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { ANA_MENU, UST_CUBUK } from '@/lib/rotalar';
 import { Ara, Kapat, Kevron } from '@/components/arayuz/Ikonlar';
 import { Logo } from './Logo';
+import { OturumAlaniMobil } from './OturumAlani';
 import { TemaAnahtari } from './TemaAnahtari';
 
 export function MobilMenu({
@@ -144,22 +145,7 @@ export function MobilMenu({
 
         <div className="flex shrink-0 items-center justify-between gap-3 border-t border-kenar px-5 py-4">
           <TemaAnahtari />
-          <div className="flex items-center gap-2">
-            <Link
-              href="/giris/"
-              onClick={kapat}
-              className="rounded-full px-3 py-2 text-sm font-medium text-metin-ikincil"
-            >
-              Giriş Yap
-            </Link>
-            <Link
-              href="/uye-ol/"
-              onClick={kapat}
-              className="rounded-full bg-vurgu px-4 py-2 text-sm font-medium text-white"
-            >
-              Üye Ol
-            </Link>
-          </div>
+          <OturumAlaniMobil kapat={kapat} />
         </div>
       </div>
     </div>
