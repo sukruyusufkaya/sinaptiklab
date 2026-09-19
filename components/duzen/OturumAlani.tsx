@@ -32,10 +32,33 @@ export function OturumAlani() {
   return (
     <div className="hidden items-center justify-end gap-2 lg:flex lg:min-w-[10.5rem]">
       {durum.asama === 'bilinmiyor' && (
-        <span
-          aria-hidden="true"
-          className="h-9 w-28 animate-pulse rounded-full border border-kenar bg-yuzey/60"
-        />
+        <>
+          <span
+            aria-hidden="true"
+            className="h-9 w-28 animate-pulse rounded-full border border-kenar bg-yuzey/60"
+          />
+          {/*
+           * JAVASCRIPT KAPALIYSA GİRİŞ BAĞLANTILARI YİNE DURUR.
+           *
+           * Bu alan artık istemcide çözüldüğü için statik HTML'de yalnızca
+           * iskelet var; betik çalışmazsa kullanıcı sitenin hiçbir yerinden
+           * giriş sayfasına ulaşamazdı. Önceki sürümde bağlantılar düz `<a>`
+           * olarak duruyordu ve betiksiz çalışıyordu — o davranış burada geri
+           * veriliyor.
+           *
+           * `dangerouslySetInnerHTML` ile veriliyor: React `<noscript>`
+           * çocuklarını hidrasyonda yeniden yorumlar ve uyumsuzluk uyarısı
+           * üretir; ham dize bu sorunu doğurmaz. İçerik sabit, dışarıdan veri
+           * almıyor.
+           */}
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html:
+                '<a href="/giris/" style="font-size:0.875rem">Giriş Yap</a>' +
+                '<a href="/uye-ol/" style="margin-left:0.75rem;font-size:0.875rem">Üye Ol</a>',
+            }}
+          />
+        </>
       )}
 
       {durum.asama === 'anonim' && (
