@@ -96,7 +96,7 @@ Yayında olan içerik (sayılar Atlas'tan, `npm run icerik:denetim` ile doğrula
 | `atlas` | 35 | gövde, SSS, kaynak, sürüm geçmişi; beceri ağının düğümleri |
 | `terimler` | 538 | sözlük; 35'i Atlas girdisine bağlı, 12'si aşama işaretli |
 | `uzmanlar` | 23 | 22 tanımlı açık koltuk |
-| `dersler` | 8 | |
+| `dersler` | 148 | 20 rotanın tamamı ders taşıyor |
 
 Ayrıca: 45 haber + 56 derin analiz tam gövde, seviye testi, model
 karşılaştırma stüdyosu, model seçici, beceri ağı, AI Readiness.

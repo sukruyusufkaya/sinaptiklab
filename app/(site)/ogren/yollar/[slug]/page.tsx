@@ -68,6 +68,24 @@ export default async function YolSayfasi({ params }: { params: Promise<{ slug: s
     (yol.bolumler ?? []).some((bolum) => bolum.kavramlar.includes(test.konu)),
   );
 
+  /*
+   * "ROTAYI BAŞLAT" ROTANIN İLK DERSİNE GİDER.
+   *
+   * Önceden `/uye-ol/` adresine SABİT bağlıydı: giriş yapmış kullanıcı da,
+   * hiç üye olmayan da aynı kayıt formuna düşüyordu. Düğme oturuma hiç
+   * bakmadığı için "giriş yaptım ama yine üye ol diyor" şikâyeti kaçınılmazdı.
+   *
+   * Dahası sitenin kendi vaadiyle çelişiyordu: `/ogren/` sayfası "Üye olmadan
+   * da tüm rotalar, dersler ve testler açık ve taranabilir durumda" diyor.
+   * Dersler gerçekten açık (statik üretiliyor, hiçbir oturum denetimi yok);
+   * başlama düğmesinin kapı gibi davranması yanlıştı.
+   *
+   * `yolunDersleri()` sıraya göre döndüğü için ilk ders dizinin başındadır.
+   * Ders yoksa müfredat bölümüne çapa atılır — var olmayan bir derse
+   * bağlanmaktansa okuru sayfanın içeriğine yollamak dürüsttür.
+   */
+  const ilkDers = dersler[0];
+
   return (
     <>
       <KursSemasi
@@ -94,10 +112,17 @@ export default async function YolSayfasi({ params }: { params: Promise<{ slug: s
         ]}
         eylemler={
           <>
-            <Dugme href="/uye-ol/">
-              Rotayı başlat
-              <Ok className="size-4" />
-            </Dugme>
+            {ilkDers ? (
+              <Dugme href={`/ogren/dersler/${ilkDers.slug}/`}>
+                Rotayı başlat
+                <Ok className="size-4" />
+              </Dugme>
+            ) : (
+              <Dugme href="#mufredat">
+                Müfredatı gör
+                <Ok className="size-4" />
+              </Dugme>
+            )}
             {ilgiliTest && (
               <Dugme href={`/testler/${ilgiliTest.slug}/`} gorunum="ikincil">
                 Önce seviyeni ölç
@@ -164,7 +189,7 @@ export default async function YolSayfasi({ params }: { params: Promise<{ slug: s
       </Bolum>
 
       {/* --- Bölümler --- */}
-      <Bolum zemin="derin">
+      <Bolum kimlik="mufredat" zemin="derin">
         <BolumBasligi
           numara="02"
           etiket="MÜFREDAT"
