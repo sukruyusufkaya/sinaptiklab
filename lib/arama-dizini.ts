@@ -101,7 +101,7 @@ export const siteAramaDizini = cache(async (): Promise<AramaKaydi[]> => {
     });
 
   /*
-   * SÖZLÜK TERİMLERİ — 324 kayıt, dizinin en büyük tek grubu.
+   * SÖZLÜK TERİMLERİ — dizinin en büyük tek grubu (yayındaki tüm terimler).
    *
    * Terimin kendi sayfası yok; Atlas girdisi olan `/atlas/<slug>/` adresine,
    * olmayan ise sözlükteki çapasına (`/sozluk/#terim-<slug>`) gider. Çapaya
@@ -110,7 +110,9 @@ export const siteAramaDizini = cache(async (): Promise<AramaKaydi[]> => {
    *
    * ANAHTARLARA İNGİLİZCE KARŞILIK VE KISALTMA da girer: bu alanın literatürü
    * İngilizce üretildiği için okur çoğu zaman "embedding" ya da "RAG" diye
-   * arar, "gömme" diye değil.
+   * arar, "gömme" diye değil. İngilizce adın SLUG PARÇALARI da eklenir:
+   * "Agent2Agent Protocol" diye kayıtlı bir terimi "agent to agent" diye
+   * arayan okur, tam dize eşleşmesine takılmasın.
    */
   for (const t of TERIMLER)
     dizin.push({
@@ -118,7 +120,13 @@ export const siteAramaDizini = cache(async (): Promise<AramaKaydi[]> => {
       ad: t.terim,
       aciklama: t.tanim,
       yol: t.atlasSlug ? `/atlas/${t.atlasSlug}/` : `/sozluk/#terim-${t.slug}`,
-      anahtarlar: anahtarla(...slugParcalari(t.slug), t.ingilizce, t.kisaltma, t.kategori),
+      anahtarlar: anahtarla(
+        ...slugParcalari(t.slug),
+        t.ingilizce,
+        ...(t.ingilizce ? t.ingilizce.toLowerCase().split(/[^a-z0-9]+/i) : []),
+        t.kisaltma,
+        t.kategori,
+      ),
     });
 
   for (const k of KONULAR)

@@ -3,3 +3,8 @@ node_modules
 package-lock.json
 *.md
 _*
+
+# `npm run mongo:sema` tarafından üretilir, elle düzenlenmez (CLAUDE.md kural 9).
+# Prettier dizileri tek satıra topluyor, üreteci ise açıyor: ikisi birbirinin
+# çıktısını bozup her `format` + `mongo:sema` çiftinde sahte bir diff üretiyordu.
+scripts/mongo-semalari.json

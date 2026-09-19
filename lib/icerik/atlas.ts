@@ -80,6 +80,11 @@ export async function kategoriAdedi(kategoriSlug: string): Promise<number> {
   return (await kategoriyeGoreAtlas(kategoriSlug)).length;
 }
 
+/** Terimin alandaki yerleşiklik durumu — tanımın doğruluğu değil, geçerliliği. */
+export type TerimAsamasi = 'yerlesik' | 'yeni' | 'kullanimdan-kalkti';
+
+export type TerimKaynagi = { ad: string; adres: string };
+
 export type SozlukGirdisi = {
   slug: string;
   terim: string;
@@ -90,6 +95,11 @@ export type SozlukGirdisi = {
   kategori: string;
   /** Ayrıntılı Atlas girdisi varsa slug'ı; yoksa terimin detay sayfası yoktur. */
   atlasSlug?: string;
+  /** Aynı sözlükteki ilgili terimlerin slug'ları — çözülmüş hâliyle. */
+  ilgili: { slug: string; terim: string }[];
+  asama: TerimAsamasi;
+  asamaNotu?: string;
+  kaynak?: TerimKaynagi;
 };
 
 type TerimBelgesi = {
@@ -100,6 +110,10 @@ type TerimBelgesi = {
   tanim: string;
   kategoriSlug?: string;
   atlasSlug?: string;
+  ilgili?: string[];
+  asama?: TerimAsamasi;
+  asamaNotu?: string;
+  kaynak?: TerimKaynagi;
 };
 
 /**
@@ -107,7 +121,7 @@ type TerimBelgesi = {
  *
  * ÖNCEDEN `atlas` KOLEKSİYONUNU OKUYORDU ve 35 terim gösteriyordu. Sözlüğü
  * büyütmenin tek yolu yeni Atlas girdisi açmaktı; bir Atlas girdisi ise gövde,
- * SSS, kaynak ve sürüm geçmişi taşıyan ağır bir editoryal üründür. Üç yüz
+ * SSS, kaynak ve sürüm geçmişi taşıyan ağır bir editoryal üründür. Beş yüz
  * terimi o ağırlıkla üretmek ne gerçekçi ne de doğruydu: "şaşkınlık" terimine
  * tek satırlık tanım yeter, "RAG"e kendi sayfası gerekir.
  *
@@ -118,9 +132,18 @@ type TerimBelgesi = {
  *
  * Kategori adı `lib/taksonomi.ts` üzerinden çözülür; kayıtta yalnızca slug
  * durur, görünen ad tek yerden gelir.
+ *
+ * İLGİLİ TERİMLER BURADA ÇÖZÜLÜR, SAYFADA DEĞİL. Kayıtta yalnızca slug durur;
+ * sayfanın onları göstermek için ikinci bir sorgu atması ya da kendi eşlemesini
+ * kurması gerekirdi. Kopuk bir slug (silinmiş ya da taslağa alınmış terim)
+ * SESSİZCE DÜŞER: sözlükte tıklandığında hiçbir yere gitmeyen bir çapa
+ * bırakmaktansa bağlantıyı hiç basmamak doğrudur. Kopukluğun kendisi
+ * `npm run icerik:denetim` ile raporlanır.
  */
 export async function sozluk(): Promise<SozlukGirdisi[]> {
   const belgeler = await yayindakiler<TerimBelgesi>(KOLEKSIYONLAR.terimler);
+  const adlar = new Map(belgeler.map((b) => [b.slug, b.terim]));
+
   return belgeler
     .map((belge) => ({
       slug: belge.slug,
@@ -133,6 +156,27 @@ export async function sozluk(): Promise<SozlukGirdisi[]> {
         ? (ATLAS_KATEGORI_ADI.get(belge.kategoriSlug) ?? belge.kategoriSlug)
         : 'Diğer',
       atlasSlug: belge.atlasSlug,
+      ilgili: (belge.ilgili ?? []).flatMap((slug) => {
+        const terim = adlar.get(slug);
+        return terim ? [{ slug, terim }] : [];
+      }),
+      asama: belge.asama ?? ('yerlesik' as const),
+      asamaNotu: belge.asamaNotu,
+      kaynak: belge.kaynak,
     }))
     .sort((a, b) => a.terim.localeCompare(b.terim, 'tr'));
+}
+
+/**
+ * Bir Atlas kategorisinin sözlük terimleri.
+ *
+ * `/atlas/kategori/<slug>/` sayfaları için: o sayfalar 35 Atlas girdisini 14
+ * kategoriye bölüştüğü için kategori başına ortalama iki karta düşüyordu —
+ * arama motorunun "ince sayfa" saydığı şeyin tarifi. Aynı kategorinin sözlük
+ * terimleri o boşluğu GERÇEK içerikle doldurur; sözlüğün tamamını ikinci kez
+ * yayımlamaz, yalnızca ilgili dilimi gösterir.
+ */
+export async function kategoriyeGoreSozluk(kategoriSlug: string): Promise<SozlukGirdisi[]> {
+  if (!ATLAS_KATEGORI_ADI.has(kategoriSlug)) return [];
+  return (await sozluk()).filter((t) => t.kategoriSlug === kategoriSlug);
 }

@@ -167,9 +167,8 @@ export default async function AnalizSayfasi({ params }: { params: Promise<{ slug
               {analiz.yanlislanmaKosulu}
             </p>
             <p className="mt-4 border-t border-uyari/20 pt-3.5 text-xs leading-relaxed text-metin-soluk">
-              Her analiz kendi yanlışlanma koşulunu yazar. Bir tezin hangi gözlemle
-              çürütüleceğini söyleyemiyorsak ortada tez değil temenni vardır; o metin
-              yayımlanmaz.
+              Her analiz kendi yanlışlanma koşulunu yazar. Bir tezin hangi gözlemle çürütüleceğini
+              söyleyemiyorsak ortada tez değil temenni vardır; o metin yayımlanmaz.
             </p>
           </div>
         )}

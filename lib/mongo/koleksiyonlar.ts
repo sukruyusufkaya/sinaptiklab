@@ -1241,7 +1241,7 @@ export const TANIMLAR: KoleksiyonTanimi[] = [
      * `/sozluk/` eskiden doğrudan `atlas` koleksiyonunu okuyordu ve 35 terim
      * gösteriyordu. Sözlüğü büyütmenin tek yolu Atlas girdisi açmaktı; bir
      * Atlas girdisi ise gövde, SSS, kaynak listesi ve sürüm geçmişi taşıyan
-     * ağır bir editoryal üründür. Üç yüz terimi o ağırlıkla üretmek ne
+     * ağır bir editoryal üründür. Beş yüz terimi o ağırlıkla üretmek ne
      * gerçekçi ne de doğru: "perplexity"nin tek satırlık tanımı yeterlidir,
      * "RAG"in ise kendi sayfası gerekir.
      *
@@ -1253,6 +1253,20 @@ export const TANIMLAR: KoleksiyonTanimi[] = [
      * TERİMİN KENDİ SAYFASI YOKTUR ve olmayacak: tek satırlık bir tanım için
      * ayrı bir adres açmak, arama sonuçlarını ince sayfalarla doldurur
      * (MASTER-PLAN §51). Derinlik isteyen terim Atlas'a taşınır.
+     *
+     * TERİMİN YAŞAM DÖNGÜSÜ AYRI BİR ALAN (`asama`).
+     *
+     * Bir sözlük yalnızca "bu nedir?" sorusunu cevaplarsa, hızlı değişen bir
+     * alanda yanıltıcı olur: okur MCP'nin `sampling` özelliğini sözlükte görüp
+     * onun hâlâ önerilen yol olduğunu sanır. `asama`, ikinci soruyu cevaplar:
+     * "bu hâlâ kullanılıyor mu?" Üç değer vardır — `yerlesik` (alanda
+     * oturmuş), `yeni` (yerleşmekte olan, tanımı değişebilir),
+     * `kullanimdan-kalkti` (resmen geçersiz ya da terk edilmiş). Alan boşsa
+     * terim yerleşik sayılır; 324 eski kaydın hiçbirine dokunulmadı.
+     *
+     * `asamaNotu` bu iddianın DAYANAĞIDIR: "MCP 2026-07-28 ile kullanımdan
+     * kaldırıldı" gibi. Dayanağı olmayan bir "kullanımdan kalktı" etiketi,
+     * MASTER-PLAN §59'un yasakladığı dayanaksız iddianın ta kendisidir.
      */
     sema: sema(['slug', 'terim', 'tanim', 'durum'], {
       slug: SLUG,
@@ -1268,6 +1282,23 @@ export const TANIMLAR: KoleksiyonTanimi[] = [
       atlasSlug: SLUG,
       /** Aynı koleksiyondaki ilgili terimlerin slug'ları. */
       ilgili: { bsonType: 'array', items: SLUG },
+      /** Terimin yerleşiklik durumu; boşsa `yerlesik` sayılır. */
+      asama: {
+        bsonType: 'string',
+        enum: ['yerlesik', 'yeni', 'kullanimdan-kalkti'],
+        description: 'Terimin alandaki yaşam döngüsü — tanımın kendisi değil.',
+      },
+      /** `asama` iddiasının dayanağı: hangi sürüm, hangi tarih, hangi karar. */
+      asamaNotu: { bsonType: 'string', maxLength: 240 },
+      /** Terimi tanımlayan birincil kaynak (spesifikasyon, mevzuat, makale). */
+      kaynak: {
+        bsonType: 'object',
+        required: ['ad', 'adres'],
+        properties: {
+          ad: { bsonType: 'string' },
+          adres: { bsonType: 'string', pattern: '^https://' },
+        },
+      },
       durum: DURUM,
       ...ZAMAN_DAMGALARI,
     }),
@@ -1275,6 +1306,7 @@ export const TANIMLAR: KoleksiyonTanimi[] = [
       { anahtar: { slug: 1 }, secenekler: { unique: true, name: 'slug_tekil' } },
       { anahtar: { kategoriSlug: 1 }, secenekler: { name: 'kategori' } },
       { anahtar: { terim: 1 }, secenekler: { name: 'terim' } },
+      { anahtar: { asama: 1 }, secenekler: { name: 'asama' } },
     ],
   },
 

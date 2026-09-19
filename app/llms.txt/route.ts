@@ -1,5 +1,6 @@
 import { SITE, KATMANLAR } from '@/lib/site';
-import { atlasListesi } from '@/lib/icerik/atlas';
+import { atlasListesi, sozluk } from '@/lib/icerik/atlas';
+import { ATLAS_KATEGORILERI } from '@/lib/taksonomi';
 import { analizler, tumGundem } from '@/lib/icerik/gundem';
 import { arastirmaListesi } from '@/lib/icerik/arastirma';
 import { dersler, ogrenmeYollari, testler } from '@/lib/icerik/ogrenme';
@@ -42,6 +43,7 @@ export async function GET() {
     MODELLER,
     SIRKETLER,
     ARACLAR,
+    TERIMLER,
   ] = await Promise.all([
     atlasListesi(),
     konuListesi(),
@@ -55,6 +57,7 @@ export async function GET() {
     modelListesi(),
     sirketListesi(),
     aracListesi(),
+    sozluk(),
   ]);
 
   const bolum = (baslik: string, satirlar: readonly string[]) =>
@@ -80,6 +83,7 @@ export async function GET() {
     '## Yayında olan içerik (canlı sayım)',
     '',
     `- Atlas kavramı: ${ATLAS.length}`,
+    `- Sözlük terimi: ${TERIMLER.length}`,
     `- Konu: ${KONULAR.length}`,
     `- Haber ve analiz: ${GUNDEM.length} + ${ANALIZLER.length}`,
     `- Rehber: ${REHBERLER.length}`,
@@ -98,6 +102,42 @@ export async function GET() {
     ...bolum(
       'Atlas — kavram referansı',
       liste(ATLAS, (g) => `- [${g.ad}](${SITE.url}/atlas/${g.slug}/): ${g.kisaTanim}`),
+    ),
+    /*
+     * SÖZLÜK — 538 terimin tamamı BURAYA YAZILMAZ. llms.txt bir içerik dökümü
+     * değil bir haritadır; terimlerin tam listesi zaten `/sozluk/` sayfasında
+     * `DefinedTermSet` şemasıyla işaretli duruyor. Burada verilen şey yapı:
+     * kanonik adres, terim çapasının biçimi ve kategori dilimlerinin adresleri.
+     *
+     * AŞAMA İŞARETLİ TERİMLER İSTİSNADIR ve tam listelenir: en hızlı eskiyen,
+     * bir modelin eğitim verisinde büyük olasılıkla YANLIŞ hâliyle bulunan
+     * dilim burasıdır. "MCP sampling hâlâ kullanılıyor mu?" sorusunun doğru
+     * cevabı bu dosyada doğrudan bulunur.
+     */
+    ...bolum('Sözlük — terim referansı', [
+      `Kanonik adres: ${SITE.url}/sozluk/ (${TERIMLER.length} terim, tek sayfa, DefinedTermSet şemalı)`,
+      `Terim çapası: ${SITE.url}/sozluk/#terim-<slug>`,
+      'Terimlerin ayrı sayfası yoktur; derinlik gerektiren terim /atlas/<slug>/ girdisine taşınır.',
+      '',
+      'Kategori dilimleri (her biri o alanın tüm terimlerini ve Atlas girdilerini taşır):',
+      ...ATLAS_KATEGORILERI.map((k) => {
+        const adet = TERIMLER.filter((t) => t.kategoriSlug === k.slug).length;
+        return `- [${k.ad}](${SITE.url}/atlas/kategori/${k.slug}/): ${adet} terim`;
+      }),
+    ]),
+    ...bolum(
+      'Sözlük — yerleşmekte olan terimler',
+      TERIMLER.filter((t) => t.asama === 'yeni').map(
+        (t) =>
+          `- **${t.terim}** (${t.ingilizce ?? t.terim}) — ${t.tanim}${t.asamaNotu ? ` DURUM: ${t.asamaNotu}` : ''}`,
+      ),
+    ),
+    ...bolum(
+      'Sözlük — kullanımdan kalkan terimler',
+      TERIMLER.filter((t) => t.asama === 'kullanimdan-kalkti').map(
+        (t) =>
+          `- **${t.terim}** (${t.ingilizce ?? t.terim}) — ${t.tanim}${t.asamaNotu ? ` DURUM: ${t.asamaNotu}` : ''}`,
+      ),
     ),
     ...bolum(
       'Konular',

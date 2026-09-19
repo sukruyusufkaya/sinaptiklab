@@ -85,6 +85,13 @@ const BAGLAR = [
   { kaynak: 'konular', alan: 'ustKonuSlug', hedef: 'konular' },
   { kaynak: 'testler', alan: 'konuSlug', hedef: 'konular' },
   { kaynak: 'terimler', alan: 'atlasSlug', hedef: 'atlas' },
+  /*
+   * Sözlüğün KENDİ İÇİNDEKİ bağı. `ilgili`, terimleri birbirine bağlayan
+   * semantik ağdır (MASTER-PLAN §48); okuma katmanı kopuk bir slug'ı sessizce
+   * düşürdüğü için sitede hata GÖRÜNMEZ — bağ bir gün taslağa alınırsa
+   * sözlükteki geçiş yolu sessizce kaybolur. Denetim o sessizliği bozar.
+   */
+  { kaynak: 'terimler', alan: 'ilgili', hedef: 'terimler', dizi: true },
   { kaynak: 'icerikler', alan: 'konuSlug', hedef: 'konular' },
   { kaynak: 'icerikler', alan: 'yazarSlug', hedef: 'yazarlar' },
   { kaynak: 'arastirma', alan: 'yazarSlug', hedef: 'yazarlar' },

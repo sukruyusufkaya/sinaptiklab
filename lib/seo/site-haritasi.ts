@@ -252,10 +252,16 @@ async function atlasParcasi(): Promise<HaritaGirdisi[]> {
       siklik: 'monthly' as const,
       oncelik: 0.9,
     })),
+    /*
+     * Kategori sayfalarının önceliği 0.6'dan yükseltildi: bu sayfalar artık
+     * yalnızca birkaç Atlas kartı değil, o alanın TÜM sözlük terimlerini
+     * taşıyor. İnce sayfa olmaktan çıktılar ve taranmaya kavram sayfaları
+     * kadar değerler.
+     */
     ...ATLAS_KATEGORILERI.map((k) => ({
       yol: `/atlas/kategori/${k.slug}/`,
       siklik: 'weekly' as const,
-      oncelik: 0.6,
+      oncelik: 0.75,
     })),
     ...KONULAR.map((konu) => ({
       yol: `/konu/${konu.slug}/`,

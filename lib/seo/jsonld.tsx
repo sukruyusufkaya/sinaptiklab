@@ -435,9 +435,22 @@ export function MeslekSemasi({
  * makineye açıkça söyler; tanım paragrafını çevresindeki metinden ayırt etme
  * işini tahmine bırakmaz.
  *
- * `identifier` terimin sayfa içi çapasıdır (`#terim-<slug>`): terimlerin ayrı
- * sayfası olmadığı için `url` yerine bu kullanılır. Ayrı sayfa açmak, tek
- * satırlık tanımlar için yüzlerce ince adres üretmek olurdu (§51).
+ * `@id` terimin sayfa içi çapasıdır (`#terim-<slug>`): terimlerin ayrı sayfası
+ * olmadığı için kanonik kimlik budur. Ayrı sayfa açmak, tek satırlık tanımlar
+ * için yüzlerce ince adres üretmek olurdu (§51). `url` aynı değeri taşır
+ * çünkü çapalı adres tarayıcıda doğru yere gider.
+ *
+ * `termCode` terimin kalıcı slug'ıdır: görünen ad düzeltilse bile kimlik
+ * sabit kalır ve iki yayın arasında aynı terim tanınabilir.
+ *
+ * `sameAs` yalnızca BİRİNCİL kaynağı olan terimlerde basılır — bir
+ * spesifikasyon, mevzuat metni ya da resmî dokümantasyon. Bu, tanımın
+ * dayanağını makineye de gösterir (MASTER-PLAN §59).
+ *
+ * AYRINTI BİLEREK KISILDI. Sözlük beş yüzü aşkın terim taşıyor; her terime
+ * `identifier` (`@id` ile birebir aynı) ve `inLanguage` (kümeden miras alınan)
+ * basmak, tek bir sayfaya yaklaşık 90 KB ham veri ekliyordu ve hiçbir tüketiciye
+ * yeni bilgi vermiyordu. Alan sayısı burada bedava değil.
  */
 export function TerimKumesiSemasi({
   ad,
@@ -448,26 +461,40 @@ export function TerimKumesiSemasi({
   ad: string;
   aciklama: string;
   yol: string;
-  terimler: { ad: string; tanim: string; kimlik: string; esAd?: string }[];
+  terimler: {
+    ad: string;
+    tanim: string;
+    kimlik: string;
+    esAd?: string;
+    kaynakAdresi?: string;
+  }[];
 }) {
+  const kumeKimligi = `${SITE.url}${yol}#sozluk`;
   return (
     <Betik
       veri={{
         '@context': 'https://schema.org',
         '@type': 'DefinedTermSet',
-        '@id': `${SITE.url}${yol}#sozluk`,
+        '@id': kumeKimligi,
         name: ad,
         description: aciklama,
         url: `${SITE.url}${yol}`,
         inLanguage: SITE.dil,
-        hasDefinedTerm: terimler.map((terim) => ({
-          '@type': 'DefinedTerm',
-          name: terim.ad,
-          description: terim.tanim,
-          identifier: `${SITE.url}${yol}#terim-${terim.kimlik}`,
-          ...(terim.esAd ? { alternateName: terim.esAd } : {}),
-          inDefinedTermSet: { '@id': `${SITE.url}${yol}#sozluk` },
-        })),
+        publisher: { '@id': `${SITE.url}/#organizasyon` },
+        hasDefinedTerm: terimler.map((terim) => {
+          const adres = `${SITE.url}${yol}#terim-${terim.kimlik}`;
+          return {
+            '@type': 'DefinedTerm',
+            '@id': adres,
+            name: terim.ad,
+            description: terim.tanim,
+            url: adres,
+            termCode: terim.kimlik,
+            ...(terim.esAd ? { alternateName: terim.esAd } : {}),
+            ...(terim.kaynakAdresi ? { sameAs: terim.kaynakAdresi } : {}),
+            inDefinedTermSet: { '@id': kumeKimligi },
+          };
+        }),
       }}
     />
   );

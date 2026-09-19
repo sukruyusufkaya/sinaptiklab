@@ -94,7 +94,7 @@ Yayında olan içerik (sayılar Atlas'tan, `npm run icerik:denetim` ile doğrula
 | `ogrenme_yollari` | 20 | 11 rol |
 | `meslekler` | 19 | 6 rol ailesi, kıdem kırılımlı |
 | `atlas` | 35 | gövde, SSS, kaynak, sürüm geçmişi; beceri ağının düğümleri |
-| `terimler` | 324 | sözlük; 35'i Atlas girdisine bağlı |
+| `terimler` | 538 | sözlük; 35'i Atlas girdisine bağlı, 12'si aşama işaretli |
 | `uzmanlar` | 23 | 22 tanımlı açık koltuk |
 | `dersler` | 8 | |
 
@@ -113,7 +113,7 @@ gördüğü için yayından kaldırmakla aynı sonucu verir, ama geri dönülebi
 `/sozluk/` artık `atlas` değil `terimler` koleksiyonundan okuyor. Gerekçe:
 sözlüğü büyütmenin tek yolu Atlas girdisi açmaktı ve bir Atlas girdisi
 gövde, SSS, kaynak ve sürüm geçmişi taşıyan ağır bir editoryal üründür.
-Üç yüz terimi o ağırlıkla üretmek doğru değil: "şaşkınlık"a tek satır
+Beş yüz terimi o ağırlıkla üretmek doğru değil: "şaşkınlık"a tek satır
 yeter, "RAG"e kendi sayfası gerekir.
 
 İki katman **bilinçli olarak örtüşür**: Atlas girdisi olan terim
@@ -122,6 +122,32 @@ sözlük tek ve tam bir liste olur, aynı terim iki kez listelenmez.
 **Terimin kendi sayfası yoktur** — tek satırlık tanım için ayrı adres
 açmak yüzlerce ince sayfa üretir (§51); derinlik isteyen terim Atlas'a
 taşınır.
+
+### Terimin aşaması (`asama`)
+
+Sözlük "bu nedir?" sorusunun yanında **"bu hâlâ kullanılıyor mu?"** sorusunu
+da cevaplar. `asama` alanı üç değer alır — `yerlesik` (varsayılan, alan boş
+olabilir), `yeni` (yerleşmekte, tanımı değişebilir), `kullanimdan-kalkti`.
+Yerleşik olmayan her terim `asamaNotu` taşımak **zorundadır**: dayanaksız
+"kullanımdan kalktı" etiketi §59'un yasakladığı iddiadır. Kural tohumlama
+betiğinde denetlenir (şema koşullu zorunluluk ifade edemiyor).
+
+Kullanımdan kalkan terim **silinmez**: okur onunla eski dokümantasyonda
+karşılaşmaya devam ediyor. Gerekçesi ve yerine geleni gösterir.
+Ayrıntı: [docs/ADR/0003-terim-asamalari.md](docs/ADR/0003-terim-asamalari.md).
+
+`ilgili` alanı terimleri birbirine bağlayan semantik ağdır (§48); okuma
+katmanı kopuk slug'ı sessizce düşürür, `npm run icerik:denetim` bildirir.
+`kaynak: { ad, adres }` tanımın dayandığı birincil kaynağı taşır ve
+`DefinedTerm.sameAs` olarak basılır.
+
+### Kategori sayfaları sözlüğün dilimidir
+
+`/atlas/kategori/<slug>/` yalnızca Atlas kartlarını listelediğinde kategori
+başına ortalama iki karta düşüyordu — ince sayfa tarifi. Sayfa artık aynı
+kategorinin **tüm sözlük terimlerini** de taşıyor ve kendi `DefinedTermSet`
+şemasını basıyor. `/sozluk/` kopyası değil: biri alfabetik tek liste, diğeri
+tek alanın konusuyla birlikte verilmiş hâli.
 
 ### Beceri ağı
 

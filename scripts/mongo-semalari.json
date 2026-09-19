@@ -4712,6 +4712,35 @@
               "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
             }
           },
+          "asama": {
+            "bsonType": "string",
+            "enum": [
+              "yerlesik",
+              "yeni",
+              "kullanimdan-kalkti"
+            ],
+            "description": "Terimin alandaki yaşam döngüsü — tanımın kendisi değil."
+          },
+          "asamaNotu": {
+            "bsonType": "string",
+            "maxLength": 240
+          },
+          "kaynak": {
+            "bsonType": "object",
+            "required": [
+              "ad",
+              "adres"
+            ],
+            "properties": {
+              "ad": {
+                "bsonType": "string"
+              },
+              "adres": {
+                "bsonType": "string",
+                "pattern": "^https://"
+              }
+            }
+          },
           "durum": {
             "bsonType": "string",
             "enum": [
@@ -4755,6 +4784,14 @@
         },
         "secenekler": {
           "name": "terim"
+        }
+      },
+      {
+        "anahtar": {
+          "asama": 1
+        },
+        "secenekler": {
+          "name": "asama"
         }
       }
     ]

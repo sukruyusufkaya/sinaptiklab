@@ -340,6 +340,73 @@
   max-width: var(--kap-dar);
 }
 
+/* --- SÖZLÜK SATIRI -------------------------------------------------------- */
+
+/*
+ * Sözlük beş yüzü aşkın terim listeliyor ve her satır aynı altı yardımcı sınıf
+ * dizisini tekrar ediyordu. Utility sınıfları burada BEDAVA DEĞİL: her satır
+ * hem HTML'e hem React'in sunucu yükü (flight payload) içine bir kez daha
+ * yazılıyor, yani maliyet iki katı. Altı uzun dizeyi altı kısa ada indirmek
+ * sayfadan yüz kilobayttan fazla ham veri düşürüyor.
+ *
+ * Kural bozulmuyor: renk ve ölçü değerleri yine tokenlardan geliyor, yalnızca
+ * tekrar eden bileşim tek bir ada bağlanıyor.
+ */
+
+/* Terimin tanım metni */
+@utility sozluk-tanim {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--metin-ikincil);
+}
+
+/* Terimin görünen adı */
+@utility sozluk-terim {
+  scroll-margin-top: 7rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* İngilizce karşılık */
+@utility sozluk-ingilizce {
+  margin-top: 0.25rem;
+  display: block;
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: var(--metin-soluk);
+}
+
+/* Aşama gerekçesi — tanımdan görsel olarak ayrı durur */
+@utility sozluk-not {
+  margin-top: 0.5rem;
+  display: block;
+  border-left: 2px solid var(--kenar-guclu);
+  padding-left: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--metin-soluk);
+}
+
+/* İlgili terim şeridi */
+@utility sozluk-ilgili {
+  margin-top: 0.625rem;
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--metin-soluk);
+}
+
+/* Satırın alt künyesi: kategori, Atlas bağlantısı, kaynak */
+@utility sozluk-kunye {
+  margin-top: 0.375rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  color: var(--metin-soluk);
+}
+
 /* Ekran okuyucuya özel */
 @utility yalniz-ekran-okuyucu {
   position: absolute;

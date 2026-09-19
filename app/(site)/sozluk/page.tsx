@@ -4,19 +4,13 @@ import { SayfaBasligi } from '@/components/arayuz/SayfaBasligi';
 import { Bolum } from '@/components/arayuz/Bolum';
 import { BolumBasligi } from '@/components/arayuz/BolumBasligi';
 import { Dugme } from '@/components/arayuz/Dugme';
-import { Atlas, Ok } from '@/components/arayuz/Ikonlar';
+import { Rozet } from '@/components/arayuz/Rozet';
+import { Atlas, Ok, OkSagUst } from '@/components/arayuz/Ikonlar';
 import { SSSBolumu } from '@/components/icerik/IcerikKenari';
 import { SSSSemasi, TerimKumesiSemasi } from '@/lib/seo/jsonld';
 import { sozluk, type SozlukGirdisi } from '@/lib/icerik/atlas';
 import { ATLAS_KATEGORILERI } from '@/lib/taksonomi';
 import { kucult } from '@/lib/metin';
-
-export const metadata: Metadata = {
-  title: 'Yapay Zekâ Sözlüğü',
-  description:
-    'Üç yüzden fazla yapay zekâ teriminin tek satırlık, alıntılanabilir Türkçe tanımı. İngilizce karşılığı, kategorisi ve varsa ayrıntılı Atlas girdisiyle birlikte.',
-  alternates: { canonical: '/sozluk/' },
-};
 
 /**
  * Yapay zekâ sözlüğü.
@@ -30,6 +24,13 @@ export const metadata: Metadata = {
  * TERİMİN KENDİ SAYFASI YOKTUR ve olmayacak: tek satırlık bir tanım için ayrı
  * bir adres açmak, arama sonuçlarını ince sayfalarla doldurur (MASTER-PLAN
  * §51). Derinlik isteyen terim Atlas'a taşınır — sözlük o zaman ona bağlanır.
+ *
+ * SAYFA İKİ SORUYU BİRDEN CEVAPLAR. "Bu nedir?" sorusunun cevabı tanımdır;
+ * "bu hâlâ kullanılıyor mu?" sorusunun cevabı `asama` alanıdır. Hızlı değişen
+ * bir alanda ikincisini atlayan sözlük, okuru kullanımdan kalkmış bir
+ * özelliğin peşine yollar — MCP'nin `sampling` özelliği sözlükte yalın bir
+ * tanım olarak dursaydı tam olarak bu olurdu. Aşaması yerleşik olmayan her
+ * terim gerekçesini (`asamaNotu`) taşır; dayanaksız etiket basılmaz (§59).
  *
  * HARF GRUPLAMASINDA TÜRKÇE TUZAĞI: baş harfi `toLocaleUpperCase('tr-TR')` ile
  * almak "İstem" ile "Istem"i ayrı gruplara düşürür ve "I" harfi Türkçe
@@ -109,6 +110,50 @@ function basHarf(terim: string): string {
   return BUYUK_HARF[ilk] ?? ilk.toUpperCase();
 }
 
+/**
+ * Aşama etiketleri.
+ *
+ * `yerlesik` görünmez: sözlükteki terimlerin ezici çoğunluğu yerleşiktir ve
+ * hepsine rozet basmak, gerçekten bilgi taşıyan iki rozeti gürültüye boğardı.
+ */
+const ASAMA_ETIKETI = {
+  yeni: { ad: 'Yerleşmekte', ton: 'sinyal' as const },
+  'kullanimdan-kalkti': { ad: 'Kullanımdan kalktı', ton: 'uyari' as const },
+};
+
+/**
+ * Sayfanın alıntılanabilir çekirdeği (MASTER-PLAN §56 — answer-first).
+ *
+ * Bir dil modeli bu sayfayı okuduğunda "Sinaptik Lab sözlüğü nedir?" sorusuna
+ * doğrudan bu paragrafı kullanabilir. Sayısı canlı sorgudan gelir; elle
+ * yazılmış "500+ terim" ifadesi bir gün gerçekle çelişirdi (§59).
+ */
+function kisaCevap(toplam: number, kategori: number): string {
+  return `Sinaptik Lab yapay zekâ sözlüğü, ${toplam} terimin Türkçe ve tek satırlık tanımını tek sayfada toplar. Her girdi terimin İngilizce karşılığını, ${kategori} alan kategorisinden birini ve alanda yerleşik mi yoksa kullanımdan kalkmış mı olduğunu gösterir; ayrıntı gerektiren terimler AI Atlas girdisine bağlanır.`;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const TERIMLER = await sozluk();
+  const kategoriSayisi = new Set(TERIMLER.map((t) => t.kategoriSlug).filter(Boolean)).size;
+
+  /*
+   * BAŞLIK VE AÇIKLAMA CANLI SAYIYLA ÜRETİLİR. Sabit "üç yüzden fazla" metni
+   * sözlük 538 terime çıktığında yanlış olmuştu; bir daha olmasın diye sayı
+   * tek bir yerden, verinin kendisinden geliyor.
+   */
+  return {
+    title: `Yapay Zekâ Sözlüğü — ${TERIMLER.length} terim`,
+    description: kisaCevap(TERIMLER.length, kategoriSayisi),
+    alternates: { canonical: '/sozluk/' },
+    openGraph: {
+      title: `Yapay zekâ sözlüğü — ${TERIMLER.length} Türkçe terim`,
+      description: kisaCevap(TERIMLER.length, kategoriSayisi),
+      url: '/sozluk/',
+      type: 'website',
+    },
+  };
+}
+
 const SORULAR = [
   {
     soru: 'Sözlük ile AI Atlas arasındaki fark nedir?',
@@ -129,6 +174,26 @@ const SORULAR = [
     soru: 'Türkçe karşılıklar nasıl seçiliyor?',
     cevap:
       'Ölçüt yaygın kullanım. Alanda yerleşmiş bir Türkçe karşılık varsa o kullanılır; yoksa İngilizce biçim korunur ve açıklaması Türkçe verilir. Zorlama çeviri üretmek, terimi tanınmaz hâle getirip okurun literatürle bağını koparır.',
+  },
+  {
+    soru: '"Yerleşmekte" ve "kullanımdan kalktı" etiketleri ne anlama geliyor?',
+    cevap:
+      '"Yerleşmekte", terimin alanda kullanıldığını ama tanımının henüz oturmadığını gösterir — bugün yazılan tanım bir yıl sonra dar kalabilir. "Kullanımdan kalktı" ise terimin karşılığı olan özelliğin ya da yaklaşımın resmen geçersiz sayıldığını söyler; örneğin bir protokol sürümüyle bir özellik kaldırıldığında. Her iki etiket de gerekçesiyle birlikte verilir, gerekçesi olmayan etiket basılmaz.',
+  },
+  {
+    soru: 'Kullanımdan kalkmış terimler neden siliniyor değil?',
+    cevap:
+      'Çünkü okur onlarla karşılaşmaya devam ediyor: eski dokümantasyonda, mevcut kod tabanında, bir yıl önce yazılmış blog yazısında. Terimi silmek okuru cevapsız bırakır. Kalması ve "artık kullanılmıyor, yerine şu geldi" demesi, hem soruyu cevaplar hem de doğru yöne çevirir.',
+  },
+  {
+    soru: 'Terimler ne sıklıkta güncelleniyor?',
+    cevap:
+      'Sözlük sabit bir takvimle değil, alan değiştikçe güncelleniyor. Bir protokol sürümü bir özelliği kaldırdığında ya da yeni bir kavram literatürde tutunduğunda ilgili girdiler düzeltilir. İçerik değişmeden tarih güncellenmez; tazelik izlenimi vermek için yapılan güncelleme yanıltıcıdır.',
+  },
+  {
+    soru: 'Sözlükteki tanımlar alıntılanabilir mi?',
+    cevap:
+      'Evet. Tanımlar bu amaçla, kendi başına tam ve kaynak gerektirmeyen cümleler olarak yazılıyor. Alıntılarken kanonik adresin (sinaptiklab.com/sozluk/) ve terimin çapasının (#terim-<slug>) verilmesi yeterlidir.',
   },
 ];
 
@@ -151,17 +216,28 @@ export default async function SozlukSayfasi() {
     adet: TERIMLER.filter((t) => t.kategoriSlug === kategori.slug).length,
   })).filter((k) => k.adet > 0);
 
+  /*
+   * Aşaması yerleşik olmayan terimler ayrı bir bölümde öne çıkar. Bu bölüm
+   * sözlüğün en hızlı eskiyen ve en çok aranan dilimidir: okur "MCP'de ne
+   * değişti" ya da "A2A ne demek" diye geldiğinde 538 satırlık dizinde
+   * aramak zorunda kalmaz.
+   */
+  const yeniler = TERIMLER.filter((t) => t.asama === 'yeni');
+  const kalkanlar = TERIMLER.filter((t) => t.asama === 'kullanimdan-kalkti');
+  const kaynakli = TERIMLER.filter((t) => t.kaynak).length;
+
   return (
     <>
       <TerimKumesiSemasi
         ad="Sinaptik Lab yapay zekâ sözlüğü"
-        aciklama="Yapay zekâ terimlerinin Türkçe, tek satırlık ve alıntılanabilir tanımları."
+        aciklama={kisaCevap(TERIMLER.length, kategoriSayimi.length)}
         yol="/sozluk/"
         terimler={TERIMLER.map((t) => ({
           ad: t.terim,
           tanim: t.tanim,
           kimlik: t.slug,
           esAd: t.ingilizce,
+          kaynakAdresi: t.kaynak?.adres,
         }))}
       />
       <SSSSemasi sorular={SORULAR} />
@@ -170,12 +246,12 @@ export default async function SozlukSayfasi() {
         kirintilar={[{ ad: 'Sözlük', yol: '/sozluk/' }]}
         etiket="UNDERSTAND"
         baslik="Yapay zekâ sözlüğü"
-        ozet="Tek satırlık, alıntılanabilir tanımlar. Her terim Türkçe karşılığı, İngilizce biçimi ve kategorisiyle birlikte verilir; ayrıntı gerektiren terimler Atlas girdisine bağlanır."
+        ozet="Tek satırlık, alıntılanabilir tanımlar. Her terim Türkçe karşılığı, İngilizce biçimi ve kategorisiyle birlikte verilir; alanda yerleşmemiş ya da kullanımdan kalkmış olanlar gerekçesiyle işaretlenir."
         olcumler={[
           { deger: `${TERIMLER.length}`, etiket: 'Terim' },
-          { deger: `${siraliGruplar.length}`, etiket: 'Harf grubu' },
           { deger: `${kategoriSayimi.length}`, etiket: 'Kategori' },
           { deger: `${atlasBagli}`, etiket: 'Atlas girdisi olan' },
+          { deger: `${yeniler.length + kalkanlar.length}`, etiket: 'İşaretli' },
         ]}
         eylemler={
           <>
@@ -191,13 +267,32 @@ export default async function SozlukSayfasi() {
         desen="nokta"
       />
 
-      {/* --- Kategori dağılımı --- */}
+      {/* --- Answer-first çekirdek (§56) --- */}
       <Bolum>
+        <div className="olcu">
+          <p className="border-l-2 border-vurgu pl-5 text-lg leading-relaxed text-metin">
+            {kisaCevap(TERIMLER.length, kategoriSayimi.length)}
+          </p>
+          <p className="mt-5 text-[0.9375rem] leading-relaxed text-metin-ikincil">
+            Sözlük iki katmanlıdır. Tek satırlık tanım yeten terim burada kalır; nasıl çalıştığı,
+            hangi ödünleşimleri getirdiği ve nerede yanlış kullanıldığı anlatılması gereken terim{' '}
+            <Link href="/atlas/" className="text-vurgu-parlak hover:underline">
+              AI Atlas
+            </Link>{' '}
+            girdisine taşınır — şu an {atlasBagli} terim böyle. Terimlerin {kaynakli} tanesi
+            tanımının dayandığı birincil kaynağa (spesifikasyon, mevzuat metni ya da resmî
+            dokümantasyon) doğrudan bağlanır.
+          </p>
+        </div>
+      </Bolum>
+
+      {/* --- Kategori dağılımı --- */}
+      <Bolum zemin="derin">
         <BolumBasligi
           numara="01"
           etiket="KATEGORİLER"
           baslik="Terimler hangi alanlarda"
-          aciklama="Kategori adları Atlas taksonomisiyle aynı; aynı terim iki listede farklı ada sahip olmaz."
+          aciklama="Kategori adları Atlas taksonomisiyle aynı; aynı terim iki listede farklı ada sahip olmaz. Bir kategoriye tıklamak o alanın hem Atlas girdilerini hem tüm sözlük terimlerini getirir."
           baglantiYolu="/atlas/"
           baglantiMetni="Atlas kategorileri"
         />
@@ -224,9 +319,34 @@ export default async function SozlukSayfasi() {
         </ul>
       </Bolum>
 
+      {/* --- Aşama işaretli terimler (§60 — tazelik) --- */}
+      {(yeniler.length > 0 || kalkanlar.length > 0) && (
+        <Bolum>
+          <BolumBasligi
+            numara="02"
+            etiket="DEĞİŞEN TERİMLER"
+            baslik="Yerleşmekte olanlar ve kullanımdan kalkanlar"
+            aciklama="Bir sözlük yalnızca “bu nedir?” sorusunu cevaplarsa hızlı değişen bir alanda yanıltır. Aşağıdaki terimler ikinci soruyu da cevaplar: bu hâlâ kullanılıyor mu? Her işaret gerekçesiyle birlikte verilir."
+          />
+
+          <div className="grid gap-8 lg:grid-cols-2">
+            <AsamaListesi
+              baslik="Yerleşmekte olan terimler"
+              aciklama="Alanda kullanılıyor, tanımı henüz oturmadı. Burada verilen tanım bugünkü kullanımı yansıtır; değiştiğinde güncellenir."
+              kayitlar={yeniler}
+            />
+            <AsamaListesi
+              baslik="Kullanımdan kalkan terimler"
+              aciklama="Karşılığı olan özellik ya da yaklaşım resmen geçersiz sayıldı. Silinmiyorlar: okur onlarla eski dokümantasyonda karşılaşmaya devam ediyor."
+              kayitlar={kalkanlar}
+            />
+          </div>
+        </Bolum>
+      )}
+
       <Bolum zemin="derin">
         <BolumBasligi
-          numara="02"
+          numara="03"
           etiket="TÜM TERİMLER"
           baslik="Alfabetik dizin"
           aciklama="Mor işaretli terimlerin ayrıntılı Atlas girdisi yayında; diğerlerinde tanım nihai biçimidir."
@@ -273,23 +393,69 @@ export default async function SozlukSayfasi() {
   );
 }
 
+/** Aşama işaretli terimlerin kompakt listesi — çapaya götürür, tanımı tekrar etmez. */
+function AsamaListesi({
+  baslik,
+  aciklama,
+  kayitlar,
+}: {
+  baslik: string;
+  aciklama: string;
+  kayitlar: SozlukGirdisi[];
+}) {
+  if (kayitlar.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl border border-kenar bg-zemin p-6">
+      <h3 className="flex flex-wrap items-baseline gap-x-3 text-[0.9375rem] font-semibold tracking-tight text-metin">
+        {baslik}
+        <span className="etiket-mono text-metin-soluk tabular-nums">{kayitlar.length}</span>
+      </h3>
+      <p className="mt-2 text-[0.8125rem] leading-relaxed text-metin-ikincil">{aciklama}</p>
+
+      <ul className="mt-5 space-y-4">
+        {kayitlar.map((kayit) => (
+          <li key={kayit.slug} className="border-t border-kenar-soluk pt-4">
+            <a
+              href={`#terim-${kayit.slug}`}
+              className="text-[0.9375rem] font-medium text-metin transition-colors hover:text-vurgu-parlak"
+            >
+              {kayit.terim}
+            </a>
+            {kayit.ingilizce && kayit.ingilizce !== kayit.terim && (
+              <span className="ml-2 text-[0.8125rem] text-metin-soluk italic">
+                {kayit.ingilizce}
+              </span>
+            )}
+            {kayit.asamaNotu && (
+              <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-metin-ikincil">
+                {kayit.asamaNotu}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function TerimSatiri({ kayit }: { kayit: SozlukGirdisi }) {
   /*
    * ATLAS GİRDİSİ OLAN TERİM BAĞLANTILI, OLMAYAN DEĞİL.
    *
    * Eski sürüm her terimi `/atlas/<slug>/` adresine bağlıyordu; sözlük Atlas
    * koleksiyonundan okurken bu doğruydu. Terimler kendi koleksiyonuna
-   * taşındığında aynı bağlantı 324 terimin 289'unda 404 verirdi. Bağlantı
-   * yalnızca hedefi olan terimde basılır.
+   * taşındığında aynı bağlantı terimlerin ezici çoğunluğunda 404 verirdi.
+   * Bağlantı yalnızca hedefi olan terimde basılır.
    */
+  const asama = kayit.asama === 'yerlesik' ? undefined : ASAMA_ETIKETI[kayit.asama];
+
   const govde = (
     <>
       <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
         <span
           id={`terim-${kayit.slug}`}
-          className={`scroll-mt-28 text-[0.9375rem] font-semibold tracking-tight ${
-            kayit.atlasSlug ? 'text-vurgu-parlak' : 'text-metin'
-          }`}
+          className={`sozluk-terim ${kayit.atlasSlug ? 'text-vurgu-parlak' : 'text-metin'}`}
         >
           {kayit.terim}
         </span>
@@ -300,15 +466,18 @@ function TerimSatiri({ kayit }: { kayit: SozlukGirdisi }) {
         )}
       </span>
       {kayit.ingilizce && kayit.ingilizce !== kayit.terim && (
-        <span className="mt-1 block text-[0.8125rem] text-metin-soluk italic">
-          {kayit.ingilizce}
-        </span>
+        <span className="sozluk-ingilizce">{kayit.ingilizce}</span>
+      )}
+      {asama && (
+        <Rozet ton={asama.ton} className="mt-2">
+          {asama.ad}
+        </Rozet>
       )}
     </>
   );
 
   return (
-    <div className="group grid gap-2 py-4 md:grid-cols-[17rem_1fr] md:gap-6">
+    <div className="grid gap-2 py-4 md:grid-cols-[17rem_1fr] md:gap-6">
       <dt>
         {kayit.atlasSlug ? (
           <Link
@@ -321,13 +490,37 @@ function TerimSatiri({ kayit }: { kayit: SozlukGirdisi }) {
           govde
         )}
       </dt>
-      <dd className="text-[0.9375rem] leading-relaxed text-metin-ikincil">
+      <dd className="sozluk-tanim">
         {kayit.tanim}
-        <span className="etiket-mono mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-metin-soluk">
+
+        {/*
+         * AŞAMA NOTU TANIMDAN AYRI BİR SATIRDA. Tanıma karıştırılsaydı
+         * alıntılanan cümle "…sağlıyordu. MCP 2026-07-28 ile kaldırıldı."
+         * hâline gelir ve terimin tanımı ile o tanımın geçerlilik bilgisi
+         * birbirine karışırdı. Şema da yalnızca `tanim` alanını `description`
+         * olarak basar.
+         */}
+        {kayit.asamaNotu && <span className="sozluk-not">{kayit.asamaNotu}</span>}
+
+        {kayit.ilgili.length > 0 && (
+          <span className="sozluk-ilgili">
+            İlgili:{' '}
+            {kayit.ilgili.map((ilgi, sira) => (
+              <span key={ilgi.slug}>
+                {sira > 0 && <span aria-hidden="true"> · </span>}
+                <a href={`#terim-${ilgi.slug}`} className="hover:text-vurgu-parlak">
+                  {ilgi.terim}
+                </a>
+              </span>
+            ))}
+          </span>
+        )}
+
+        <span className="etiket-mono sozluk-kunye">
           {kayit.kategoriSlug ? (
             <Link
               href={`/atlas/kategori/${kayit.kategoriSlug}/`}
-              className="transition-colors hover:text-vurgu-parlak"
+              className="hover:text-vurgu-parlak"
             >
               {kayit.kategori}
             </Link>
@@ -337,11 +530,22 @@ function TerimSatiri({ kayit }: { kayit: SozlukGirdisi }) {
           {kayit.atlasSlug && (
             <Link
               href={`/atlas/${kayit.atlasSlug}/`}
-              className="inline-flex items-center gap-1.5 text-vurgu-sonuk transition-colors hover:text-vurgu-parlak"
+              className="inline-flex items-center gap-1.5 text-vurgu-sonuk hover:text-vurgu-parlak"
             >
               <Atlas className="size-3" />
               Atlas girdisi
             </Link>
+          )}
+          {kayit.kaynak && (
+            <a
+              href={kayit.kaynak.adres}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-vurgu-parlak"
+            >
+              {kayit.kaynak.ad}
+              <OkSagUst className="size-3" />
+            </a>
           )}
         </span>
       </dd>
