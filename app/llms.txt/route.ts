@@ -1,3 +1,4 @@
+import { koseYazilari } from '@/lib/icerik/kose';
 import { SITE, KATMANLAR } from '@/lib/site';
 import { atlasListesi, sozluk } from '@/lib/icerik/atlas';
 import { ATLAS_KATEGORILERI } from '@/lib/taksonomi';
@@ -44,6 +45,7 @@ export async function GET() {
     SIRKETLER,
     ARACLAR,
     TERIMLER,
+    KOSE,
   ] = await Promise.all([
     atlasListesi(),
     konuListesi(),
@@ -58,6 +60,7 @@ export async function GET() {
     sirketListesi(),
     aracListesi(),
     sozluk(),
+    koseYazilari(),
   ]);
 
   const bolum = (baslik: string, satirlar: readonly string[]) =>
@@ -86,6 +89,7 @@ export async function GET() {
     `- Sözlük terimi: ${TERIMLER.length}`,
     `- Konu: ${KONULAR.length}`,
     `- Haber ve analiz: ${GUNDEM.length} + ${ANALIZLER.length}`,
+    `- Köşe yazısı (imzalı görüş): ${KOSE.length}`,
     `- Rehber: ${REHBERLER.length}`,
     `- Araştırma yayını: ${ARASTIRMA.length}`,
     `- Öğrenme yolu / ders / test: ${YOLLAR.length} / ${DERSLER.length} / ${TESTLER.length}`,
@@ -142,6 +146,10 @@ export async function GET() {
     ...bolum(
       'Konular',
       liste(KONULAR, (k) => `- [${k.ad}](${SITE.url}/konu/${k.slug}/)`),
+    ),
+    ...bolum(
+      'Köşe yazıları — imzalı görüş',
+      liste(KOSE, (k) => `- [${k.baslik}](${SITE.url}${k.yol}) — ${k.yazar.ad}: ${k.kisaCevap}`),
     ),
     ...bolum(
       'Rehberler',

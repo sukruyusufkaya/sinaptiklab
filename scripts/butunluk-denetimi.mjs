@@ -94,6 +94,14 @@ const BAGLAR = [
   { kaynak: 'terimler', alan: 'ilgili', hedef: 'terimler', dizi: true },
   { kaynak: 'icerikler', alan: 'konuSlug', hedef: 'konular' },
   { kaynak: 'icerikler', alan: 'yazarSlug', hedef: 'yazarlar' },
+  /*
+   * Köşe yazısının (ve analizin) ilişki ağı. Okuma katmanı kopuk slug'ı
+   * sessizce düşürür: Atlas girdisi taslağa alınırsa "Yazıda geçen
+   * kavramlar" listesinden, analiz arşivlenirse "Derinleş" bölümünden kart
+   * eksilir ve sitede hata görünmez.
+   */
+  { kaynak: 'icerikler', alan: 'ilgiliAtlas', hedef: 'atlas', dizi: true },
+  { kaynak: 'icerikler', alan: 'ilgiliIcerik', hedef: 'icerikler', dizi: true },
   { kaynak: 'arastirma', alan: 'yazarSlug', hedef: 'yazarlar' },
   // Öğrenme
   { kaynak: 'dersler', alan: 'yolSlug', hedef: 'ogrenme_yollari' },

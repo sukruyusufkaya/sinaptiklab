@@ -19,13 +19,22 @@ import { tarihUzun } from '@/lib/bicim';
 
 /**
  * Tek dinamik segment iki sayfa tipini karşılar:
- *  - slug bir bölüm ise (`dosya`, `roportaj`, `kose`) → bölüm arşivi
+ *  - slug bir bölüm ise (`dosya`, `roportaj`, …) → bölüm arşivi
  *  - slug bir sayı ise (`2026-ekim`) → sayı sayfası
+ *
+ * İSTİSNA: `kose`. Köşe yazıları sayıya bağlı olmayan görüş yazılarını da
+ * taşıdığı için kendi statik klasörü var (`dergi/kose/`, ADR 0004). Statik
+ * segment dinamikten önce eşleşir; burada da üretilirse aynı yol iki kez
+ * prerender edilirdi.
  */
+
+const KENDI_ROTASI_OLAN_BOLUMLER = new Set(['kose']);
 
 export async function generateStaticParams() {
   return [
-    ...DERGI_BOLUMLERI.map((bolum) => ({ sayi: bolum.slug })),
+    ...DERGI_BOLUMLERI.filter((bolum) => !KENDI_ROTASI_OLAN_BOLUMLER.has(bolum.slug)).map(
+      (bolum) => ({ sayi: bolum.slug }),
+    ),
     ...(await dergiSayiListesi()).map((sayi) => ({ sayi: sayi.slug })),
   ];
 }

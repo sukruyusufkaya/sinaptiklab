@@ -6,6 +6,7 @@ import { Dugme } from '@/components/arayuz/Dugme';
 import { CokYakinda, YakindaBolumListesi } from '@/components/arayuz/CokYakinda';
 import { Ok, Zarf } from '@/components/arayuz/Ikonlar';
 import { DERGI_BOLUMLERI, dergiSayiListesi } from '@/lib/icerik/yayin';
+import { koseYazilari } from '@/lib/icerik/kose';
 import { tarihUzun } from '@/lib/bicim';
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
  * dalı değil.
  */
 export default async function DergiSayfasi() {
-  const DERGI_SAYILARI = await dergiSayiListesi();
+  const [DERGI_SAYILARI, KOSE] = await Promise.all([dergiSayiListesi(), koseYazilari()]);
 
   /*
    * GELECEK TARİHLİ SAYI "SON SAYI" DEĞİLDİR.
@@ -119,7 +120,11 @@ export default async function DergiSayfasi() {
           baglantiYolu="/dergi/arsiv/"
           baglantiMetni="Tüm sayılar"
         />
-        <YakindaBolumListesi bolumler={DERGI_BOLUMLERI} temelYol="/dergi/" />
+        <YakindaBolumListesi
+          bolumler={DERGI_BOLUMLERI}
+          temelYol="/dergi/"
+          yayindakiAdet={{ kose: KOSE.length }}
+        />
       </Bolum>
     </>
   );

@@ -466,3 +466,23 @@
 @utility giris-animasyonu {
   animation: yukari-sus 0.6s var(--ease-sinaptik) both;
 }
+
+/*
+ * Köşe yazısının açılış harfi (drop cap).
+ *
+ * Görüş yazısı dergi geleneğinden gelir; ilk paragrafın büyük harfle açılması
+ * okura "burada imzalı, uzun soluklu bir metin başlıyor" der. Renk ve ölçü
+ * tokenlardan; harf kaynakta nasıl yazıldıysa öyle basılır (büyük harfe
+ * çevirme yok — değişmez kural 1).
+ */
+@utility kose-ilk-harf {
+  &::first-letter {
+    float: left;
+    margin: 0.32rem 0.6rem 0 0;
+    font-family: var(--font-serif);
+    font-size: 4.25rem;
+    line-height: 0.8;
+    font-weight: 600;
+    color: var(--vurgu-parlak);
+  }
+}

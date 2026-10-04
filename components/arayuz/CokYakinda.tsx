@@ -111,9 +111,16 @@ export function CokYakinda({
 export function YakindaBolumListesi({
   bolumler,
   temelYol,
+  yayindakiAdet = {},
 }: {
   bolumler: readonly { slug: string; ad: string; ozet: string }[];
   temelYol: string;
+  /**
+   * Bölüm başına yayındaki yazı sayısı. Dolu bölüm "Yakında" rozeti taşımaz:
+   * arkasında okunabilir içerik olan bağlantıya "Yakında" yazmak rozetin
+   * sözünü bozar (bkz. `lib/rotalar.ts` içindeki "Derin Analizler" notu).
+   */
+  yayindakiAdet?: Readonly<Record<string, number>>;
 }) {
   return (
     <ul className="grid gap-px overflow-hidden rounded-2xl border border-kenar bg-kenar sm:grid-cols-2 lg:grid-cols-3">
@@ -127,7 +134,11 @@ export function YakindaBolumListesi({
               <span className="text-[1.0625rem] font-semibold tracking-tight text-metin group-hover:text-vurgu-parlak">
                 {bolum.ad}
               </span>
-              <Rozet ton="uyari">Yakında</Rozet>
+              {(yayindakiAdet[bolum.slug] ?? 0) > 0 ? (
+                <Rozet ton="basari">{yayindakiAdet[bolum.slug]} yazı yayında</Rozet>
+              ) : (
+                <Rozet ton="uyari">Yakında</Rozet>
+              )}
             </span>
             <span className="mt-2.5 block text-[0.875rem] leading-relaxed text-metin-ikincil">
               {bolum.ozet}

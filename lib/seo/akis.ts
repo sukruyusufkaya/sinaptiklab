@@ -3,6 +3,7 @@ import { xmlKacir } from '@/lib/seo/site-haritasi';
 import { analizler, tumGundem } from '@/lib/icerik/gundem';
 import { rehberListesi } from '@/lib/icerik/yayin';
 import { yazarHaritasi } from '@/lib/icerik/temel';
+import { koseYazilari } from '@/lib/icerik/kose';
 
 /**
  * RSS ve Atom akışları (MASTER-PLAN — makine yüzeyleri).
@@ -40,16 +41,17 @@ function gecerliTarih(deger?: string): Date | undefined {
 }
 
 /**
- * Akışa girecek ögeler: haber + analiz + rehber.
+ * Akışa girecek ögeler: haber + analiz + köşe yazısı + rehber.
  *
  * Radar ve brief dışarıda: ikisi de anlık görüntü niteliğinde, her gün yeniden
  * yayımlanan kayıtlar — akışta her sabah aynı başlıkları tekrar göstermek
  * abonelik değerini düşürür.
  */
 export async function akisOgeleri(): Promise<AkisOgesi[]> {
-  const [GUNDEM, ANALIZLER, REHBERLER, yazarlar] = await Promise.all([
+  const [GUNDEM, ANALIZLER, KOSE, REHBERLER, yazarlar] = await Promise.all([
     tumGundem(),
     analizler(),
+    koseYazilari(),
     rehberListesi(),
     yazarHaritasi(),
   ]);
@@ -79,6 +81,19 @@ export async function akisOgeleri(): Promise<AkisOgesi[]> {
       tarih,
       yazar: yazarlar.get(analiz.yazarSlug)?.ad,
       tur: 'analiz',
+    });
+  }
+
+  for (const yazi of KOSE) {
+    const tarih = gecerliTarih(yazi.tarih);
+    if (!tarih) continue;
+    ogeler.push({
+      baslik: yazi.baslik,
+      yol: yazi.yol,
+      ozet: yazi.kisaCevap,
+      tarih,
+      yazar: yazi.yazar.ad,
+      tur: 'gorus',
     });
   }
 

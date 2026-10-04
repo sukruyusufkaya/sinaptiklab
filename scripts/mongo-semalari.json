@@ -425,6 +425,34 @@
               "description": "Küçük harf, rakam ve tire; Türkçe karakter içermez."
             }
           },
+          "veriNoktalari": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "object",
+              "required": [
+                "deger",
+                "aciklama",
+                "kaynak",
+                "adres"
+              ],
+              "properties": {
+                "deger": {
+                  "bsonType": "string",
+                  "maxLength": 24
+                },
+                "aciklama": {
+                  "bsonType": "string",
+                  "maxLength": 200
+                },
+                "kaynak": {
+                  "bsonType": "string"
+                },
+                "adres": {
+                  "bsonType": "string"
+                }
+              }
+            }
+          },
           "seo": {
             "bsonType": "object",
             "properties": {

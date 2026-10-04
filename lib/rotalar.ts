@@ -215,7 +215,11 @@ export const ANA_MENU: AnaMenuOgesi[] = [
           { ad: 'Röportajlar', yol: '/dergi/roportaj/', rozet: 'yakinda' },
           { ad: 'Araştırma Yazıları', yol: '/dergi/arastirma-yazilari/', rozet: 'yakinda' },
           { ad: 'Uygulama Notları', yol: '/dergi/uygulama/', rozet: 'yakinda' },
-          { ad: 'Köşe Yazıları', yol: '/dergi/kose/', rozet: 'yakinda' },
+          /*
+           * Köşe yazıları sayıya bağlı değil (ADR 0004): bağımsız görüş yazıları
+           * yayında olduğu için rozetsiz. "Derin Analizler" ile aynı gerekçe.
+           */
+          { ad: 'Köşe Yazıları', yol: '/dergi/kose/' },
           /*
            * "Derin Analizler" Dergi menüsünde duruyor ama DERGİ VERİSİ DEĞİL:
            * içerik `icerikler` koleksiyonunda `tur: 'analiz'` olarak yaşıyor

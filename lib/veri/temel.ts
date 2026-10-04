@@ -35,7 +35,7 @@ export const YAZARLAR: Record<string, Yazar> = {
   sukru: {
     slug: 'sukru-yusuf-kaya',
     ad: 'Şükrü Yusuf Kaya',
-    unvan: 'Kurucu & Genel Yayın Yönetmeni',
+    unvan: 'Yapay Zekâ Mimarı · Kurucu & Genel Yayın Yönetmeni',
     basHarfler: 'ŞK',
     ozgecmis:
       'Sinaptik Lab’in kurucusu. Yapay zekâ platform mimarisi, kurumsal dönüşüm ve bilgi grafiği tasarımı üzerine çalışıyor.',

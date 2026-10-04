@@ -1,11 +1,32 @@
 import type { Blok } from '@/lib/tipler';
+import { SatirIci } from '@/components/icerik/SatirIci';
+
+/**
+ * Gövdenin basılış biçimi.
+ *
+ * `standart` — haber, analiz, rehber, Atlas: bilgi yoğun, sıkı tipografi.
+ * `kose` — imzalı görüş yazısı: dergi tipografisi. Aynı bloklar, farklı ritim:
+ *   açılış harfi, numaralı bölüm başlıkları, alıntı blokları, soru kartları,
+ *   kavram çipleri ve dikey zaman çizelgesi. Yeni blok tipi YOKTUR; biçim
+ *   bloğun kendi şeklinden okunur (bkz. `listeBicimi`). Böylece aynı içerik
+ *   makine yüzeylerinde (RSS, şema, dışa aktarma) değişmeden kalır.
+ */
+export type GovdeGorunumu = 'standart' | 'kose';
 
 /**
  * Yapılandırılmış blokları uzun metin tipografisiyle basar.
  * HTML string yerine blok listesi kullanılır; böylece aynı içerik
  * makine tarafından da (GEO, dışa aktarma) okunabilir kalır.
  */
-export function MetinGovdesi({ bloklar }: { bloklar: Blok[] }) {
+export function MetinGovdesi({
+  bloklar,
+  gorunum = 'standart',
+}: {
+  bloklar: Blok[];
+  gorunum?: GovdeGorunumu;
+}) {
+  if (gorunum === 'kose') return <KoseGovdesi bloklar={bloklar} />;
+
   return (
     <div className="space-y-6">
       {bloklar.map((blok, sira) => (
@@ -21,7 +42,9 @@ function BlokBas({ blok }: { blok: Blok }) {
       return (
         <div className="rounded-xl border border-vurgu/30 bg-vurgu-zemin/45 p-5">
           <p className="etiket-mono mb-2.5 text-vurgu-parlak">Kısa cevap</p>
-          <p className="font-serif text-[1.0625rem] leading-relaxed text-metin">{blok.metin}</p>
+          <p className="font-serif text-[1.0625rem] leading-relaxed text-metin">
+            <SatirIci metin={blok.metin} />
+          </p>
         </div>
       );
 
@@ -32,20 +55,14 @@ function BlokBas({ blok }: { blok: Blok }) {
           className="group scroll-mt-28 pt-4 text-[1.375rem] leading-snug font-semibold tracking-tight sm:text-2xl"
         >
           {blok.metin}
-          <a
-            href={`#${blok.kimlik}`}
-            aria-label={`${blok.metin} bölümüne bağlantı`}
-            className="ml-2 align-middle text-base text-metin-soluk opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
-          >
-            #
-          </a>
+          <BaslikCapasi kimlik={blok.kimlik} metin={blok.metin} />
         </h2>
       );
 
     case 'paragraf':
       return (
         <p className="font-serif text-[1.0625rem] leading-[1.75] text-metin-ikincil">
-          {blok.metin}
+          <SatirIci metin={blok.metin} />
         </p>
       );
 
@@ -58,7 +75,7 @@ function BlokBas({ blok }: { blok: Blok }) {
                 {String(sira + 1).padStart(2, '0')}
               </span>
               <span className="font-serif text-[1.0625rem] leading-relaxed text-metin-ikincil">
-                {oge}
+                <SatirIci metin={oge} />
               </span>
             </li>
           ))}
@@ -72,7 +89,7 @@ function BlokBas({ blok }: { blok: Blok }) {
                 aria-hidden="true"
               />
               <span className="font-serif text-[1.0625rem] leading-relaxed text-metin-ikincil">
-                {oge}
+                <SatirIci metin={oge} />
               </span>
             </li>
           ))}
@@ -82,7 +99,9 @@ function BlokBas({ blok }: { blok: Blok }) {
     case 'alinti':
       return (
         <blockquote className="border-l-2 border-vurgu pl-5">
-          <p className="font-serif text-lg leading-relaxed text-metin italic">{blok.metin}</p>
+          <p className="font-serif text-lg leading-relaxed text-metin italic">
+            <SatirIci metin={blok.metin} />
+          </p>
           {blok.kaynak && (
             <footer className="etiket-mono mt-2.5 text-metin-soluk">— {blok.kaynak}</footer>
           )}
@@ -102,44 +121,7 @@ function BlokBas({ blok }: { blok: Blok }) {
       );
 
     case 'tablo':
-      return (
-        <figure>
-          <div className="overflow-x-auto rounded-xl border border-kenar">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-kenar bg-yuzey/50">
-                  {blok.basliklar.map((baslik) => (
-                    <th
-                      key={baslik}
-                      scope="col"
-                      className="etiket-mono px-4 py-3 text-left text-metin-soluk"
-                    >
-                      {baslik}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {blok.satirlar.map((satir, sira) => (
-                  <tr key={sira} className="border-b border-kenar-soluk last:border-b-0">
-                    {satir.map((hucre, hucreSira) => (
-                      <td
-                        key={hucreSira}
-                        className={`px-4 py-3 ${hucreSira === 0 ? 'font-medium text-metin' : 'text-metin-ikincil'}`}
-                      >
-                        {hucre}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {blok.aciklama && (
-            <figcaption className="mt-2.5 text-xs text-metin-soluk">{blok.aciklama}</figcaption>
-          )}
-        </figure>
-      );
+      return <Tablo blok={blok} />;
 
     case 'akis':
       return (
@@ -172,10 +154,257 @@ function BlokBas({ blok }: { blok: Blok }) {
           >
             {blok.ton === 'dikkat' ? 'Dikkat' : 'Not'}
           </p>
-          <p className="text-[0.9375rem] leading-relaxed text-metin-ikincil">{blok.metin}</p>
+          <p className="text-[0.9375rem] leading-relaxed text-metin-ikincil">
+            <SatirIci metin={blok.metin} />
+          </p>
         </aside>
       );
   }
+}
+
+function BaslikCapasi({ kimlik, metin }: { kimlik: string; metin: string }) {
+  return (
+    <a
+      href={`#${kimlik}`}
+      aria-label={`${metin} bölümüne bağlantı`}
+      className="ml-2 align-middle text-base text-metin-soluk opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
+    >
+      #
+    </a>
+  );
+}
+
+function Tablo({ blok }: { blok: Extract<Blok, { tip: 'tablo' }> }) {
+  return (
+    <figure>
+      <div className="overflow-x-auto rounded-xl border border-kenar">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-kenar bg-yuzey/50">
+              {blok.basliklar.map((baslik) => (
+                <th
+                  key={baslik}
+                  scope="col"
+                  className="etiket-mono px-4 py-3 text-left text-metin-soluk"
+                >
+                  {baslik}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {blok.satirlar.map((satir, sira) => (
+              <tr key={sira} className="border-b border-kenar-soluk last:border-b-0">
+                {satir.map((hucre, hucreSira) => (
+                  <td
+                    key={hucreSira}
+                    className={`px-4 py-3 ${hucreSira === 0 ? 'font-medium text-metin' : 'text-metin-ikincil'}`}
+                  >
+                    <SatirIci metin={hucre} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {blok.aciklama && (
+        <figcaption className="mt-2.5 text-xs text-metin-soluk">{blok.aciklama}</figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* --- KÖŞE GÖRÜNÜMÜ -------------------------------------------------------- */
+
+/** Metnin tamamı tek bir vurgu ise (`**...**`) — yazarın altını çizdiği cümle. */
+const TAM_VURGU = /^\*\*[^*]+\*\*$/;
+
+/**
+ * Listenin dergi sayfasındaki biçimi, öğelerin şeklinden okunur:
+ *
+ *  - `soru`: her öğe soru işaretiyle biter → numaralı soru kartları. Görüş
+ *    yazısında soru listesi bir kontrol listesidir; okur kendi kurumuna sorar.
+ *  - `cip`: beş ve daha fazla kısa öğe (≤ 42 karakter) → kavram çipleri.
+ *    "Kimlik. Yetki. Retrieval…" gibi katman sayımları cümle değil envanterdir.
+ *  - `cumle`: geri kalan her şey → ritimli cümle dizisi.
+ */
+function listeBicimi(ogeler: string[]): 'soru' | 'cip' | 'cumle' {
+  if (ogeler.length >= 2 && ogeler.every((oge) => oge.trim().endsWith('?'))) return 'soru';
+  if (ogeler.length >= 5 && ogeler.every((oge) => oge.length <= 42)) return 'cip';
+  return 'cumle';
+}
+
+function KoseGovdesi({ bloklar }: { bloklar: Blok[] }) {
+  const ilkParagraf = bloklar.findIndex((blok) => blok.tip === 'paragraf');
+  // Bölüm numarası = bloğa kadar gelen alt başlık sayısı; render sırasında sayaç tutulmaz.
+  const baslikSiralari = bloklar.flatMap((blok, sira) => (blok.tip === 'altbaslik' ? [sira] : []));
+
+  return (
+    <div className="space-y-7">
+      {bloklar.map((blok, sira) => {
+        if (blok.tip === 'altbaslik') {
+          return <KoseBasligi key={sira} blok={blok} numara={baslikSiralari.indexOf(sira) + 1} />;
+        }
+        if (blok.tip === 'paragraf') {
+          return <KoseParagrafi key={sira} metin={blok.metin} acilis={sira === ilkParagraf} />;
+        }
+        if (blok.tip === 'alinti' && !blok.kaynak)
+          return <KoseAlintisi key={sira} metin={blok.metin} />;
+        if (blok.tip === 'liste' && !blok.sirali)
+          return <KoseListesi key={sira} ogeler={blok.ogeler} />;
+        if (blok.tip === 'akis') return <KoseZamanCizelgesi key={sira} adimlar={blok.adimlar} />;
+        return <BlokBas key={sira} blok={blok} />;
+      })}
+    </div>
+  );
+}
+
+function KoseBasligi({
+  blok,
+  numara,
+}: {
+  blok: Extract<Blok, { tip: 'altbaslik' }>;
+  numara: number;
+}) {
+  return (
+    <div className="mt-16! border-t border-kenar pt-8 first:mt-0!">
+      <p className="etiket-mono mb-3 flex items-center gap-3 text-vurgu-parlak" aria-hidden="true">
+        {String(numara).padStart(2, '0')}
+        <span className="h-px w-10 bg-vurgu/40" />
+      </p>
+      <h2
+        id={blok.kimlik}
+        className="group scroll-mt-28 font-serif text-[1.625rem] leading-[1.2] font-semibold tracking-[-0.015em] text-balance text-metin sm:text-[2rem]"
+      >
+        {blok.metin}
+        <BaslikCapasi kimlik={blok.kimlik} metin={blok.metin} />
+      </h2>
+    </div>
+  );
+}
+
+function KoseParagrafi({ metin, acilis }: { metin: string; acilis: boolean }) {
+  if (TAM_VURGU.test(metin)) {
+    return (
+      <p className="border-l-2 border-vurgu py-1 pl-5 font-serif text-[1.3125rem] leading-[1.5] font-medium text-balance text-metin">
+        {metin.slice(2, -2)}
+      </p>
+    );
+  }
+  return (
+    <p
+      className={`font-serif text-[1.125rem] leading-[1.8] text-metin-ikincil sm:text-[1.1875rem] ${acilis ? 'kose-ilk-harf' : ''}`}
+    >
+      <SatirIci metin={metin} />
+    </p>
+  );
+}
+
+function KoseAlintisi({ metin }: { metin: string }) {
+  // Yazar alıntıyı kendi tırnağıyla yazmış olabilir; çift tırnak basılmaz.
+  const temiz = metin.replace(/^[“"]|[”"]$/g, '');
+  return (
+    <figure className="relative my-12! border-y border-kenar py-9 sm:px-6">
+      <span
+        className="pointer-events-none absolute -top-5 left-0 bg-zemin pr-3 font-serif text-[4rem] leading-none text-vurgu-parlak sm:left-6"
+        aria-hidden="true"
+      >
+        “
+      </span>
+      <blockquote>
+        <p className="font-serif text-[1.5rem] leading-[1.35] font-medium tracking-[-0.01em] text-balance text-metin sm:text-[1.875rem]">
+          <SatirIci metin={temiz} />
+        </p>
+      </blockquote>
+    </figure>
+  );
+}
+
+function KoseListesi({ ogeler }: { ogeler: string[] }) {
+  const bicim = listeBicimi(ogeler);
+
+  if (bicim === 'soru') {
+    return (
+      <ol className="grid gap-px overflow-hidden rounded-2xl border border-kenar bg-kenar sm:grid-cols-2">
+        {ogeler.map((oge, sira) => (
+          <li
+            key={sira}
+            className="flex gap-3.5 bg-zemin p-4 transition-colors duration-200 hover:bg-yuzey/60 sm:p-5 sm:last:odd:col-span-2"
+          >
+            <span className="etiket-mono mt-1 shrink-0 text-vurgu-parlak">
+              {String(sira + 1).padStart(2, '0')}
+            </span>
+            <span className="text-[0.9375rem] leading-relaxed text-metin">
+              <SatirIci metin={oge} />
+            </span>
+          </li>
+        ))}
+      </ol>
+    );
+  }
+
+  if (bicim === 'cip') {
+    return (
+      <ul className="flex flex-wrap gap-2">
+        {ogeler.map((oge, sira) => (
+          <li
+            key={sira}
+            className="rounded-full border border-kenar bg-yuzey/50 px-3.5 py-1.5 text-[0.875rem] text-metin-ikincil transition-colors duration-200 hover:border-vurgu/45 hover:text-metin"
+          >
+            <SatirIci metin={oge.replace(/[.,]$/, '')} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return (
+    <ul className="space-y-3 border-l border-kenar pl-5">
+      {ogeler.map((oge, sira) => (
+        <li
+          key={sira}
+          className="relative font-serif text-[1.0625rem] leading-relaxed text-metin-ikincil sm:text-[1.125rem]"
+        >
+          <span
+            className="absolute top-[0.7em] -left-[1.4rem] size-1.5 rounded-full bg-vurgu-sonuk"
+            aria-hidden="true"
+          />
+          <SatirIci metin={oge} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function KoseZamanCizelgesi({ adimlar }: { adimlar: { ad: string; aciklama: string }[] }) {
+  const son = adimlar.length - 1;
+  return (
+    <ol className="relative space-y-5 border-l border-kenar pl-7">
+      {adimlar.map((adim, sira) => (
+        <li key={`${adim.ad}-${sira}`} className="relative">
+          <span
+            className={`absolute top-1 -left-[2.0625rem] grid size-3 place-items-center rounded-full border ${
+              sira === son
+                ? 'border-vurgu bg-vurgu shadow-[0_0_0_4px_var(--vurgu-zemin)]'
+                : 'border-kenar-guclu bg-zemin'
+            }`}
+            aria-hidden="true"
+          />
+          <p className={`etiket-mono ${sira === son ? 'text-vurgu-parlak' : 'text-metin-soluk'}`}>
+            {adim.ad}
+          </p>
+          <p
+            className={`mt-1.5 font-serif text-[1.0625rem] leading-relaxed ${
+              sira === son ? 'font-medium text-metin' : 'text-metin-ikincil'
+            }`}
+          >
+            <SatirIci metin={adim.aciklama} />
+          </p>
+        </li>
+      ))}
+    </ol>
+  );
 }
 
 /** Gövdedeki alt başlıklardan içindekiler listesi çıkarır. */

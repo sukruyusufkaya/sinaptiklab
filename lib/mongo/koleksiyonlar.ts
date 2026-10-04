@@ -331,6 +331,27 @@ export const TANIMLAR: KoleksiyonTanimi[] = [
         description: 'Bu tezi çürütecek gözlem. Yazılamıyorsa tez değil temennidir.',
       },
       ilgiliIcerik: { bsonType: 'array', items: SLUG },
+      /*
+       * GÖRÜŞ FORMATINA ÖZGÜ ALAN: yazıda geçen sayısal iddialar.
+       *
+       * Görüş yazısında kanıt yükü yazarın üzerindedir (bkz. ADR 0004). Metin
+       * bir rakam kullanıyorsa o rakam burada KAYNAĞIYLA birlikte durur ve
+       * sayfada "Yazıdaki veriler" şeridi olarak basılır. Kaynağı olmayan
+       * rakam bu diziye yazılamaz (`kaynak` ve `adres` zorunlu) — §59.
+       */
+      veriNoktalari: {
+        bsonType: 'array',
+        items: {
+          bsonType: 'object',
+          required: ['deger', 'aciklama', 'kaynak', 'adres'],
+          properties: {
+            deger: { bsonType: 'string', maxLength: 24 },
+            aciklama: { bsonType: 'string', maxLength: 200 },
+            kaynak: { bsonType: 'string' },
+            adres: { bsonType: 'string' },
+          },
+        },
+      },
       seo: SEO,
     }),
     dizinler: [

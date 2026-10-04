@@ -94,8 +94,10 @@ export function MakaleSemasi({
   guncellemeTarihi,
   bolum,
   anahtarlar,
+  kelimeSayisi,
 }: {
-  tur?: 'Article' | 'NewsArticle' | 'TechArticle';
+  /** Görüş yazısı `OpinionNewsArticle` basar: arama motoruna metnin haber değil imzalı yorum olduğunu söyler. */
+  tur?: 'Article' | 'NewsArticle' | 'TechArticle' | 'OpinionNewsArticle';
   baslik: string;
   aciklama: string;
   yol: string;
@@ -105,6 +107,7 @@ export function MakaleSemasi({
   guncellemeTarihi?: string;
   bolum?: string;
   anahtarlar?: string[];
+  kelimeSayisi?: number;
 }) {
   return (
     <Betik
@@ -122,6 +125,7 @@ export function MakaleSemasi({
         ...(guncellemeTarihi ? { dateModified: guncellemeTarihi } : {}),
         ...(bolum ? { articleSection: bolum } : {}),
         ...(anahtarlar?.length ? { keywords: anahtarlar.join(', ') } : {}),
+        ...(kelimeSayisi ? { wordCount: kelimeSayisi } : {}),
       }}
     />
   );

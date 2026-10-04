@@ -11,6 +11,7 @@ import { arastirmaListesi } from '@/lib/icerik/arastirma';
 import { aracListesi, modelListesi, sirketListesi } from '@/lib/icerik/varliklar';
 import { hizmetler, sektorler, vakalar } from '@/lib/icerik/kurumsal';
 import { labProjeleri, meslekler } from '@/lib/icerik/lab';
+import { koseYazilari } from '@/lib/icerik/kose';
 
 /**
  * Arama dizini — VERİTABANINDAN.
@@ -66,6 +67,7 @@ export const siteAramaDizini = cache(async (): Promise<AramaKaydi[]> => {
     LAB,
     MESLEKLER,
     TERIMLER,
+    KOSE,
   ] = await Promise.all([
     atlasListesi(),
     konuListesi(),
@@ -87,6 +89,7 @@ export const siteAramaDizini = cache(async (): Promise<AramaKaydi[]> => {
     labProjeleri(),
     meslekler(),
     sozluk(),
+    koseYazilari(),
   ]);
 
   const dizin: AramaKaydi[] = [];
@@ -163,6 +166,21 @@ export const siteAramaDizini = cache(async (): Promise<AramaKaydi[]> => {
       aciklama: a.konu,
       yol: `/analiz/${a.slug}/`,
       anahtarlar: anahtarla(...slugParcalari(a.slug)),
+    });
+
+  for (const k of KOSE)
+    dizin.push({
+      grup: 'Dergi',
+      ad: k.baslik,
+      aciklama: `Köşe yazısı · ${k.yazar.ad}`,
+      yol: k.yol,
+      anahtarlar: anahtarla(
+        ...slugParcalari(k.slug),
+        ...(k.etiketler ?? []),
+        k.yazar.ad,
+        'köşe yazısı',
+        'görüş',
+      ),
     });
 
   for (const m of MODELLER)

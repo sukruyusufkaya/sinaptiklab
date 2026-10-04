@@ -10,6 +10,7 @@ import { Ok, Saat } from '@/components/arayuz/Ikonlar';
 import { ProfilSemasi } from '@/lib/seo/jsonld';
 import { ustveriBirlestir } from '@/lib/seo/ustveri';
 import { yazarListesi } from '@/lib/icerik/temel';
+import { koseYazilari } from '@/lib/icerik/kose';
 import { analizler as analizListesi, tumGundem } from '@/lib/icerik/gundem';
 import { atlasListesi } from '@/lib/icerik/atlas';
 import { rehberListesi, uzmanListesi } from '@/lib/icerik/yayin';
@@ -85,11 +86,12 @@ export default async function YazarSayfasi({ params }: { params: Promise<{ slug:
     );
   }
 
-  const [TUM_GUNDEM, ATLAS, REHBERLER, ANALIZLER] = await Promise.all([
+  const [TUM_GUNDEM, ATLAS, REHBERLER, ANALIZLER, KOSE] = await Promise.all([
     tumGundem(),
     atlasListesi(),
     rehberListesi(),
     analizListesi(),
+    koseYazilari(),
   ]);
 
   const haberler = TUM_GUNDEM.filter((icerik) => icerik.yazar.slug === yazar.slug);
@@ -97,6 +99,7 @@ export default async function YazarSayfasi({ params }: { params: Promise<{ slug:
   const incelemeleri = ATLAS.filter((girdi) => girdi.inceleyenSlug === yazar.slug);
   const rehberler = REHBERLER.filter((rehber) => rehber.yazarSlug === yazar.slug);
   const analizler = ANALIZLER.filter((analiz) => analiz.yazarSlug === yazar.slug);
+  const koseYazilariListesi = KOSE.filter((yazi) => yazi.yazar.slug === yazar.slug);
 
   return (
     <>
@@ -111,6 +114,9 @@ export default async function YazarSayfasi({ params }: { params: Promise<{ slug:
         baslik={yazar.ad}
         ozet={yazar.ozgecmis}
         olcumler={[
+          ...(koseYazilariListesi.length > 0
+            ? [{ deger: `${koseYazilariListesi.length}`, etiket: 'Köşe yazısı' }]
+            : []),
           { deger: `${haberler.length}`, etiket: 'Gündem' },
           { deger: `${analizler.length}`, etiket: 'Analiz' },
           { deger: `${atlasGirdileri.length}`, etiket: 'Atlas' },
@@ -162,6 +168,42 @@ export default async function YazarSayfasi({ params }: { params: Promise<{ slug:
           </div>
         }
       />
+
+      {koseYazilariListesi.length > 0 && (
+        <Bolum>
+          <BolumBasligi
+            etiket="KÖŞE"
+            baslik="Köşe yazıları"
+            aciklama="İmzalı, uzun soluklu görüş yazıları."
+            baglantiYolu="/dergi/kose/"
+            baglantiMetni="Köşe arşivi"
+          />
+          <ul className="grid gap-4 md:grid-cols-2">
+            {koseYazilariListesi.map((yazi) => (
+              <li key={yazi.slug}>
+                <Link
+                  href={yazi.yol}
+                  className="group flex h-full flex-col rounded-2xl border border-kenar bg-yuzey/30 p-6 transition-colors hover:border-vurgu/45"
+                >
+                  <span className="etiket-mono text-vurgu-parlak">
+                    Köşe yazısı · {tarihKisa(yazi.tarih)}
+                  </span>
+                  <span className="mt-3 block font-serif text-xl leading-snug font-semibold text-metin transition-colors group-hover:text-vurgu-parlak">
+                    {yazi.baslik}
+                  </span>
+                  <span className="mt-2.5 block flex-1 text-[0.875rem] leading-relaxed text-metin-ikincil">
+                    {yazi.ozet ?? yazi.kisaCevap}
+                  </span>
+                  <span className="etiket-mono mt-4 inline-flex items-center gap-1.5 text-metin-soluk">
+                    <Saat className="size-3.5" />
+                    {yazi.okumaDakika} dk
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Bolum>
+      )}
 
       {haberler.length > 0 && (
         <Bolum>

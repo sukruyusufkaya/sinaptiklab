@@ -38,7 +38,8 @@ const TUR_SECENEKLERI: readonly Secenek[] = [
 const TUR_YOLLARI: Record<string, string> = {
   haber: 'haber',
   analiz: 'analiz',
-  gorus: 'analiz',
+  // Görüş yazısının kanonik adresi köşe arşivinin altındadır (ADR 0004).
+  gorus: 'dergi/kose',
   roportaj: 'analiz',
   rehber: 'rehber',
 };

@@ -75,7 +75,7 @@ sayfaları ayrıca `lib/seo/jsonld.tsx` içinden uygun şemayı basar.
 ## Şu anki durum
 
 **Faz 1 (Foundation) ve Faz 2 (veri katmanı) tamamlandı; içerik ölçeklendi.**
-1366 prerender edilen sayfa. Site artık fixture'dan değil MongoDB Atlas'tan
+1367 prerender edilen sayfa. Site artık fixture'dan değil MongoDB Atlas'tan
 okuyor (`lib/mongo/sorgular/*`, `lib/icerik/*`); `lib/veri/*` yalnızca
 yapılandırma (skor basamakları, rota önerileri, politika bölümleri) için kaldı.
 
@@ -100,6 +100,16 @@ Yayında olan içerik (sayılar Atlas'tan, `npm run icerik:denetim` ile doğrula
 
 Ayrıca: 45 haber + 56 derin analiz tam gövde, seviye testi, model
 karşılaştırma stüdyosu, model seçici, beceri ağı, AI Readiness.
+
+### Köşe yazıları
+
+Görüş yazısı `icerikler` içinde `tur: 'gorus'`, kanonik adresi
+`/dergi/kose/<slug>/` (ADR 0004 — envanterdeki `/analiz/` adresinden bilinçli
+sapma: analiz tez güveni ve yanlışlanma koşulu taşır, görüş taşımaz). Okuma
+katmanı `lib/icerik/kose.ts`; yazarı çözülemeyen görüş ATLANIR (imzasız görüş
+yayımlanmaz). Metindeki her rakam `veriNoktalari` alanında kaynağıyla durur.
+Gövde `MetinGovdesi gorunum="kose"` ile basılır; satır içi `**vurgu**` tüm
+görünümlerde desteklenir. İlk yazı: `zeka-metalasiyor-kontrol-degerleniyor`.
 
 **Dergi ve Araştırma bölümleri hazırlanıyor.** `dergi_sayilari` (3) ve
 `arastirma` (6) kayıtları arşive alındı; iki menü de `rozet: 'yakinda'`

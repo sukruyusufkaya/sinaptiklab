@@ -49,7 +49,7 @@ doğrulama tarihi vardır, "yayın tarihi" ikincildir. Haber ve analiz ise
 | 27 | Yayın | Dergi sayısı | `/dergi/<sayi>/` | `dergi_sayilari` | Periyodik |
 | 28 | Yayın | Dergi yazısı | `/dergi/<sayi>/<yazi>/` | `dergi_sayilari.yazilar` | Periyodik |
 | 29 | Yayın | Podcast bölümü | `/podcast/<slug>/` | `podcast` | Akış |
-| 30 | Yayın | Görüş yazısı | `/analiz/<slug>/` | `icerikler` (`tur: gorus`) | Akış |
+| 30 | Yayın | Görüş yazısı (köşe) | `/dergi/kose/<slug>/` | `icerikler` (`tur: gorus`) | Akış — ADR 0004 |
 | 31 | Yayın | Röportaj | `/analiz/<slug>/` | `icerikler` (`tur: roportaj`) | Akış |
 | 32 | Kurumsal | Hizmet sayfası | `/kurumsal/<slug>/` | `hizmetler` | Bakımlı |
 | 33 | Kurumsal | Sektör sayfası | `/sektor/<slug>/` | `sektorler` | Bakımlı |

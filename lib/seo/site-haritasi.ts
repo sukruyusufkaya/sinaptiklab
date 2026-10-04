@@ -1,3 +1,4 @@
+import { koseYazilari } from '@/lib/icerik/kose';
 import { SITE } from '@/lib/site';
 import { ANA_MENU, ALTLIK_SUTUNLARI, ALTLIK_YASAL } from '@/lib/rotalar';
 import { arastirmaListesi, ARASTIRMA_TURLERI } from '@/lib/icerik/arastirma';
@@ -330,8 +331,9 @@ async function akademiParcasi(): Promise<HaritaGirdisi[]> {
 }
 
 async function dergiParcasi(): Promise<HaritaGirdisi[]> {
-  const [SAYILAR, PODCAST, ETKINLIKLER] = await Promise.all([
+  const [SAYILAR, KOSE, PODCAST, ETKINLIKLER] = await Promise.all([
     dergiSayiListesi(),
+    koseYazilari(),
     podcastListesi(),
     etkinlikListesi(),
   ]);
@@ -360,10 +362,16 @@ async function dergiParcasi(): Promise<HaritaGirdisi[]> {
         oncelik: 0.7,
       })),
     ),
-    ...DERGI_BOLUMLERI.map((b) => ({
-      yol: `/dergi/${b.slug}/`,
-      siklik: 'monthly' as const,
-      oncelik: 0.6,
+    /*
+     * Köşe yazıları (ADR 0004): sayıya bağlı olmayan görüş yazıları. Bölüm
+     * arşivi `/dergi/kose/` yukarıdaki DERGI_BOLUMLERI satırından gelir.
+     * (Bu noktada bölüm arşivleri ikinci kez listeleniyordu; tekrar kaldırıldı.)
+     */
+    ...KOSE.map((yazi) => ({
+      yol: yazi.yol,
+      sonDegisim: gecerliTarih(yazi.guncellemeTarihi ?? yazi.tarih),
+      siklik: 'yearly' as const,
+      oncelik: 0.75,
     })),
     ...PODCAST.map((b) => ({
       yol: `/podcast/${b.slug}/`,

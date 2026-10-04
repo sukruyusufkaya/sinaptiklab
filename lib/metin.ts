@@ -68,3 +68,32 @@ export function sayi(deger: number): string {
   const basamak = deger > 0 && deger < 1 ? 4 : 2;
   return deger.toLocaleString('tr-TR', { maximumFractionDigits: basamak });
 }
+
+/**
+ * Blok metnindeki satır içi vurgu işaretini (`**kalın**`) kaldırır.
+ *
+ * Görünür sayfada vurgu `components/icerik/SatirIci.tsx` ile basılır; şema,
+ * RSS, arama dizini ve paylaşım kartı gibi düz metin yüzeylerinde işaretin
+ * kendisi görünmemeli.
+ */
+export function duzMetin(metin: string): string {
+  return metin.replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+
+/** Blok gövdesindeki okunabilir kelime sayısı (vurgu işaretleri hariç). */
+export function kelimeSayisi(
+  bloklar: readonly {
+    metin?: string;
+    ogeler?: string[];
+    adimlar?: { ad: string; aciklama: string }[];
+    satirlar?: string[][];
+  }[] = [],
+): number {
+  const metinler = bloklar.flatMap((blok) => [
+    blok.metin ?? '',
+    ...(blok.ogeler ?? []),
+    ...(blok.adimlar ?? []).flatMap((adim) => [adim.ad, adim.aciklama]),
+    ...(blok.satirlar ?? []).flat(),
+  ]);
+  return duzMetin(metinler.join(' ')).split(/\s+/).filter(Boolean).length;
+}
