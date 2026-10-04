@@ -2,6 +2,23 @@ import type { ReactNode } from 'react';
 import { Kirintilar, type Kirinti } from './Kirintilar';
 
 /**
+ * Ölçüm şeridinin sütun sayısı ve genişliği ölçüm sayısına göre seçilir.
+ *
+ * Şerit eskiden her durumda dört sütundu; ızgaranın arka planı (`bg-kenar`)
+ * çizgi rengi olduğu için boş kalan hücreler gri bir blok olarak görünüyordu
+ * (tek ölçümlü bölüm arşivinde üç hücrelik gri alan). Hücre genişliği dört
+ * sütunluk düzendekiyle aynı tutulur; şerit içerik kadar uzar. Dar ekranda
+ * iki sütuna inen tek sayılı şeritte son hücre satırı doldurur.
+ */
+const OLCUM_IZGARASI: Record<number, string> = {
+  1: 'grid-cols-1 max-w-[10.5rem]',
+  2: 'grid-cols-2 max-w-[21rem]',
+  3: 'grid-cols-2 sm:grid-cols-3 max-w-[31.5rem]',
+  4: 'grid-cols-2 sm:grid-cols-4 max-w-2xl',
+  5: 'grid-cols-2 sm:grid-cols-5 max-w-[52.5rem]',
+};
+
+/**
  * Arşiv ve hub sayfalarının ortak başlık bloğu.
  * Kırıntı + mono etiket + H1 + özet + ölçüm şeridi + eylem alanı.
  */
@@ -50,7 +67,9 @@ export function SayfaBasligi({
             {eylemler && <div className="mt-7 flex flex-wrap items-center gap-3">{eylemler}</div>}
 
             {olcumler && olcumler.length > 0 && (
-              <dl className="mt-9 grid max-w-2xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-kenar bg-kenar sm:grid-cols-4">
+              <dl
+                className={`mt-9 grid gap-px overflow-hidden rounded-xl border border-kenar bg-kenar max-sm:[&>:last-child:nth-child(odd)]:col-span-2 ${OLCUM_IZGARASI[olcumler.length] ?? OLCUM_IZGARASI[4]}`}
+              >
                 {olcumler.map((olcum) => (
                   <div key={olcum.etiket} className="bg-zemin px-4 py-3.5">
                     <dt className="etiket-mono text-metin-soluk">{olcum.etiket}</dt>
