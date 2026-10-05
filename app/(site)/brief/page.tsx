@@ -54,6 +54,9 @@ export default async function BriefSayfasi() {
           etiket="BUGÜN"
           baslik={bugun ? bugun.baslik : 'Bugünün maddeleri'}
           aciklama="Maddeler editoryal olarak seçilir; her biri ilgili konu merkezine bağlanır."
+          {...(bugun?.tamMetin
+            ? { baglantiYolu: `/brief/${bugun.tarih}/`, baglantiMetni: 'Sayının tamamını oku' }
+            : {})}
         />
 
         {BRIEF.length === 0 ? (
@@ -115,9 +118,6 @@ export default async function BriefSayfasi() {
             </li>
           ))}
         </ul>
-        <p className="mt-6 text-xs text-metin-soluk">
-          Arşiv sayfaları yayına alındığında her sayı kendi kalıcı adresine taşınacak.
-        </p>
       </Bolum>
     </>
   );

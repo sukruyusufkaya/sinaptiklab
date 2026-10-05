@@ -185,6 +185,14 @@ type IcerikBelgesi = {
 type BriefBelgesi = {
   tarih: string;
   baslik: string;
+  kisaCevap?: string;
+  ozet?: string;
+  okumaDakika?: number;
+  govde?: Blok[];
+  kaynaklar?: Kaynak[];
+  sss?: SSS[];
+  konuSluglari?: string[];
+  seo?: SeoAlanlari;
   maddeler?: {
     numara: string;
     baslik: string;
@@ -485,6 +493,29 @@ export type BriefArsivKaydi = {
   baslik: string;
   /** Şemada YOK — `maddeler.length` ile hesaplanır. */
   maddeSayisi: number;
+  /** Sayının madde özetinin ötesinde tam metni (`govde`) var mı. */
+  tamMetin: boolean;
+};
+
+/**
+ * Tek sayının tam görünümü.
+ *
+ * Şema brief'i 45 sayı önce "tam yayın"a genişletmişti (`kisaCevap`, `govde`,
+ * `kaynaklar`, `sss` — bkz. `lib/mongo/koleksiyonlar.ts`), ama okuma katmanı
+ * yalnızca tarih, başlık ve maddeleri taşıyordu: alanlar yazılsa da sayfaya
+ * ulaşmıyordu. Artık hepsi geçer; sayfa olanı basar, olmayanı atlar.
+ */
+export type BriefSayisi = {
+  tarih: string;
+  baslik: string;
+  maddeler: BriefMaddesi[];
+  kisaCevap?: string;
+  ozet?: string;
+  okumaDakika?: number;
+  govde?: Blok[];
+  kaynaklar?: Kaynak[];
+  sss?: SSS[];
+  seo?: SeoAlanlari;
 };
 
 /** Yayındaki brief sayıları, tarihe göre yeniden eskiye. */
@@ -545,12 +576,21 @@ export async function brief(): Promise<BriefMaddesi[]> {
  * bağlıyordu, yani 44 sayı veritabanında durup hiçbir adresten
  * görünmüyordu — "veri var, hiçbir şey okumuyor" hatasının bir örneği daha.
  */
-export async function briefBul(
-  tarih: string,
-): Promise<{ tarih: string; baslik: string; maddeler: BriefMaddesi[] } | undefined> {
+export async function briefBul(tarih: string): Promise<BriefSayisi | undefined> {
   const belge = (await briefBelgeleri()).find((b) => b.tarih === tarih);
   if (!belge) return undefined;
-  return { tarih: belge.tarih, baslik: belge.baslik, maddeler: briefMaddeleri(belge) };
+  return {
+    tarih: belge.tarih,
+    baslik: belge.baslik,
+    maddeler: briefMaddeleri(belge),
+    kisaCevap: belge.kisaCevap,
+    ozet: belge.ozet,
+    okumaDakika: belge.okumaDakika,
+    govde: belge.govde,
+    kaynaklar: belge.kaynaklar,
+    sss: belge.sss,
+    seo: belge.seo,
+  };
 }
 
 export async function briefArsivi(): Promise<BriefArsivKaydi[]> {
@@ -558,6 +598,7 @@ export async function briefArsivi(): Promise<BriefArsivKaydi[]> {
     tarih: belge.tarih,
     baslik: belge.baslik,
     maddeSayisi: (belge.maddeler ?? []).length,
+    tamMetin: (belge.govde ?? []).length > 0,
   }));
 }
 

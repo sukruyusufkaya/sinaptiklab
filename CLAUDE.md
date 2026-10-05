@@ -75,7 +75,7 @@ sayfaları ayrıca `lib/seo/jsonld.tsx` içinden uygun şemayı basar.
 ## Şu anki durum
 
 **Faz 1 (Foundation) ve Faz 2 (veri katmanı) tamamlandı; içerik ölçeklendi.**
-1367 prerender edilen sayfa. Site artık fixture'dan değil MongoDB Atlas'tan
+1368 prerender edilen sayfa. Site artık fixture'dan değil MongoDB Atlas'tan
 okuyor (`lib/mongo/sorgular/*`, `lib/icerik/*`); `lib/veri/*` yalnızca
 yapılandırma (skor basamakları, rota önerileri, politika bölümleri) için kaldı.
 
