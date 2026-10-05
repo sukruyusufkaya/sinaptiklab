@@ -21,6 +21,19 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: 'tr-TR',
     dir: 'ltr',
     categories: ['education', 'news', 'technology'],
-    icons: [{ src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
+    icons: [
+      {
+        src: '/marka/sinaptik-isaret-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/marka/sinaptik-isaret-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+    ],
   };
 }

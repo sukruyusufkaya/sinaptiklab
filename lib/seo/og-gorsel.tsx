@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { SITE } from '@/lib/site';
 import { MARKA } from '@/lib/seo/marka';
+import { ISARET_VERI_URI } from '@/lib/seo/isaret-verisi';
 
 /**
  * Paylaşım kartı (Open Graph görseli) üreticisi.
@@ -121,36 +122,12 @@ export async function ogKarti(veri: OgKartVerisi): Promise<ImageResponse> {
       {/* Üst şerit: işaret + tür etiketi */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
         {/*
-            İşaret Satori'nin anladığı ölçüde SVG olarak çizilir: `rect`,
-            `path` ve `circle` destekleniyor. Geometri
-            `components/duzen/Logo.tsx` içindeki `SinaptikIsareti` ile AYNI
-            tutulmalı — ikisi ayrı düşerse marka iki farklı yerde iki farklı
-            görünür.
+            İşaret, sitedeki `SinaptikIsareti` ile aynı PNG'dir (veri URI'si
+            olarak gömülü, bkz. `lib/seo/isaret-verisi.ts`). Satori `<img>`'i
+            destekler; saydam zemin kartın ışımasıyla doğal biçimde birleşir.
           */}
-        <svg width={52} height={52} viewBox="0 0 32 32">
-          <rect
-            x="0.75"
-            y="0.75"
-            width="30.5"
-            height="30.5"
-            rx="9"
-            fill={MARKA.vurguZemin}
-            stroke={MARKA.vurgu}
-            strokeOpacity="0.45"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M9.5 21.5 15 16l-2.5-2.8L22 9.5"
-            fill="none"
-            stroke={MARKA.vurguParlak}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="9.5" cy="21.5" r="2.6" fill={MARKA.ikincil} />
-          <circle cx="22" cy="9.5" r="2.6" fill={MARKA.vurguParlak} />
-          <circle cx="15" cy="16" r="1.6" fill={MARKA.sinyal} />
-        </svg>
+        {/* eslint-disable-next-line @next/next/no-img-element -- Satori next/image çalıştırmaz */}
+        <img src={ISARET_VERI_URI} width={56} height={56} alt="" />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontSize: 25, color: MARKA.metin, letterSpacing: -0.4 }}>{SITE.ad}</span>
           <span style={{ fontSize: 15, color: MARKA.vurguParlak, letterSpacing: 3 }}>

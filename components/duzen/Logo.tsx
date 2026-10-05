@@ -1,32 +1,35 @@
+import Image from 'next/image';
 import Link from 'next/link';
+import isaret from '@/public/marka/sinaptik-isaret-256.png';
 
-/** Sinaptik işareti: sinyal taşıyan üç düğüm. */
-export function SinaptikIsareti({ className = '' }: { className?: string }) {
+/**
+ * Sinaptik işareti: iki düğümü birbirine bağlayan "S" — sinaps.
+ *
+ * Kaynak raster (saydam PNG, `public/marka/`): işaretin derinlik ve ışık
+ * geçişleri SVG ile birebir kurulamıyor. Arka planı kaldırılmış ana dosya
+ * `sinaptik-isaret.png` (500 px); türevler ondan üretilir. Statik içe alma
+ * sayesinde `next/image` boyuta göre küçültülmüş sürüm sunar ve yer tutucu
+ * boyutu bilindiği için düzen kaymaz.
+ *
+ * Dekoratiftir (`alt=""`): yanındaki marka adı ya da bağlantının
+ * `aria-label`'ı kimliği zaten söyler.
+ */
+export function SinaptikIsareti({
+  className = '',
+  oncelikli = false,
+}: {
+  className?: string;
+  /** Yalnızca ekranın üstünde ilk görünen işaret (başlık) önceden yüklenir. */
+  oncelikli?: boolean;
+}) {
   return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden="true" focusable="false">
-      <rect
-        x="0.75"
-        y="0.75"
-        width="30.5"
-        height="30.5"
-        rx="9"
-        fill="var(--vurgu-zemin)"
-        stroke="var(--vurgu)"
-        strokeOpacity="0.45"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M9.5 21.5 15 16l-2.5-2.8L22 9.5"
-        fill="none"
-        stroke="var(--vurgu-parlak)"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="9.5" cy="21.5" r="2.6" fill="var(--ikincil)" />
-      <circle cx="22" cy="9.5" r="2.6" fill="var(--vurgu-parlak)" />
-      <circle cx="15" cy="16" r="1.6" fill="var(--sinyal)" />
-    </svg>
+    <Image
+      src={isaret}
+      alt=""
+      sizes="48px"
+      className={`object-contain ${className}`.trim()}
+      priority={oncelikli}
+    />
   );
 }
 
@@ -43,7 +46,10 @@ export function Logo({
       className={`group inline-flex items-center gap-2.5 rounded-lg ${className}`.trim()}
       aria-label="Sinaptik Lab ana sayfa"
     >
-      <SinaptikIsareti className="size-8 shrink-0 transition-transform duration-300 ease-sinaptik group-hover:scale-105" />
+      <SinaptikIsareti
+        oncelikli
+        className="size-8 shrink-0 transition-transform duration-300 ease-sinaptik group-hover:scale-105"
+      />
       {yaziGoster && (
         <span className="flex flex-col leading-none">
           <span className="text-[0.9375rem] font-semibold tracking-tight text-metin">
